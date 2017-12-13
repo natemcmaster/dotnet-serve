@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <PackageReleaseNotes Condition="'$(VersionPrefix)' == '0.1.0'">
+0.1.0:
+Initial release
+ - Provides a simple command-line web server for dotnet
+    </PackageReleaseNotes>
+  </PropertyGroup>
+</Project>
