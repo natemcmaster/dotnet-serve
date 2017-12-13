@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="prefercliruntime" PackagePath="/" />
+    <Content Include="prefercliruntime" PackagePath="\prefercliruntime" />
   </ItemGroup>
 
 </Project>

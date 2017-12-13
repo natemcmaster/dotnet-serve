@@ -1,6 +1,4 @@
-﻿version: 0.1.0-alpha.{build}
-init:
-  - git config --global core.autocrlf input
+﻿version: 0.1.0-rtm.{build}
 clone_depth: 1
 branches:
   only:
