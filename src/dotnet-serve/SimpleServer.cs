@@ -21,11 +21,10 @@ namespace McMaster.DotNet.Server
         FullName = "dotnet-serve",
         Description = "Provides a simple HTTP server")]
     [HelpOption]
-    [VersionOption("0.1.0")]
     class SimpleServer
     {
         [Argument(0, Name = "path", Description = "Base path to the server root")]
-        [DirectoryMustExist]
+        [DirectoryExists]
         public string Path { get; }
 
         [Option(Description = "Port to use [8080]. Use 0 for a dynamic port.")]
