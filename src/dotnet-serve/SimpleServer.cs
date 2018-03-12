@@ -63,6 +63,7 @@ namespace McMaster.DotNet.Server
                 {
                     o.Listen(address, Port);
                 })
+                .UseSockets()
                 .UseWebRoot(path)
                 .UseContentRoot(path)
                 .UseEnvironment("Production")

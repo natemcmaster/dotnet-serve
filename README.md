@@ -18,12 +18,11 @@ It launches a server in the current working directory and serves all files in it
 
 ## Installation
 
-Add this to your \*.csproj file and execute `dotnet restore`.
+The latest release of dotnet-serve requires the [2.1.300-preview1](https://www.microsoft.com/net/download/dotnet-core/sdk-2.1.300-preview1) .NET Core SDK or newer.
+Once installed, run this command:
 
-```xml
-<ItemGroup>
-  <DotNetCliToolReference Include="dotnet-serve" Version="0.1.0" />
-</ItemGroup>
+```
+dotnet install tool --global dotnet-serve
 ```
 
 ## Usage
@@ -32,7 +31,7 @@ Add this to your \*.csproj file and execute `dotnet restore`.
 dotnet serve [path] [options]
 
 Arguments:
-  path                    Base path to the server root
+  path                    Base path to the server root. Defaults to the current directory.
 
 Options:
   -p|--port <PORT>        Port to use [8080]. Use 0 for a dynamic port.

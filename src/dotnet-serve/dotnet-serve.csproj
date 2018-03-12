@@ -10,8 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0-preview1-28226" />
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.0-alpha.160	" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0-preview1-final" />
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.0-beta" />
   </ItemGroup>
 
 </Project>
