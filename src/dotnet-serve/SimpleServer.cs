@@ -61,6 +61,12 @@ namespace McMaster.DotNet.Server
                 .PreferHostingUrls(false)
                 .UseKestrel(o =>
                 {
+                    if (IPAddress.Any.Equals(address))
+                    {
+                        o.ListenLocalhost(Port);
+                        o.ListenAnyIP(Port);
+                    }
+
                     o.Listen(address, Port);
                 })
                 .UseSockets()
@@ -105,7 +111,11 @@ namespace McMaster.DotNet.Server
 
             if (OpenBrowser)
             {
-                LaunchBrowser(addresses.Addresses.First());
+                var url = addresses.Addresses.First();
+                // normalize to loopback if binding to IPAny
+                url = url.Replace("0.0.0.0", "localhost");
+                url = url.Replace("[::]", "localhost");
+                LaunchBrowser(url);
             }
 
             await host.WaitForShutdownAsync(cts.Token);
