@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+Enhancements:
+ - Add `--path-base` option to support setting a root URL to postpend to the site URL
+
 Fixes:
  - Launch the browser to localhost when 0.0.0.0 or [::] is used
 
