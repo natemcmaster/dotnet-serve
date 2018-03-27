@@ -34,9 +34,9 @@ namespace McMaster.DotNet.Server
         [Range(0, 65535, ErrorMessage = "Invalid port. Ports must be in the range of 0 to 65535.")]
         public int Port { get; } = 8080;
 
-        [Option(Description = "Address to use [0.0.0.0]")]
+        [Option(Description = "Address to use [127.0.0.1]")]
         [IPAddress]
-        public string Address { get; } = "0.0.0.0";
+        public string Address { get; } = "127.0.0.1";
 
         [Option(Description = "Open a web browser when the server starts. [false]")]
         public bool OpenBrowser { get; }
