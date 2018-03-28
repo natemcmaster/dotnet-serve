@@ -10,10 +10,13 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using McMaster.DotNet.Server.RazorPages;
 using McMaster.Extensions.CommandLineUtils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using IOPath = System.IO.Path;
 
@@ -36,7 +39,7 @@ namespace McMaster.DotNet.Server
 
         [Option(Description = "Address to use [0.0.0.0]")]
         [IPAddress]
-        public string Address { get; } = "0.0.0.0";
+        public string[] Address { get; }
 
         [Option(Description = "Open a web browser when the server starts. [false]")]
         public bool OpenBrowser { get; }
@@ -53,7 +56,25 @@ namespace McMaster.DotNet.Server
                 cts.Cancel();
             };
 
-            var address = IPAddress.Parse(Address);
+            IPAddress[] addresses;
+            if (Address.Length == 0)
+            {
+                addresses = new IPAddress[]
+                {
+                    IPAddress.Loopback,
+                    IPAddress.Any,
+                    IPAddress.IPv6Any,
+                };
+            }
+            else
+            {
+                addresses = new IPAddress[Address.Length];
+                for (int i = 0; i < Address.Length; i++)
+                {
+                    addresses[i] = IPAddress.Parse(Address[i]);
+                }
+            }
+
             var path = Path != null
                 ? IOPath.GetFullPath(Path)
                 : Directory.GetCurrentDirectory();
@@ -72,32 +93,27 @@ namespace McMaster.DotNet.Server
                 .PreferHostingUrls(false)
                 .UseKestrel(o =>
                 {
-                    if (IPAddress.Any.Equals(address))
+                    foreach (var a in addresses)
                     {
-                        o.ListenLocalhost(Port);
-                        o.ListenAnyIP(Port);
+                        if (a.Equals(IPAddress.Loopback))
+                        {
+                            o.ListenLocalhost(Port);
+                        }
+                        else
+                        {
+                            o.Listen(a, Port);
+                        }
                     }
-
-                    o.Listen(address, Port);
                 })
                 .UseSockets()
                 .UseWebRoot(path)
                 .UseContentRoot(path)
                 .UseEnvironment("Production")
-                .Configure(app =>
-                {
-                    app.UseStatusCodePages("text/html",
-                        "<html><head><title>Error {0}</title></head><body><h1>HTTP {0}</h1></body></html>");
-
-                    if (!string.IsNullOrEmpty(PathBase))
-                    {
-                        app.Map(PathBase, Configure);
-                    }
-                    else
-                    {
-                        Configure(app);
-                    }
-                })
+                .SuppressStatusMessages(true)
+                .UseSetting("DotNetServe:PathBase", PathBase)
+                .UseStartup<Startup>()
+                .ConfigureServices(s => s
+                    .AddSingleton<RazorPageSourceProvider>())
                 .Build();
 
             console.ForegroundColor = ConsoleColor.DarkYellow;
@@ -106,7 +122,13 @@ namespace McMaster.DotNet.Server
             console.WriteLine(IOPath.GetRelativePath(Directory.GetCurrentDirectory(), path));
 
             await host.StartAsync(cts.Token);
+            AfterServerStart(console, host);
+            await host.WaitForShutdownAsync(cts.Token);
+            return 0;
+        }
 
+        private void AfterServerStart(IConsole console, IWebHost host)
+        {
             var addresses = host.ServerFeatures.Get<IServerAddressesFeature>();
 
             console.WriteLine("Listening on:");
@@ -134,22 +156,6 @@ namespace McMaster.DotNet.Server
 
                 LaunchBrowser(url);
             }
-
-            await host.WaitForShutdownAsync(cts.Token);
-            return 0;
-        }
-
-        private static void Configure(IApplicationBuilder app)
-        {
-            app.UseFileServer(new FileServerOptions
-            {
-                EnableDefaultFiles = true,
-                EnableDirectoryBrowsing = true,
-                StaticFileOptions =
-                {
-                    ServeUnknownFileTypes = true,
-                },
-            });
         }
 
         private static void LaunchBrowser(string url)

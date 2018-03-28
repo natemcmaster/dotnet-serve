@@ -7,11 +7,14 @@
     <PackAsTool>true</PackAsTool>
     <AssemblyName>dotnet-serve</AssemblyName>
     <Description>A simple command-line HTTP server.</Description>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <DebugType>portable</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0-preview1-final" />
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.0-beta" />
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.0-rc" />
   </ItemGroup>
 
 </Project>

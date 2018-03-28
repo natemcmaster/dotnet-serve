@@ -15,7 +15,7 @@
     <RepositoryType>git</RepositoryType>
     <IsPackable>false</IsPackable>
     <NoPackageAnalysis>true</NoPackageAnalysis>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>Latest</LangVersion>
 
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)build\StrongName.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
