@@ -28,14 +28,15 @@ dotnet install tool --global dotnet-serve
 ## Usage
 
 ```
-dotnet serve [path] [options]
+Usage: dotnet serve [arguments] [options]
 
 Arguments:
-  path                    Base path to the server root. Defaults to the current directory.
+  path  Base path to the server root
 
 Options:
+  -?|-h|--help            Show help information
   -p|--port <PORT>        Port to use [8080]. Use 0 for a dynamic port.
   -a|--address <ADDRESS>  Address to use [0.0.0.0]
-  -o|--open-browser       Open a web browser when the server starts [false]
-  -?|-h|--help            Show help information
+  -o|--open-browser       Open a web browser when the server starts. [false]
+  --path-base <PATH>      The base URL path of postpended to the site url.
 ```

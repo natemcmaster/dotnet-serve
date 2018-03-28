@@ -1,4 +1,4 @@
-version: 0.2.1-alpha.{build}
+version: 0.2.1-rtm.{build}
 install:
   - ps: iwr https://raw.githubusercontent.com/dotnet/cli/release/2.1.3xx/scripts/obtain/dotnet-install.ps1 -outfile dotnet-install.ps1
   - ps: .\dotnet-install.ps1 -Version 2.1.300-preview1-008174 -InstallDir $env:ProgramFiles/dotnet
