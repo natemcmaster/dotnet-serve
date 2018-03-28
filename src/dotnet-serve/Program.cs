@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 
 namespace McMaster.DotNet.Server
@@ -13,11 +12,20 @@ namespace McMaster.DotNet.Server
         private const int ERROR = 2;
         private const int OK = 0;
 
-        public static async Task<int> Main(string[] args)
+        public static int Main(string[] args)
         {
             try
             {
-                return await CommandLineApplication.ExecuteAsync<SimpleServer>(args);
+                var app = new CommandLineApplication<CommandLineOptions>();
+                app.VersionOptionFromAssemblyAttributes(typeof(Program).Assembly);
+                app.ValueParsers.Add(new IPAddressParser());
+                app.Conventions.UseDefaultConventions();
+                app.OnExecute(async () =>
+                {
+                    var server = new SimpleServer(app.Model, PhysicalConsole.Singleton);
+                    return await server.RunAsync();
+                });
+                return app.Execute(args);
             }
             catch (Exception ex)
             {

@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+Breaking change:
+ - Change syntax to make the directory served a flag. `-d|--directory`
+
+Enhancements:
+ - Add support for Razor Pages (experiemental still. Must be enabled with `--razor`)
+ 
 ## [v0.2.1]
 
 **March 28, 2018**

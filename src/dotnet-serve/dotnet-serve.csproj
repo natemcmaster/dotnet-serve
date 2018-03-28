@@ -10,6 +10,7 @@
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <DebugType>portable</DebugType>
+    <RootNamespace>McMaster.DotNet.Server</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

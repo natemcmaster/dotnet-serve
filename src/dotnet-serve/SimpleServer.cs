@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -12,76 +11,52 @@ using System.Threading;
 using System.Threading.Tasks;
 using McMaster.DotNet.Server.RazorPages;
 using McMaster.Extensions.CommandLineUtils;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using IOPath = System.IO.Path;
 
 namespace McMaster.DotNet.Server
 {
-    [Command(
-        Name = "dotnet serve",
-        FullName = "dotnet-serve",
-        Description = "Provides a simple HTTP server")]
-    [HelpOption]
     class SimpleServer
     {
-        [Argument(0, Name = "path", Description = "Base path to the server root")]
-        [DirectoryExists]
-        public string Path { get; }
+        private readonly CommandLineOptions _options;
+        private readonly IConsole _console;
 
-        [Option(Description = "Port to use [8080]. Use 0 for a dynamic port.")]
-        [Range(0, 65535, ErrorMessage = "Invalid port. Ports must be in the range of 0 to 65535.")]
-        public int Port { get; } = 8080;
+        private static readonly IPAddress[] s_defaultAddresses = {
+            IPAddress.Loopback,
+            IPAddress.Any,
+            IPAddress.IPv6Any,
+        };
 
-        [Option(Description = "Address to use [0.0.0.0]")]
-        [IPAddress]
-        public string[] Address { get; }
+        public SimpleServer(CommandLineOptions options, IConsole console)
+        {
+            _options = options;
+            _console = console;
+        }
 
-        [Option(Description = "Open a web browser when the server starts. [false]")]
-        public bool OpenBrowser { get; }
-
-        [Option("--path-base <PATH>", Description = "The base URL path of postpended to the site url.")]
-        public string PathBase { get; private set; }
-
-        public async Task<int> OnExecute(IConsole console)
+        public async Task<int> RunAsync()
         {
             var cts = new CancellationTokenSource();
-            console.CancelKeyPress += (o, e) =>
+            var addresses = _options.Addresses.Length > 0 ? _options.Addresses : s_defaultAddresses;
+            var directory = _options.Directory;
+            var pathBase = _options.PathBase;
+            var port = _options.Port;
+
+            _console.CancelKeyPress += (o, e) =>
             {
-                console.WriteLine("Shutting down...");
+                _console.WriteLine("Shutting down...");
                 cts.Cancel();
             };
 
-            IPAddress[] addresses;
-            if (Address.Length == 0)
-            {
-                addresses = new IPAddress[]
-                {
-                    IPAddress.Loopback,
-                    IPAddress.Any,
-                    IPAddress.IPv6Any,
-                };
-            }
-            else
-            {
-                addresses = new IPAddress[Address.Length];
-                for (int i = 0; i < Address.Length; i++)
-                {
-                    addresses[i] = IPAddress.Parse(Address[i]);
-                }
-            }
-
-            var path = Path != null
-                ? IOPath.GetFullPath(Path)
+            var path = directory != null
+                ? Path.GetFullPath(directory)
                 : Directory.GetCurrentDirectory();
 
-            if (!string.IsNullOrEmpty(PathBase) && PathBase[0] != '/')
+            if (!string.IsNullOrEmpty(pathBase) && pathBase[0] != '/')
             {
-                PathBase = "/" + PathBase;
+                pathBase = "/" + pathBase;
             }
 
             var host = new WebHostBuilder()
@@ -95,13 +70,13 @@ namespace McMaster.DotNet.Server
                 {
                     foreach (var a in addresses)
                     {
-                        if (a.Equals(IPAddress.Loopback))
+                        if (a.Equals(IPAddress.Loopback) || a.Equals(IPAddress.IPv6Loopback))
                         {
-                            o.ListenLocalhost(Port);
+                            o.ListenLocalhost(port);
                         }
                         else
                         {
-                            o.Listen(a, Port);
+                            o.Listen(a, port);
                         }
                     }
                 })
@@ -110,48 +85,48 @@ namespace McMaster.DotNet.Server
                 .UseContentRoot(path)
                 .UseEnvironment("Production")
                 .SuppressStatusMessages(true)
-                .UseSetting("DotNetServe:PathBase", PathBase)
                 .UseStartup<Startup>()
-                .ConfigureServices(s => s
+                .ConfigureServices(s =>
+                    s.AddSingleton(_options)
                     .AddSingleton<RazorPageSourceProvider>())
                 .Build();
 
-            console.ForegroundColor = ConsoleColor.DarkYellow;
-            console.Write("Starting server, serving ");
-            console.ResetColor();
-            console.WriteLine(IOPath.GetRelativePath(Directory.GetCurrentDirectory(), path));
+            _console.ForegroundColor = ConsoleColor.DarkYellow;
+            _console.Write("Starting server, serving ");
+            _console.ResetColor();
+            _console.WriteLine(Path.GetRelativePath(Directory.GetCurrentDirectory(), path));
 
             await host.StartAsync(cts.Token);
-            AfterServerStart(console, host);
+            AfterServerStart(host);
             await host.WaitForShutdownAsync(cts.Token);
             return 0;
         }
 
-        private void AfterServerStart(IConsole console, IWebHost host)
+        private void AfterServerStart(IWebHost host)
         {
             var addresses = host.ServerFeatures.Get<IServerAddressesFeature>();
 
-            console.WriteLine("Listening on:");
-            console.ForegroundColor = ConsoleColor.Green;
+            _console.WriteLine("Listening on:");
+            _console.ForegroundColor = ConsoleColor.Green;
             foreach (var a in addresses.Addresses)
             {
-                console.WriteLine("  " + a + PathBase);
+                _console.WriteLine("  " + a + _options.PathBase);
             }
 
-            console.ResetColor();
-            console.WriteLine("");
-            console.WriteLine("Press CTRL+C to exit");
+            _console.ResetColor();
+            _console.WriteLine("");
+            _console.WriteLine("Press CTRL+C to exit");
 
-            if (OpenBrowser)
+            if (_options.OpenBrowser)
             {
                 var url = addresses.Addresses.First();
                 // normalize to loopback if binding to IPAny
                 url = url.Replace("0.0.0.0", "localhost");
                 url = url.Replace("[::]", "localhost");
 
-                if (!string.IsNullOrEmpty(PathBase))
+                if (!string.IsNullOrEmpty(_options.PathBase))
                 {
-                    url += PathBase;
+                    url += _options.PathBase;
                 }
 
                 LaunchBrowser(url);
