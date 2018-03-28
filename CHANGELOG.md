@@ -1,6 +1,8 @@
 # Changelog
 
-## [Unreleased]
+## [v0.2.1]
+
+**March 28, 2018**
 
 Enhancements:
  - Add `--path-base` option to support setting a root URL to postpend to the site URL
@@ -23,7 +25,8 @@ Changes:
 Initial release
  - Provides a simple command-line web server for dotnet
 
-[Unreleased]: https://github.com/natemcmaster/dotnet-serve/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/natemcmaster/dotnet-serve/compare/v0.2.1...HEAD
+[v0.2.1]: https://github.com/natemcmaster/dotnet-serve/compare/v0.2.0...v0.2.1
 [v0.2.0]: https://github.com/natemcmaster/dotnet-serve/compare/v0.1.0...v0.2.0
 [v0.1.0]: https://github.com/natemcmaster/dotnet-serve/tree/v0.1.0
 
