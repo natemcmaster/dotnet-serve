@@ -3,6 +3,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
 
 namespace McMaster.DotNet.Server
@@ -30,8 +31,28 @@ namespace McMaster.DotNet.Server
 
         [Option("--path-base <PATH>", Description = "The base URL path of postpended to the site url.")]
         public string PathBase { get; private set; }
+        
+        [Option("--default-extensions:<EXTENSIONS>", CommandOptionType.SingleOrNoValue, Description = "A comma-delimited list of extensions to use when no extension is provided in the URL. [.html,.htm]")]
+        public (bool HasValue, string Extensions) DefaultExtensions { get; private set; }
 
         [Option("--razor", Description ="Enable Razor Pages support (Experimental)")]
         public bool EnableRazor { get; set; }
+
+        public string GetPathBase()
+        {
+            if(string.IsNullOrEmpty(PathBase))
+            {
+                return PathBase;
+            }
+            var pathBase = PathBase.Replace('\\', '/').TrimEnd('/');
+            return pathBase[0] != '/' ? "/" + pathBase : pathBase;
+        }
+
+        public string[] GetDefaultExtensions() =>
+            DefaultExtensions.HasValue
+                ? string.IsNullOrEmpty(DefaultExtensions.Extensions)
+                    ? new [] { ".html", ".htm" }
+                    : DefaultExtensions.Extensions.Split(',').Select(x => x.StartsWith('.') ? x : "." + x).ToArray()
+                : null;
     }
 }

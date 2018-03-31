@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Diagnostics;
+using McMaster.DotNet.Server.DefaultExtensions;
 using McMaster.DotNet.Server.RazorPages;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -55,9 +56,10 @@ namespace McMaster.DotNet.Server
                 _sourceProvider.Initialize();
             }
 
-            if (!string.IsNullOrEmpty(_options.PathBase))
+            var pathBase = _options.GetPathBase();
+            if (!string.IsNullOrEmpty(pathBase))
             {
-                app.Map(_options.PathBase, ConfigureFileServer);
+                app.Map(pathBase, ConfigureFileServer);
             }
             else
             {
@@ -66,7 +68,16 @@ namespace McMaster.DotNet.Server
         }
 
         private void ConfigureFileServer(IApplicationBuilder app)
-        {
+        {          
+            var defaultExtensions = _options.GetDefaultExtensions();  
+            if(defaultExtensions != null && defaultExtensions.Length > 0)
+            {
+                app.UseDefaultExtensions(new DefaultExtensionsOptions
+                {
+                    Extensions = defaultExtensions
+                });
+            }
+
             app.UseFileServer(new FileServerOptions
             {
                 EnableDefaultFiles = true,

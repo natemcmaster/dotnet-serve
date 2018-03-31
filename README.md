@@ -31,12 +31,13 @@ dotnet install tool --global dotnet-serve
 Usage: dotnet serve [options]
 
 Options:
-  --version                   Show version information
-  -?|-h|--help                Show help information
-  -d|--directory <DIRECTORY>  The root directory to serve. [Current directory]
-  -p|--port <PORT>            Port to use [8080]. Use 0 for a dynamic port.
-  -a|--address <ADDRESS>      Address to use [0.0.0.0]
-  -o|--open-browser           Open a web browser when the server starts. [false]
-  --path-base <PATH>          The base URL path of postpended to the site url.
-  --razor                     Enable Razor Pages support (Experimental)
+  --version                          Show version information
+  -?|-h|--help                       Show help information
+  -d|--directory <DIRECTORY>         The root directory to serve. [Current directory]
+  -p|--port <PORT>                   Port to use [8080]. Use 0 for a dynamic port.
+  -a|--address <ADDRESS>             Address to use [0.0.0.0]
+  -o|--open-browser                  Open a web browser when the server starts. [false]
+  --path-base <PATH>                 The base URL path of postpended to the site url.
+  --default-extensions:<EXTENSIONS>  A comma-delimited list of extensions to use when no extension is provided in the URL. [.html,.htm]
+  --razor                            Enable Razor Pages support (Experimental)
 ```

@@ -41,7 +41,6 @@ namespace McMaster.DotNet.Server
             var cts = new CancellationTokenSource();
             var addresses = _options.Addresses.Length > 0 ? _options.Addresses : s_defaultAddresses;
             var directory = _options.Directory;
-            var pathBase = _options.PathBase;
             var port = _options.Port;
 
             _console.CancelKeyPress += (o, e) =>
@@ -52,12 +51,7 @@ namespace McMaster.DotNet.Server
 
             var path = directory != null
                 ? Path.GetFullPath(directory)
-                : Directory.GetCurrentDirectory();
-
-            if (!string.IsNullOrEmpty(pathBase) && pathBase[0] != '/')
-            {
-                pathBase = "/" + pathBase;
-            }
+                : Directory.GetCurrentDirectory();                  
 
             var host = new WebHostBuilder()
                 .ConfigureLogging(l =>
@@ -96,6 +90,14 @@ namespace McMaster.DotNet.Server
             _console.ResetColor();
             _console.WriteLine(Path.GetRelativePath(Directory.GetCurrentDirectory(), path));
 
+            string[] defaultExtensions = _options.GetDefaultExtensions();          
+            if(defaultExtensions != null)
+            {                
+                _console.ForegroundColor = ConsoleColor.DarkYellow;
+                _console.WriteLine($"Using default extensions " + string.Join(", ", defaultExtensions));
+                _console.ResetColor();
+            }
+
             await host.StartAsync(cts.Token);
             AfterServerStart(host);
             await host.WaitForShutdownAsync(cts.Token);
@@ -105,12 +107,13 @@ namespace McMaster.DotNet.Server
         private void AfterServerStart(IWebHost host)
         {
             var addresses = host.ServerFeatures.Get<IServerAddressesFeature>();
+            var pathBase = _options.GetPathBase();
 
             _console.WriteLine("Listening on:");
             _console.ForegroundColor = ConsoleColor.Green;
             foreach (var a in addresses.Addresses)
             {
-                _console.WriteLine("  " + a + _options.PathBase);
+                _console.WriteLine("  " + a + pathBase);
             }
 
             _console.ResetColor();
@@ -124,9 +127,9 @@ namespace McMaster.DotNet.Server
                 url = url.Replace("0.0.0.0", "localhost");
                 url = url.Replace("[::]", "localhost");
 
-                if (!string.IsNullOrEmpty(_options.PathBase))
+                if (!string.IsNullOrEmpty(pathBase))
                 {
-                    url += _options.PathBase;
+                    url += pathBase;
                 }
 
                 LaunchBrowser(url);
