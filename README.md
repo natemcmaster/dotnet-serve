@@ -34,10 +34,12 @@ Options:
   --version                          Show version information
   -?|-h|--help                       Show help information
   -d|--directory <DIRECTORY>         The root directory to serve. [Current directory]
+  -o|--open-browser                  Open a web browser when the server starts. [false]
   -p|--port <PORT>                   Port to use [8080]. Use 0 for a dynamic port.
   -a|--address <ADDRESS>             Address to use [0.0.0.0]
-  -o|--open-browser                  Open a web browser when the server starts. [false]
   --path-base <PATH>                 The base URL path of postpended to the site url.
   --default-extensions:<EXTENSIONS>  A comma-delimited list of extensions to use when no extension is provided in the URL. [.html,.htm]
+  -q|--quiet                         Show less console output.
+  -v|--verbose                       Show more console output.
   --razor                            Enable Razor Pages support (Experimental)
 ```

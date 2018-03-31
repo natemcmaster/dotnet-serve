@@ -14,6 +14,11 @@ namespace McMaster.DotNet.Server
 
         public IPAddress Parse(string argName, string value, CultureInfo culture)
         {
+            if (string.Equals("localhost", value, StringComparison.OrdinalIgnoreCase))
+            {
+                return IPAddress.Loopback;
+            }
+
             if (!IPAddress.TryParse(value, out var address))
             {
                 throw new FormatException($"'{value}' is not a valid IP address");

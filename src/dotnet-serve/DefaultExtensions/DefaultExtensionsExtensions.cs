@@ -1,11 +1,13 @@
+// Copyright (c) Nate McMaster.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 using System;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
 
 namespace McMaster.DotNet.Server.DefaultExtensions
-{    
-    public static class DefaultExtensionsExtensions
+{
+    static class DefaultExtensionsExtensions
     {
         public static IApplicationBuilder UseDefaultExtensions(this IApplicationBuilder app, DefaultExtensionsOptions options)
         {

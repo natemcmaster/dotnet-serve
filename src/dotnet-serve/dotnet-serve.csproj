@@ -14,8 +14,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="McMaster.DotNet.Server.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0-preview1-final" />
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.0-rc" />
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.0" />
   </ItemGroup>
 
 </Project>
+ 

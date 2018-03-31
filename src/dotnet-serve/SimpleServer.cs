@@ -56,7 +56,7 @@ namespace McMaster.DotNet.Server
             var host = new WebHostBuilder()
                 .ConfigureLogging(l =>
                 {
-                    l.SetMinimumLevel(LogLevel.Information);
+                    l.SetMinimumLevel(_options.MinLogLevel);
                     l.AddConsole();
                 })
                 .PreferHostingUrls(false)
@@ -85,17 +85,13 @@ namespace McMaster.DotNet.Server
                     .AddSingleton<RazorPageSourceProvider>())
                 .Build();
 
-            _console.ForegroundColor = ConsoleColor.DarkYellow;
-            _console.Write("Starting server, serving ");
-            _console.ResetColor();
+            _console.Write(ConsoleColor.DarkYellow, "Starting server, serving ");
             _console.WriteLine(Path.GetRelativePath(Directory.GetCurrentDirectory(), path));
 
-            string[] defaultExtensions = _options.GetDefaultExtensions();          
+            var defaultExtensions = _options.GetDefaultExtensions();          
             if(defaultExtensions != null)
             {                
-                _console.ForegroundColor = ConsoleColor.DarkYellow;
-                _console.WriteLine($"Using default extensions " + string.Join(", ", defaultExtensions));
-                _console.ResetColor();
+                _console.WriteLine(ConsoleColor.DarkYellow, $"Using default extensions " + string.Join(", ", defaultExtensions));
             }
 
             await host.StartAsync(cts.Token);
@@ -110,13 +106,11 @@ namespace McMaster.DotNet.Server
             var pathBase = _options.GetPathBase();
 
             _console.WriteLine("Listening on:");
-            _console.ForegroundColor = ConsoleColor.Green;
             foreach (var a in addresses.Addresses)
             {
-                _console.WriteLine("  " + a + pathBase);
+                _console.WriteLine(ConsoleColor.Green, "  " + a + pathBase);
             }
 
-            _console.ResetColor();
             _console.WriteLine("");
             _console.WriteLine("Press CTRL+C to exit");
 

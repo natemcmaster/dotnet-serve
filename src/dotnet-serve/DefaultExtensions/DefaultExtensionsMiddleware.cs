@@ -1,8 +1,8 @@
+// Copyright (c) Nate McMaster.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 using System;
-using System.Diagnostics;
-using System.IO;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace McMaster.DotNet.Server.DefaultExtensions
 {
-    public class DefaultExtensionsMiddleware
+    class DefaultExtensionsMiddleware
     {
         private readonly RequestDelegate _next;
         private readonly IFileProvider _fileProvider;
@@ -20,11 +20,6 @@ namespace McMaster.DotNet.Server.DefaultExtensions
 
         public DefaultExtensionsMiddleware(RequestDelegate next, IHostingEnvironment hostingEnv, IOptions<DefaultExtensionsOptions> options, ILoggerFactory loggerFactory)
         {
-            if (next == null)
-            {
-                throw new ArgumentNullException(nameof(next));
-            }
-
             if (hostingEnv == null)
             {
                 throw new ArgumentNullException(nameof(hostingEnv));
@@ -40,7 +35,7 @@ namespace McMaster.DotNet.Server.DefaultExtensions
                 throw new ArgumentNullException(nameof(loggerFactory));
             }
 
-            _next = next;
+            _next = next ?? throw new ArgumentNullException(nameof(next));
             _fileProvider = hostingEnv.WebRootFileProvider;
             _options = options.Value;
             _logger = loggerFactory.CreateLogger<DefaultExtensionsMiddleware>();
@@ -52,10 +47,10 @@ namespace McMaster.DotNet.Server.DefaultExtensions
                 && !PathEndsInSlash(context.Request.Path))
             {
                 // Check if there's a file with a matched extension, and rewrite the request if found
-                foreach (string extension in _options.Extensions)
+                foreach (var extension in _options.Extensions)
                 {
-                    string filePath = context.Request.Path.ToString() + extension;
-                    IFileInfo fileInfo = _fileProvider.GetFileInfo(filePath);
+                    var filePath = context.Request.Path.ToString() + extension;
+                    var fileInfo = _fileProvider.GetFileInfo(filePath);
                     if (fileInfo != null && fileInfo.Exists)
                     {
                         _logger.LogInformation($"Rewriting extensionless path to {filePath}");
@@ -66,7 +61,7 @@ namespace McMaster.DotNet.Server.DefaultExtensions
             }
             await _next(context);
         }
-        
+
         private static bool IsGetOrHeadMethod(string method) =>
             HttpMethods.IsGet(method) || HttpMethods.IsHead(method);
 

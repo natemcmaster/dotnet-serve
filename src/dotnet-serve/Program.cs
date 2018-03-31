@@ -17,7 +17,6 @@ namespace McMaster.DotNet.Server
             try
             {
                 var app = new CommandLineApplication<CommandLineOptions>();
-                app.VersionOptionFromAssemblyAttributes(typeof(Program).Assembly);
                 app.ValueParsers.Add(new IPAddressParser());
                 app.Conventions.UseDefaultConventions();
                 app.OnExecute(async () =>
