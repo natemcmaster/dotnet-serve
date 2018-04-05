@@ -1,9 +1,12 @@
+// Copyright (c) Nate McMaster.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 
-namespace McMaster.DotNet.Server.RazorPages
+namespace McMaster.DotNet.Serve.RazorPages
 {
     class TpaReferencesProvider : ApplicationPart,
         ICompilationReferencesProvider

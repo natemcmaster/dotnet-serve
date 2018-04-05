@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Net;
 using McMaster.Extensions.CommandLineUtils.Abstractions;
 
-namespace McMaster.DotNet.Server
+namespace McMaster.DotNet.Serve
 {
     class IPAddressParser : IValueParser<IPAddress>
     {

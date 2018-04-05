@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 
-namespace McMaster.DotNet.Server
+namespace McMaster.DotNet.Serve
 {
     // forwards to XmlKeyManager, but with logging disabled
     class KeyManager : IKeyManager

@@ -9,7 +9,7 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using McMaster.DotNet.Server.RazorPages;
+using McMaster.DotNet.Serve.RazorPages;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace McMaster.DotNet.Server
+namespace McMaster.DotNet.Serve
 {
     class SimpleServer
     {

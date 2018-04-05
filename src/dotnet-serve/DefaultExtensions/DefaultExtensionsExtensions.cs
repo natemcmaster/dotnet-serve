@@ -5,7 +5,7 @@ using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
 
-namespace McMaster.DotNet.Server.DefaultExtensions
+namespace McMaster.DotNet.Serve.DefaultExtensions
 {
     static class DefaultExtensionsExtensions
     {

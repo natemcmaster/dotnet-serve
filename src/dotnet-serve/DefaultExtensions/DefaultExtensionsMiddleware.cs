@@ -9,7 +9,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace McMaster.DotNet.Server.DefaultExtensions
+namespace McMaster.DotNet.Serve.DefaultExtensions
 {
     class DefaultExtensionsMiddleware
     {

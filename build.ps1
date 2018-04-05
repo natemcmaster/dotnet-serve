@@ -4,9 +4,7 @@ param(
     [ValidateSet('Debug', 'Release')]
     $Configuration = $null,
 	[switch]
-	$IsOfficialBuild,
-    [Parameter(ValueFromRemainingArguments = $true)]
-    [string[]]$MSBuildArgs
+	$IsOfficialBuild
 )
 
 Set-StrictMode -Version 1
@@ -27,9 +25,12 @@ function exec([string]$_cmd) {
 # Main
 #
 
+
 if (!$Configuration) {
     $Configuration = if ($env:CI -or $IsOfficialBuild) { 'Release' } else { 'Debug' }
 }
+
+[string[]] $MSBuildArgs = @("-p:Configuration=$Configuration")
 
 if ($IsOfficialBuild) {
 	$MSBuildArgs += '-p:CI=true'
@@ -39,6 +40,15 @@ $artifacts = "$PSScriptRoot/artifacts/"
 
 Remove-Item -Recurse $artifacts -ErrorAction Ignore
 
-exec dotnet pack --configuration $Configuration -o $artifacts @MSBuildArgs
+exec dotnet build @MSBuildArgs
+
+exec dotnet pack `
+    --no-build `
+    -o $artifacts @MSBuildArgs
+
+exec dotnet test `
+    "$PSScriptRoot/test/dotnet-serve.Tests/" `
+    --no-build `
+     @MSBuildArgs
 
 write-host -f magenta 'Done'

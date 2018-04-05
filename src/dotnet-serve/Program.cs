@@ -4,7 +4,7 @@
 using System;
 using McMaster.Extensions.CommandLineUtils;
 
-namespace McMaster.DotNet.Server
+namespace McMaster.DotNet.Serve
 {
     class Program
     {

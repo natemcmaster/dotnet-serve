@@ -2,14 +2,14 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Diagnostics;
-using McMaster.DotNet.Server.DefaultExtensions;
-using McMaster.DotNet.Server.RazorPages;
+using McMaster.DotNet.Serve.DefaultExtensions;
+using McMaster.DotNet.Serve.RazorPages;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace McMaster.DotNet.Server
+namespace McMaster.DotNet.Serve
 {
     class Startup
     {

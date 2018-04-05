@@ -7,7 +7,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.DataProtection.Repositories;
 
-namespace McMaster.DotNet.Server
+namespace McMaster.DotNet.Serve
 {
     class EphemeralXmlRepository : IXmlRepository
     {

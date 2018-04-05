@@ -12,7 +12,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.Extensions.Logging;
 
-namespace McMaster.DotNet.Server.RazorPages
+namespace McMaster.DotNet.Serve.RazorPages
 {
     class RazorPageSourceProvider : IDisposable
     {

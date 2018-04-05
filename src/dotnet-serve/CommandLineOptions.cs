@@ -8,7 +8,7 @@ using System.Reflection;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 
-namespace McMaster.DotNet.Server
+namespace McMaster.DotNet.Serve
 {
     [Command(
         Name = "dotnet serve",

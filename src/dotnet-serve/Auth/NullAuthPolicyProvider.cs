@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 
-namespace McMaster.DotNet.Server
+namespace McMaster.DotNet.Serve
 {
     class NullAuthPolicyProvider : IAuthorizationPolicyProvider
     {

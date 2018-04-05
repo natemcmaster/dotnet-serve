@@ -10,7 +10,7 @@
     <Description>A simple command-line HTTP server.</Description>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <DebugType>embedded</DebugType>
-    <RootNamespace>McMaster.DotNet.Server</RootNamespace>
+    <RootNamespace>McMaster.DotNet.Serve</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
