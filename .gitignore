@@ -35,4 +35,3 @@ node_modules/
 **/[Cc]ompiler/[Rr]esources/**/*.js
 .idea/
 *.iml
-launchSettings.json

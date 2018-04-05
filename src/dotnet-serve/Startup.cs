@@ -40,7 +40,8 @@ namespace McMaster.DotNet.Server
                       .AddRazorViewEngine(o =>
                       {
                           o.CompilationCallback = _sourceProvider.OnCompilation;
-                      });
+                      })
+                      .PartManager.ApplicationParts.Add(new TpaReferencesProvider());
             }
         }
 

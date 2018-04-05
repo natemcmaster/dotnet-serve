@@ -19,7 +19,6 @@ namespace McMaster.DotNet.Server.RazorPages
         public ILogger _logger { get; }
 
         private readonly string _sourceRoot;
-        private readonly CSharpParseOptions _parseOptions;
         private ConcurrentDictionary<string, SyntaxTree> _syntaxTrees;
         private readonly FileSystemWatcher _fileWatcher;
 
@@ -27,7 +26,6 @@ namespace McMaster.DotNet.Server.RazorPages
         {
             _logger = loggerFactory.CreateLogger("RazorPages");
             _sourceRoot = env.ContentRootPath;
-            _parseOptions = new CSharpParseOptions(LanguageVersion.Latest);
             _syntaxTrees = new ConcurrentDictionary<string, SyntaxTree>(StringComparer.Ordinal);
             _fileWatcher = new FileSystemWatcher(_sourceRoot, "*.cs");
         }
@@ -57,7 +55,7 @@ namespace McMaster.DotNet.Server.RazorPages
             }
 
             var source = SourceText.From(File.ReadAllText(path, Encoding.UTF8), Encoding.UTF8);
-            var syntaxTree = CSharpSyntaxTree.ParseText(source, _parseOptions, path);
+            var syntaxTree = CSharpSyntaxTree.ParseText(source, path: path);
 
             foreach (var diag in syntaxTree.GetDiagnostics())
             {
