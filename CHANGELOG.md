@@ -4,10 +4,13 @@
 
 Breaking change:
  - Change syntax to make the directory served a flag. `-d|--directory`
+ - [@shanselman]: Make localhost the default address instead of 0.0.0.0
+ - Update to ASP.NET Core 2.1.0-preview2
 
 Enhancements:
- - Add support for Razor Pages (experiemental still. Must be enabled with `--razor`)
- 
+ - [@daveaglick]: Add support for default extensions
+ - Add support for Razor Pages (experimental. Must be enabled with `--razor`)
+
 ## [v0.2.1]
 
 **March 28, 2018**
@@ -38,3 +41,5 @@ Initial release
 [v0.2.0]: https://github.com/natemcmaster/dotnet-serve/compare/v0.1.0...v0.2.0
 [v0.1.0]: https://github.com/natemcmaster/dotnet-serve/tree/v0.1.0
 
+[@daveaglick]: https://github.com/daveaglick
+[@shanselman]: https://github.com/shanselman
