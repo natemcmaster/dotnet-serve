@@ -18,12 +18,10 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\dotnet-serve\dotnet-serve.csproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <Targets>Publish</Targets>
-      <Properties>PublishDir=$(TargetDir)\tool\</Properties>
-    </ProjectReference>
-  </ItemGroup>
-  
+  <Target Name="PublishDotNetServe" BeforeTargets="Build">
+    <MSBuild Projects="..\..\src\dotnet-serve\dotnet-serve.csproj"
+      Targets="Publish"
+      Properties="PublishDir=$(TargetDir)\tool\;Configuration=$(Configuration)" />
+  </Target>
+
 </Project>
