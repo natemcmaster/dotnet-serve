@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -10,146 +9,124 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using McMaster.DotNet.Serve.RazorPages;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using IOPath = System.IO.Path;
 
-namespace McMaster.DotNet.Server
+namespace McMaster.DotNet.Serve
 {
-    [Command(
-        Name = "dotnet serve",
-        FullName = "dotnet-serve",
-        Description = "Provides a simple HTTP server")]
-    [HelpOption]
     class SimpleServer
     {
-        [Argument(0, Name = "path", Description = "Base path to the server root")]
-        [DirectoryExists]
-        public string Path { get; }
+        private readonly CommandLineOptions _options;
+        private readonly IConsole _console;
 
-        [Option(Description = "Port to use [8080]. Use 0 for a dynamic port.")]
-        [Range(0, 65535, ErrorMessage = "Invalid port. Ports must be in the range of 0 to 65535.")]
-        public int Port { get; } = 8080;
+        private static readonly IPAddress[] s_defaultAddresses = {
+            IPAddress.Loopback,
+            IPAddress.Any,
+            IPAddress.IPv6Any,
+        };
 
-        [Option(Description = "Address to use [127.0.0.1]")]
-        [IPAddress]
-        public string Address { get; } = "127.0.0.1";
+        public SimpleServer(CommandLineOptions options, IConsole console)
+        {
+            _options = options;
+            _console = console;
+        }
 
-        [Option(Description = "Open a web browser when the server starts. [false]")]
-        public bool OpenBrowser { get; }
-
-        [Option("--path-base <PATH>", Description = "The base URL path of postpended to the site url.")]
-        public string PathBase { get; private set; }
-
-        public async Task<int> OnExecute(IConsole console)
+        public async Task<int> RunAsync()
         {
             var cts = new CancellationTokenSource();
-            console.CancelKeyPress += (o, e) =>
+            var directory = _options.Directory;
+            var port = _options.Port;
+
+            _console.CancelKeyPress += (o, e) =>
             {
-                console.WriteLine("Shutting down...");
+                _console.WriteLine("Shutting down...");
                 cts.Cancel();
             };
 
-            var address = IPAddress.Parse(Address);
-            var path = Path != null
-                ? IOPath.GetFullPath(Path)
+            var path = directory != null
+                ? Path.GetFullPath(directory)
                 : Directory.GetCurrentDirectory();
-
-            if (!string.IsNullOrEmpty(PathBase) && PathBase[0] != '/')
-            {
-                PathBase = "/" + PathBase;
-            }
 
             var host = new WebHostBuilder()
                 .ConfigureLogging(l =>
                 {
-                    l.SetMinimumLevel(LogLevel.Information);
+                    l.SetMinimumLevel(_options.MinLogLevel);
                     l.AddConsole();
                 })
                 .PreferHostingUrls(false)
                 .UseKestrel(o =>
                 {
-                    if (IPAddress.Any.Equals(address))
+                    if (_options.Addresses == null || _options.Addresses.Length == 0)
                     {
-                        o.ListenLocalhost(Port);
-                        o.ListenAnyIP(Port);
+                        o.ListenLocalhost(port);
                     }
-
-                    o.Listen(address, Port);
+                    else
+                    {
+                        foreach (var a in _options.Addresses)
+                        {
+                            o.Listen(a, port);
+                        }
+                    }
                 })
                 .UseSockets()
                 .UseWebRoot(path)
                 .UseContentRoot(path)
                 .UseEnvironment("Production")
-                .Configure(app =>
-                {
-                    app.UseStatusCodePages("text/html",
-                        "<html><head><title>Error {0}</title></head><body><h1>HTTP {0}</h1></body></html>");
-
-                    if (!string.IsNullOrEmpty(PathBase))
-                    {
-                        app.Map(PathBase, Configure);
-                    }
-                    else
-                    {
-                        Configure(app);
-                    }
-                })
+                .SuppressStatusMessages(true)
+                .UseStartup<Startup>()
+                .ConfigureServices(s =>
+                    s.AddSingleton(_options)
+                    .AddSingleton<RazorPageSourceProvider>())
                 .Build();
 
-            console.ForegroundColor = ConsoleColor.DarkYellow;
-            console.Write("Starting server, serving ");
-            console.ResetColor();
-            console.WriteLine(IOPath.GetRelativePath(Directory.GetCurrentDirectory(), path));
+            _console.Write(ConsoleColor.DarkYellow, "Starting server, serving ");
+            _console.WriteLine(Path.GetRelativePath(Directory.GetCurrentDirectory(), path));
 
-            await host.StartAsync(cts.Token);
-
-            var addresses = host.ServerFeatures.Get<IServerAddressesFeature>();
-
-            console.WriteLine("Listening on:");
-            console.ForegroundColor = ConsoleColor.Green;
-            foreach (var a in addresses.Addresses)
+            var defaultExtensions = _options.GetDefaultExtensions();
+            if (defaultExtensions != null)
             {
-                console.WriteLine("  " + a + PathBase);
+                _console.WriteLine(ConsoleColor.DarkYellow, $"Using default extensions " + string.Join(", ", defaultExtensions));
             }
 
-            console.ResetColor();
-            console.WriteLine("");
-            console.WriteLine("Press CTRL+C to exit");
+            await host.StartAsync(cts.Token);
+            AfterServerStart(host);
+            await host.WaitForShutdownAsync(cts.Token);
+            return 0;
+        }
 
-            if (OpenBrowser)
+        private void AfterServerStart(IWebHost host)
+        {
+            var addresses = host.ServerFeatures.Get<IServerAddressesFeature>();
+            var pathBase = _options.GetPathBase();
+
+            _console.WriteLine("Listening on:");
+            foreach (var a in addresses.Addresses)
+            {
+                _console.WriteLine(ConsoleColor.Green, "  " + a + pathBase);
+            }
+
+            _console.WriteLine("");
+            _console.WriteLine("Press CTRL+C to exit");
+
+            if (_options.OpenBrowser)
             {
                 var url = addresses.Addresses.First();
                 // normalize to loopback if binding to IPAny
                 url = url.Replace("0.0.0.0", "localhost");
                 url = url.Replace("[::]", "localhost");
 
-                if (!string.IsNullOrEmpty(PathBase))
+                if (!string.IsNullOrEmpty(pathBase))
                 {
-                    url += PathBase;
+                    url += pathBase;
                 }
 
                 LaunchBrowser(url);
             }
-
-            await host.WaitForShutdownAsync(cts.Token);
-            return 0;
-        }
-
-        private static void Configure(IApplicationBuilder app)
-        {
-            app.UseFileServer(new FileServerOptions
-            {
-                EnableDefaultFiles = true,
-                EnableDirectoryBrowsing = true,
-                StaticFileOptions =
-                {
-                    ServeUnknownFileTypes = true,
-                },
-            });
         }
 
         private static void LaunchBrowser(string url)

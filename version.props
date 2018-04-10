@@ -1,7 +1,8 @@
 <Project>
   <PropertyGroup>
-    <VersionPrefix>0.2.1</VersionPrefix>
-    <VersionSuffix>alpha</VersionSuffix>
+    <VersionPrefix>0.3.0</VersionPrefix>
+    <VersionSuffix>rc1</VersionSuffix>
+    <SourceRevisionId>$(APPVEYOR_REPO_COMMIT)</SourceRevisionId>
     <PackageVersion Condition="'$(APPVEYOR_REPO_TAG)' == 'true' AND '$(VersionSuffix)' != ''">$(VersionPrefix)-$(VersionSuffix)</PackageVersion>
     <PackageVersion Condition="'$(APPVEYOR_REPO_TAG)' == 'true' AND '$(VersionSuffix)' == 'rtm'">$(VersionPrefix)</PackageVersion>
 

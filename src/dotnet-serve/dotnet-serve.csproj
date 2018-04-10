@@ -1,4 +1,5 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project>
+  <Sdk Name="Microsoft.NET.Sdk" />
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -7,11 +8,18 @@
     <PackAsTool>true</PackAsTool>
     <AssemblyName>dotnet-serve</AssemblyName>
     <Description>A simple command-line HTTP server.</Description>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <DebugType>embedded</DebugType>
+    <RootNamespace>McMaster.DotNet.Serve</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0-preview1-final" />
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.0-beta" />
+    <InternalsVisibleTo Include="McMaster.DotNet.Server.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0-preview2-final" />
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.0" />
   </ItemGroup>
 
 </Project>

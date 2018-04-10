@@ -1,0 +1,15 @@
+@page
+@model Pages.IndexModel
+
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<h1>Hello</h1>
+
+<ul>
+@for (var i = 0; i < 100; i++)
+{
+    <li>Item @i</li>
+}
+</ul>
