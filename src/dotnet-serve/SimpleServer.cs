@@ -39,7 +39,6 @@ namespace McMaster.DotNet.Serve
         public async Task<int> RunAsync()
         {
             var cts = new CancellationTokenSource();
-            var addresses = _options.Addresses.Length > 0 ? _options.Addresses : s_defaultAddresses;
             var directory = _options.Directory;
             var port = _options.Port;
 
@@ -51,7 +50,7 @@ namespace McMaster.DotNet.Serve
 
             var path = directory != null
                 ? Path.GetFullPath(directory)
-                : Directory.GetCurrentDirectory();                  
+                : Directory.GetCurrentDirectory();
 
             var host = new WebHostBuilder()
                 .ConfigureLogging(l =>
@@ -62,13 +61,13 @@ namespace McMaster.DotNet.Serve
                 .PreferHostingUrls(false)
                 .UseKestrel(o =>
                 {
-                    foreach (var a in addresses)
+                    if (_options.Addresses == null || _options.Addresses.Length == 0)
                     {
-                        if (a.Equals(IPAddress.Loopback) || a.Equals(IPAddress.IPv6Loopback))
-                        {
-                            o.ListenLocalhost(port);
-                        }
-                        else
+                        o.ListenLocalhost(port);
+                    }
+                    else
+                    {
+                        foreach (var a in _options.Addresses)
                         {
                             o.Listen(a, port);
                         }
@@ -88,9 +87,9 @@ namespace McMaster.DotNet.Serve
             _console.Write(ConsoleColor.DarkYellow, "Starting server, serving ");
             _console.WriteLine(Path.GetRelativePath(Directory.GetCurrentDirectory(), path));
 
-            var defaultExtensions = _options.GetDefaultExtensions();          
-            if(defaultExtensions != null)
-            {                
+            var defaultExtensions = _options.GetDefaultExtensions();
+            if (defaultExtensions != null)
+            {
                 _console.WriteLine(ConsoleColor.DarkYellow, $"Using default extensions " + string.Join(", ", defaultExtensions));
             }
 

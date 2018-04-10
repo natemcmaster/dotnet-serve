@@ -31,7 +31,7 @@ namespace McMaster.DotNet.Serve
         [Range(0, 65535, ErrorMessage = "Invalid port. Ports must be in the range of 0 to 65535.")]
         public int Port { get; } = 8080;
 
-        [Option("-a|--address <ADDRESS>", Description = "Address to use [0.0.0.0]")]
+        [Option("-a|--address <ADDRESS>", Description = "Address to use [127.0.0.1]")]
         public IPAddress[] Addresses { get; }
 
         [Option("--path-base <PATH>", Description = "The base URL path of postpended to the site url.")]
