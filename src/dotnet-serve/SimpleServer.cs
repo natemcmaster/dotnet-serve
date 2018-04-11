@@ -39,7 +39,7 @@ namespace McMaster.DotNet.Serve
         public async Task<int> RunAsync()
         {
             var cts = new CancellationTokenSource();
-            var directory = _options.Directory;
+            var directory = Path.GetFullPath(_options.Directory);
             var port = _options.Port;
 
             _console.CancelKeyPress += (o, e) =>
@@ -47,10 +47,6 @@ namespace McMaster.DotNet.Serve
                 _console.WriteLine("Shutting down...");
                 cts.Cancel();
             };
-
-            var path = directory != null
-                ? Path.GetFullPath(directory)
-                : Directory.GetCurrentDirectory();
 
             var host = new WebHostBuilder()
                 .ConfigureLogging(l =>
@@ -74,8 +70,8 @@ namespace McMaster.DotNet.Serve
                     }
                 })
                 .UseSockets()
-                .UseWebRoot(path)
-                .UseContentRoot(path)
+                .UseWebRoot(directory)
+                .UseContentRoot(directory)
                 .UseEnvironment("Production")
                 .SuppressStatusMessages(true)
                 .UseStartup<Startup>()
@@ -85,7 +81,7 @@ namespace McMaster.DotNet.Serve
                 .Build();
 
             _console.Write(ConsoleColor.DarkYellow, "Starting server, serving ");
-            _console.WriteLine(Path.GetRelativePath(Directory.GetCurrentDirectory(), path));
+            _console.WriteLine(Path.GetRelativePath(Directory.GetCurrentDirectory(), directory));
 
             var defaultExtensions = _options.GetDefaultExtensions();
             if (defaultExtensions != null)

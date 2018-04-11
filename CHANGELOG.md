@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [v0.3.0]
 
 Breaking change:
  - Change syntax to make the directory served a flag. `-d|--directory`
@@ -36,7 +36,8 @@ Changes:
 Initial release
  - Provides a simple command-line web server for dotnet
 
-[Unreleased]: https://github.com/natemcmaster/dotnet-serve/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/natemcmaster/dotnet-serve/compare/v0.3.0...HEAD
+[v0.3.0]: https://github.com/natemcmaster/dotnet-serve/compare/v0.2.1...v0.3.0
 [v0.2.1]: https://github.com/natemcmaster/dotnet-serve/compare/v0.2.0...v0.2.1
 [v0.2.0]: https://github.com/natemcmaster/dotnet-serve/compare/v0.1.0...v0.2.0
 [v0.1.0]: https://github.com/natemcmaster/dotnet-serve/tree/v0.1.0

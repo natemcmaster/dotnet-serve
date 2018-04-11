@@ -13,7 +13,7 @@ namespace McMaster.DotNet.Serve
     [Command(
         Name = "dotnet serve",
         FullName = "dotnet-serve",
-        Description = "Provides a simple HTTP server")]
+        Description = "A simple command-line HTTP server")]
     [HelpOption]
     [VersionOptionFromMember(MemberName = nameof(GetVersion))]
     class CommandLineOptions
@@ -22,7 +22,7 @@ namespace McMaster.DotNet.Serve
 
         [Option(Description = "The root directory to serve. [Current directory]")]
         [DirectoryExists]
-        public string Directory { get; }
+        public string Directory { get; } = System.IO.Directory.GetCurrentDirectory();
 
         [Option(Description = "Open a web browser when the server starts. [false]")]
         public bool OpenBrowser { get; }
