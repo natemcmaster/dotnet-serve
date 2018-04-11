@@ -39,6 +39,10 @@ namespace McMaster.DotNet.Serve.Tests
 
         public void Start()
         {
+            if (_output != null)
+            {
+                _output.WriteLine($"Starting: {_process.StartInfo.FileName} {_process.StartInfo.Arguments}");
+            }
             _process.Start();
             _process.BeginOutputReadLine();
             _process.BeginErrorReadLine();

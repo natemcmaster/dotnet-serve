@@ -26,7 +26,7 @@ namespace McMaster.DotNet.Serve.Tests
                     output: _output,
                     enableRazor: true))
             {
-                var result = await serve.Client.GetStringAsync("/");
+                var result = await serve.Client.GetStringWithRetriesAsync("/", retries: 5);
                 Assert.Contains("<li>Item 2</li>", result);
             }
         }
