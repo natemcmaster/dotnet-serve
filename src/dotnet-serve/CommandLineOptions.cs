@@ -14,11 +14,11 @@ namespace McMaster.DotNet.Serve
         Name = "dotnet serve",
         FullName = "dotnet-serve",
         Description = "A simple command-line HTTP server")]
-    [HelpOption]
     [VersionOptionFromMember(MemberName = nameof(GetVersion))]
     class CommandLineOptions
     {
         private LogLevel? _logLevel;
+        private bool? _useTls;
 
         [Option(Description = "The root directory to serve. [Current directory]")]
         [DirectoryExists]
@@ -71,6 +71,28 @@ namespace McMaster.DotNet.Serve
             private set => _logLevel = value;
         }
 
+        [Option("-S|--tls", Description = "Enable TLS (HTTPS)")]
+        public bool UseTls
+        {
+            get
+            {
+                if (_useTls.HasValue)
+                {
+                    return _useTls.Value;
+                }
+
+                return !string.IsNullOrEmpty(CertificatePath);
+            }
+            private set => _useTls = value;
+        }
+
+        [Option("--cert", Description = "A PKCS#12 certificate file to use for HTTPS connections.\nDefaults to file in current directory named '" + CertificateLoader.DefaultCertFileName + "'")]
+        [FileExists]
+        public string CertificatePath { get; }
+
+        [Option("--cert-pwd", Description = "The password to open the certificate file. (Optional)")]
+        public string CertificatePassword { get; }
+
         [Option("--razor", Description = "Enable Razor Pages support (Experimental)")]
         public bool EnableRazor { get; }
 
@@ -83,6 +105,11 @@ namespace McMaster.DotNet.Serve
             var pathBase = PathBase.Replace('\\', '/').TrimEnd('/');
             return pathBase[0] != '/' ? "/" + pathBase : pathBase;
         }
+
+        public bool ShouldUseLocalhost()
+            => Addresses == null
+            || Addresses.Length == 0
+            || (Addresses.Length == 1 && IPAddress.IsLoopback(Addresses[0]));
 
         public string[] GetDefaultExtensions() =>
             DefaultExtensions.HasValue

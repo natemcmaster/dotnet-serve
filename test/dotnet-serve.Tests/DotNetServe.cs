@@ -19,6 +19,7 @@ namespace McMaster.DotNet.Serve.Tests
 
         private readonly Process _process;
         private readonly ITestOutputHelper _output;
+        private readonly SemaphoreSlim _outputReceived = new SemaphoreSlim(0);
         private int _port;
 
         private DotNetServe(Process process, int port, ITestOutputHelper output)
@@ -41,16 +42,18 @@ namespace McMaster.DotNet.Serve.Tests
         {
             if (_output != null)
             {
-                _output.WriteLine($"Starting: {_process.StartInfo.FileName} {_process.StartInfo.Arguments}");
+                _output.WriteLine($"Starting: {_process.StartInfo.FileName} {ArgumentEscaper.EscapeAndConcatenate(_process.StartInfo.ArgumentList)}");
             }
             _process.Start();
             _process.BeginOutputReadLine();
             _process.BeginErrorReadLine();
+            _outputReceived.Wait(TimeSpan.FromSeconds(5));
         }
 
         private void HandleExit(object sender, EventArgs e)
         {
-            if(_output != null)
+            _outputReceived.Release();
+            if (_output != null)
             {
                 _output.WriteLine($"dotnet-serve exited {_process.ExitCode}");
             }
@@ -58,6 +61,7 @@ namespace McMaster.DotNet.Serve.Tests
 
         private void HandleOutput(object sender, DataReceivedEventArgs e)
         {
+            _outputReceived.Release();
             if (e.Data != null && _output != null)
             {
                 _output.WriteLine("dotnet-serve: " + e.Data);
@@ -85,15 +89,21 @@ namespace McMaster.DotNet.Serve.Tests
             bool enableRazor = false,
             ITestOutputHelper output = null)
         {
-            var args = new List<string>
+            var psi = new ProcessStartInfo
             {
-                s_dotnetServe
+                FileName = DotNetExe.FullPathOrDefault(),
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                ArgumentList =
+                {
+                    s_dotnetServe
+                }
             };
 
             if (directory != null)
             {
-                args.Add("-d");
-                args.Add(directory);
+                psi.ArgumentList.Add("-d");
+                psi.ArgumentList.Add(directory);
             }
 
             if (!port.HasValue)
@@ -101,24 +111,18 @@ namespace McMaster.DotNet.Serve.Tests
                 port = Interlocked.Increment(ref s_nextPort);
             }
 
-            args.Add("-p");
-            args.Add(port.ToString());
+            psi.ArgumentList.Add("-p");
+            psi.ArgumentList.Add(port.ToString());
 
             if (enableRazor)
             {
-                args.Add("--razor");
+                psi.ArgumentList.Add("--razor");
             }
 
             var process = new Process
             {
                 EnableRaisingEvents = true,
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = DotNetExe.FullPathOrDefault(),
-                    Arguments = ArgumentEscaper.EscapeAndConcatenate(args),
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                },
+                StartInfo = psi,
             };
 
             var serve = new DotNetServe(process, port.Value, output);

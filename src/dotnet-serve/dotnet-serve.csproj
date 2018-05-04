@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0-preview2-final" />
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.1" />
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.2" />
   </ItemGroup>
 
 </Project>

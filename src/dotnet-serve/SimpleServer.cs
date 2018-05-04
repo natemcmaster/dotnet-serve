@@ -14,6 +14,7 @@ using McMaster.Extensions.CommandLineUtils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -57,15 +58,15 @@ namespace McMaster.DotNet.Serve
                 .PreferHostingUrls(false)
                 .UseKestrel(o =>
                 {
-                    if (_options.Addresses == null || _options.Addresses.Length == 0)
+                    if (_options.ShouldUseLocalhost())
                     {
-                        o.ListenLocalhost(port);
+                        o.ListenLocalhost(port, ConfigureHttps);
                     }
                     else
                     {
                         foreach (var a in _options.Addresses)
                         {
-                            o.Listen(a, port);
+                            o.Listen(a, port, ConfigureHttps);
                         }
                     }
                 })
@@ -93,6 +94,23 @@ namespace McMaster.DotNet.Serve
             AfterServerStart(host);
             await host.WaitForShutdownAsync(cts.Token);
             return 0;
+        }
+
+        private void ConfigureHttps(ListenOptions listenOptions)
+        {
+            if (!_options.UseTls)
+            {
+                return;
+            }
+
+            var cert = CertificateLoader.LoadCertificate(_options);
+
+            if (cert == null)
+            {
+                throw new InvalidOperationException("Failed to find a certificate to use for HTTPS connections");
+            }
+
+            listenOptions.UseHttps(cert);
         }
 
         private void AfterServerStart(IWebHost host)

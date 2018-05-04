@@ -15,7 +15,7 @@ namespace McMaster.DotNet.Serve.Tests
 {
     static class HttpClientExtensions
     {
-        public static async Task<string> GetStringWithRetriesAsync(this HttpClient client, string uri, int retries = 5)
+        public static async Task<string> GetStringWithRetriesAsync(this HttpClient client, string uri, int retries = 10, ITestOutputHelper output = null)
         {
             while (retries > 0)
             {
@@ -24,9 +24,10 @@ namespace McMaster.DotNet.Serve.Tests
                 {
                     return await client.GetStringAsync(uri);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    await Task.Delay(TimeSpan.FromMilliseconds(100));
+                    output?.WriteLine($"Request to {uri} failed with '{ex.Message}'");
+                    await Task.Delay(TimeSpan.FromMilliseconds(200));
                 }
             }
 

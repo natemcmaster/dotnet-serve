@@ -69,8 +69,8 @@ namespace McMaster.DotNet.Serve
         }
 
         private void ConfigureFileServer(IApplicationBuilder app)
-        {          
-            var defaultExtensions = _options.GetDefaultExtensions();  
+        {
+            var defaultExtensions = _options.GetDefaultExtensions();
             if(defaultExtensions != null && defaultExtensions.Length > 0)
             {
                 app.UseDefaultExtensions(new DefaultExtensionsOptions
