@@ -17,15 +17,15 @@
 
   <ItemGroup>
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.2" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0-preview2-final" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.6.2" />
+    <PackageReference Include="Moq" Version="4.8.2" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
   </ItemGroup>
 
   <Target Name="PublishDotNetServe" BeforeTargets="Build">
-    <MSBuild Projects="..\..\src\dotnet-serve\dotnet-serve.csproj"
-      Targets="Publish"
-      Properties="PublishDir=$(TargetDir)\tool\;Configuration=$(Configuration)" />
+    <MSBuild Projects="..\..\src\dotnet-serve\dotnet-serve.csproj" Targets="Publish" Properties="PublishDir=$(TargetDir)\tool\;Configuration=$(Configuration)" />
   </Target>
 
 </Project>

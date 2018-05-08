@@ -22,7 +22,7 @@ namespace McMaster.DotNet.Serve
 
         [Option(Description = "The root directory to serve. [Current directory]")]
         [DirectoryExists]
-        public string Directory { get; } = System.IO.Directory.GetCurrentDirectory();
+        public virtual string Directory { get; } = System.IO.Directory.GetCurrentDirectory();
 
         [Option(Description = "Open a web browser when the server starts. [false]")]
         public bool OpenBrowser { get; }
@@ -72,7 +72,7 @@ namespace McMaster.DotNet.Serve
         }
 
         [Option("-S|--tls", Description = "Enable TLS (HTTPS)")]
-        public bool UseTls
+        public virtual bool UseTls
         {
             get
             {
@@ -91,7 +91,7 @@ namespace McMaster.DotNet.Serve
         public string CertificatePath { get; }
 
         [Option("--cert-pwd", Description = "The password to open the certificate file. (Optional)")]
-        public string CertificatePassword { get; }
+        public virtual string CertificatePassword { get; }
 
         [Option("--razor", Description = "Enable Razor Pages support (Experimental)")]
         public bool EnableRazor { get; }
