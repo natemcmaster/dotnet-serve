@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+- Add support for configuring HTTPs
+- Update to 2.1.0-rc1
+
 ## [v0.3.0]
 
 Breaking change:

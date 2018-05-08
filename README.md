@@ -18,7 +18,7 @@ It launches a server in the current working directory and serves all files in it
 
 ## Installation
 
-The latest release of dotnet-serve requires the [2.1.300-preview2](https://www.microsoft.com/net/download/dotnet-core/sdk-2.1.300-preview2) .NET Core SDK or newer.
+The latest release of dotnet-serve requires the [2.1.300-rc1](https://www.microsoft.com/net/download/dotnet-core/sdk-2.1.300-rc1) .NET Core SDK or newer.
 Once installed, run this command:
 
 ```
