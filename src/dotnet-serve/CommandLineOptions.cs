@@ -82,14 +82,22 @@ namespace McMaster.DotNet.Serve
                     return _useTls.Value;
                 }
 
-                return !string.IsNullOrEmpty(CertificatePath);
+                return !string.IsNullOrEmpty(CertPfxPath) || !string.IsNullOrEmpty(CertPemPath);
             }
             private set => _useTls = value;
         }
 
-        [Option("--cert", Description = "A PKCS#12 certificate file to use for HTTPS connections.\nDefaults to file in current directory named '" + CertificateLoader.DefaultCertFileName + "'")]
+        [Option("--cert", Description = "A PEM encoded certificate file to use for HTTPS connections.\nDefaults to file in current directory named '" + CertificateLoader.DefaultCertPemFileName + "'")]
         [FileExists]
-        public string CertificatePath { get; }
+        public string CertPemPath { get; }
+
+        [Option("--key", Description = "A PEM encoded private key to use for HTTPS connections.\nDefaults to file in current directory named '" + CertificateLoader.DefaultPrivateKeyFileName + "'")]
+        [FileExists]
+        public string PrivateKeyPath { get; }
+
+        [Option("--cert-pfx", Description = "A PKCS#12 certificate file to use for HTTPS connections.\nDefaults to file in current directory named '" + CertificateLoader.DefaultCertPfxFileName + "'")]
+        [FileExists]
+        public string CertPfxPath { get; }
 
         [Option("--cert-pwd", Description = "The password to open the certificate file. (Optional)")]
         public virtual string CertificatePassword { get; }

@@ -4,7 +4,13 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using Org.BouncyCastle.Asn1;
+using Org.BouncyCastle.Asn1.X509;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.OpenSsl;
 
 namespace McMaster.DotNet.Serve
 {
@@ -15,7 +21,9 @@ namespace McMaster.DotNet.Serve
         private const string AspNetHttpsOid = "1.3.6.1.4.1.311.84.1.1";
         private const string AspNetHttpsOidFriendlyName = "ASP.NET Core HTTPS development certificate";
 
-        public const string DefaultCertFileName = "cert.pfx";
+        public const string DefaultCertPemFileName = "cert.pem";
+        public const string DefaultPrivateKeyFileName = "private.key";
+        public const string DefaultCertPfxFileName = "cert.pfx";
 
         public static X509Certificate2 LoadCertificate(CommandLineOptions options, string currentDirectory)
         {
@@ -36,17 +44,36 @@ namespace McMaster.DotNet.Serve
 
         private static X509Certificate2 FindCertificate(CommandLineOptions options, string currentDirectory)
         {
-            if (!string.IsNullOrEmpty(options.CertificatePath))
+            if (!string.IsNullOrEmpty(options.CertPfxPath))
             {
-                options.ExcludedFiles.Add(options.CertificatePath);
-                return LoadFromFile(options.CertificatePath, options.CertificatePassword);
+                options.ExcludedFiles.Add(options.CertPfxPath);
+                return LoadFromPfxFile(options.CertPfxPath, options.CertificatePassword);
             }
 
-            var defaultCertFile = Path.Combine(currentDirectory, DefaultCertFileName);
-            if (File.Exists(defaultCertFile))
+            if (!string.IsNullOrEmpty(options.CertPemPath))
+            {
+                options.ExcludedFiles.Add(options.CertPemPath);
+                var privateKeyPath = !string.IsNullOrEmpty(options.PrivateKeyPath)
+                    ? options.PrivateKeyPath
+                    : Path.Combine(Path.GetDirectoryName(options.CertPemPath), DefaultPrivateKeyFileName);
+                options.ExcludedFiles.Add(privateKeyPath);
+                return LoadFromPfxFile(options.CertPemPath, privateKeyPath);
+            }
+
+            var defaultCertFile = Path.Combine(currentDirectory, DefaultCertPemFileName);
+            var defaultKeyFile = Path.Combine(currentDirectory, DefaultPrivateKeyFileName);
+            if (File.Exists(defaultCertFile) && File.Exists(defaultKeyFile))
             {
                 options.ExcludedFiles.Add(defaultCertFile);
-                return LoadFromFile(defaultCertFile, options.CertificatePassword);
+                options.ExcludedFiles.Add(defaultKeyFile);
+                return LoadFromPem(defaultCertFile, defaultKeyFile);
+            }
+
+            var defaultPfxFile = Path.Combine(currentDirectory, DefaultCertPfxFileName);
+            if (File.Exists(defaultPfxFile))
+            {
+                options.ExcludedFiles.Add(defaultPfxFile);
+                return LoadFromPfxFile(defaultPfxFile, options.CertificatePassword);
             }
 
             if (options.ShouldUseLocalhost())
@@ -57,7 +84,7 @@ namespace McMaster.DotNet.Serve
             return null;
         }
 
-        private static X509Certificate2 LoadFromFile(string filepath, string password)
+        private static X509Certificate2 LoadFromPfxFile(string filepath, string password)
         {
             try
             {
@@ -67,6 +94,61 @@ namespace McMaster.DotNet.Serve
             {
                 throw new InvalidOperationException($"Failed to load certificate file from '{filepath}'", ex);
             }
+        }
+
+        private static X509Certificate2 LoadFromPem(string certPath, string keyPath)
+        {
+            try
+            {
+                X509Certificate2 certWithoutPrivateKey;
+                using (var file = File.OpenText(certPath))
+                {
+                    var pemObject = new PemReader(file).ReadPemObject();
+
+                    if (pemObject.Type != "CERTIFICATE" && pemObject.Type != "X509 CERTIFICATE")
+                    {
+                        throw new InvalidOperationException($"Failed to read X509 certificate from '{certPath}'. Unexpected format '{pemObject.Type}'.");
+                    }
+
+                    certWithoutPrivateKey = new X509Certificate2(pemObject.Content);
+                }
+
+                using (var keyFile = File.OpenText(keyPath))
+                {
+                    var pemReader = new PemReader(keyFile);
+
+                    var pemObj = pemReader.ReadObject();
+                    switch (pemObj)
+                    {
+                        case RsaPrivateCrtKeyParameters rsaParams:
+                            {
+                                var rsa = CreateRSA(rsaParams);
+                                return certWithoutPrivateKey.CopyWithPrivateKey(rsa);
+                            }
+                    }
+
+                    throw new InvalidOperationException($"Failed to read private key from '{keyPath}'. Unexpected format: " + pemObj.GetType().Name);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Failed to load certificate file from '{certPath}' and '{keyPath}'", ex);
+            }
+        }
+
+        private static RSA CreateRSA(RsaPrivateCrtKeyParameters rsaParams)
+        {
+            return RSA.Create(new RSAParameters
+            {
+                Modulus = rsaParams.Modulus.ToByteArray(),
+                Exponent = rsaParams.PublicExponent.ToByteArray(),
+                D = rsaParams.Exponent.ToByteArray(),
+                P = rsaParams.P.ToByteArray(),
+                Q = rsaParams.Q.ToByteArray(),
+                DP = rsaParams.DP.ToByteArray(),
+                DQ = rsaParams.DQ.ToByteArray(),
+                InverseQ = rsaParams.QInv.ToByteArray(),
+            });
         }
 
         private static X509Certificate2 LoadDeveloperCertificate()

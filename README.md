@@ -32,8 +32,7 @@ Usage: dotnet serve [options]
 
 Options:
   --version                          Show version information
-  -?|-h|--help                       Show help information
-  -d|--directory <DIRECTORY>         The root directory to serve. [Current directory]
+  -d|--directory <DIR>               The root directory to serve. [Current directory]
   -o|--open-browser                  Open a web browser when the server starts. [false]
   -p|--port <PORT>                   Port to use [8080]. Use 0 for a dynamic port.
   -a|--address <ADDRESS>             Address to use [127.0.0.1]
@@ -41,5 +40,57 @@ Options:
   --default-extensions:<EXTENSIONS>  A comma-delimited list of extensions to use when no extension is provided in the URL. [.html,.htm]
   -q|--quiet                         Show less console output.
   -v|--verbose                       Show more console output.
+  -S|--tls                           Enable TLS (HTTPS)
+  --cert                             A PEM encoded certificate file to use for HTTPS connections.
+                                     Defaults to file in current directory named 'cert.pem'
+  --key                              A PEM encoded private key to use for HTTPS connections.
+                                     Defaults to file in current directory named 'private.key'
+  --cert-pfx                         A PKCS#12 certificate file to use for HTTPS connections.
+                                     Defaults to file in current directory named 'cert.pfx'
+  --cert-pwd                         The password to open the certificate file. (Optional)
   --razor                            Enable Razor Pages support (Experimental)
+  -?|-h|--help                       Show help information
 ```
+
+## Configuring HTTPS
+
+`dotnet-serve` supports serving requests over HTTPS. You can configure the certificates used for HTTPS in the
+following ways.
+
+### .pfx file
+
+Use this when you have your certficate as a .pfx/.p12 file (PKCS#12 format).
+```
+dotnet serve --cert-pfx myCert.pfx --cert-pwd certPass123
+```
+
+### .pem files
+
+Use this when you have your certficate and private key stored in separate files (PEM encoded).
+```
+dotnet serve --cert ./cert.pem --key ./private.pem
+```
+
+Note: currently only RSA private keys are supported.
+
+### Using the ASP.NET Core Developer Certificate
+
+You can generated an install the ASP.NET Core developer certificate by running
+
+```
+dotnet dev-certs https
+```
+
+Then launch `dotnet-serve` as
+```
+dotnet serve -S
+```
+
+### Defaults
+
+If you just run `dotnet serve -S`, it will attempt to find a .pfx, .pem, or ASP.NET Core dev cert automatically.
+
+It will look for, in order:
+ - A pair of files named `cert.pem` and `private.key` in the current directory
+ - A file named `cert.pfx` in the current directory
+ - The ASP.NET Core Developer Certificate
