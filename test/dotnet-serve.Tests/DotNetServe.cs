@@ -22,14 +22,22 @@ namespace McMaster.DotNet.Serve.Tests
         private readonly SemaphoreSlim _outputReceived = new SemaphoreSlim(0);
         private int _port;
 
-        private DotNetServe(Process process, int port, ITestOutputHelper output)
+        private DotNetServe(Process process, int port, bool useHttps, ITestOutputHelper output)
         {
             _process = process;
             _port = port;
             _output = output;
-            Client = new HttpClient
+            var protocol = useHttps
+                ? "https"
+                : "http";
+
+            var handler = new HttpClientHandler
             {
-                BaseAddress = new Uri($"http://localhost:{port}"),
+                ServerCertificateCustomValidationCallback = (_, __, ___, ____) => true,
+            };
+            Client = new HttpClient(handler)
+            {
+                BaseAddress = new Uri($"{protocol}://localhost:{port}"),
             };
             process.OutputDataReceived += HandleOutput;
             process.ErrorDataReceived += HandleOutput;
@@ -87,6 +95,8 @@ namespace McMaster.DotNet.Serve.Tests
             string directory = null,
             int? port = default,
             bool enableRazor = false,
+            bool enableTls = false,
+            string certPassword = null,
             ITestOutputHelper output = null)
         {
             var psi = new ProcessStartInfo
@@ -96,8 +106,10 @@ namespace McMaster.DotNet.Serve.Tests
                 RedirectStandardError = true,
                 ArgumentList =
                 {
-                    s_dotnetServe
-                }
+                    s_dotnetServe,
+                    "--verbose",
+                },
+                WorkingDirectory = directory ?? AppContext.BaseDirectory,
             };
 
             if (directory != null)
@@ -119,13 +131,24 @@ namespace McMaster.DotNet.Serve.Tests
                 psi.ArgumentList.Add("--razor");
             }
 
+            if (enableTls)
+            {
+                psi.ArgumentList.Add("--tls");
+            }
+
+            if (certPassword != null)
+            {
+                psi.ArgumentList.Add("--cert-pwd");
+                psi.ArgumentList.Add(certPassword);
+            }
+
             var process = new Process
             {
                 EnableRaisingEvents = true,
                 StartInfo = psi,
             };
 
-            var serve = new DotNetServe(process, port.Value, output);
+            var serve = new DotNetServe(process, port.Value, enableTls, output);
             serve.Start();
             return serve;
         }

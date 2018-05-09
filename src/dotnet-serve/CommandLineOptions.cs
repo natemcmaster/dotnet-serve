@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Nate McMaster.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
@@ -20,9 +21,9 @@ namespace McMaster.DotNet.Serve
         private LogLevel? _logLevel;
         private bool? _useTls;
 
-        [Option(Description = "The root directory to serve. [Current directory]")]
+        [Option("-d|--directory <DIR>", Description = "The root directory to serve. [Current directory]")]
         [DirectoryExists]
-        public virtual string Directory { get; } = System.IO.Directory.GetCurrentDirectory();
+        public virtual string WorkingDirectory { get; }
 
         [Option(Description = "Open a web browser when the server starts. [false]")]
         public bool OpenBrowser { get; }
@@ -95,6 +96,8 @@ namespace McMaster.DotNet.Serve
 
         [Option("--razor", Description = "Enable Razor Pages support (Experimental)")]
         public bool EnableRazor { get; }
+
+        public List<string> ExcludedFiles { get; } = new List<string>();
 
         public string GetPathBase()
         {

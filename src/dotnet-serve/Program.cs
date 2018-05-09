@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.IO;
 using McMaster.Extensions.CommandLineUtils;
 
 namespace McMaster.DotNet.Serve
@@ -21,7 +22,7 @@ namespace McMaster.DotNet.Serve
                 app.Conventions.UseDefaultConventions();
                 app.OnExecute(async () =>
                 {
-                    var server = new SimpleServer(app.Model, PhysicalConsole.Singleton);
+                    var server = new SimpleServer(app.Model, PhysicalConsole.Singleton, Directory.GetCurrentDirectory());
                     return await server.RunAsync();
                 });
                 return app.Execute(args);

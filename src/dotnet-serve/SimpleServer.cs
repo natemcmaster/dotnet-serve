@@ -2,11 +2,13 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using McMaster.DotNet.Serve.RazorPages;
@@ -24,6 +26,7 @@ namespace McMaster.DotNet.Serve
     {
         private readonly CommandLineOptions _options;
         private readonly IConsole _console;
+        private readonly string _currentDirectory;
 
         private static readonly IPAddress[] s_defaultAddresses = {
             IPAddress.Loopback,
@@ -31,16 +34,17 @@ namespace McMaster.DotNet.Serve
             IPAddress.IPv6Any,
         };
 
-        public SimpleServer(CommandLineOptions options, IConsole console)
+        public SimpleServer(CommandLineOptions options, IConsole console, string currentDirectory)
         {
             _options = options;
             _console = console;
+            _currentDirectory = currentDirectory;
         }
 
         public async Task<int> RunAsync()
         {
             var cts = new CancellationTokenSource();
-            var directory = Path.GetFullPath(_options.Directory);
+            var directory = Path.GetFullPath(_options.WorkingDirectory);
             var port = _options.Port;
 
             _console.CancelKeyPress += (o, e) =>
@@ -48,6 +52,16 @@ namespace McMaster.DotNet.Serve
                 _console.WriteLine("Shutting down...");
                 cts.Cancel();
             };
+
+            var cert = CertificateLoader.LoadCertificate(_options, _currentDirectory);
+
+            void ConfigureHttps(ListenOptions options)
+            {
+                if (cert != null)
+                {
+                    options.UseHttps(cert);
+                }
+            }
 
             var host = new WebHostBuilder()
                 .ConfigureLogging(l =>
@@ -70,7 +84,6 @@ namespace McMaster.DotNet.Serve
                         }
                     }
                 })
-                .UseSockets()
                 .UseWebRoot(directory)
                 .UseContentRoot(directory)
                 .UseEnvironment("Production")
@@ -82,7 +95,7 @@ namespace McMaster.DotNet.Serve
                 .Build();
 
             _console.Write(ConsoleColor.DarkYellow, "Starting server, serving ");
-            _console.WriteLine(Path.GetRelativePath(Directory.GetCurrentDirectory(), directory));
+            _console.WriteLine(Path.GetRelativePath(_currentDirectory, directory));
 
             var defaultExtensions = _options.GetDefaultExtensions();
             if (defaultExtensions != null)
@@ -94,23 +107,6 @@ namespace McMaster.DotNet.Serve
             AfterServerStart(host);
             await host.WaitForShutdownAsync(cts.Token);
             return 0;
-        }
-
-        private void ConfigureHttps(ListenOptions listenOptions)
-        {
-            if (!_options.UseTls)
-            {
-                return;
-            }
-
-            var cert = CertificateLoader.LoadCertificate(_options);
-
-            if (cert == null)
-            {
-                throw new InvalidOperationException("Failed to find a certificate to use for HTTPS connections");
-            }
-
-            listenOptions.UseHttps(cert);
         }
 
         private void AfterServerStart(IWebHost host)

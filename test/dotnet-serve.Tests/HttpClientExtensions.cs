@@ -33,6 +33,25 @@ namespace McMaster.DotNet.Serve.Tests
 
             throw new TimeoutException("Failed to connect to " + uri);
         }
+
+        public static async Task<HttpResponseMessage> GetWithRetriesAsync(this HttpClient client, string uri, int retries = 10, ITestOutputHelper output = null)
+        {
+            while (retries > 0)
+            {
+                retries--;
+                try
+                {
+                    return await client.GetAsync(uri);
+                }
+                catch (Exception ex)
+                {
+                    output?.WriteLine($"Request to {uri} failed with '{ex.Message}'");
+                    await Task.Delay(TimeSpan.FromMilliseconds(200));
+                }
+            }
+
+            throw new TimeoutException("Failed to connect to " + uri);
+        }
     }
 }
 

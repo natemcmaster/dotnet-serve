@@ -17,16 +17,35 @@ namespace McMaster.DotNet.Serve
 
         public const string DefaultCertFileName = "cert.pfx";
 
-        public static X509Certificate2 LoadCertificate(CommandLineOptions options)
+        public static X509Certificate2 LoadCertificate(CommandLineOptions options, string currentDirectory)
+        {
+            if (!options.UseTls)
+            {
+                return null;
+            }
+
+            var retVal = FindCertificate(options, currentDirectory);
+
+            if (retVal == null)
+            {
+                throw new InvalidOperationException("Could not find a certificate to use for HTTPS connections");
+            }
+
+            return retVal;
+        }
+
+        private static X509Certificate2 FindCertificate(CommandLineOptions options, string currentDirectory)
         {
             if (!string.IsNullOrEmpty(options.CertificatePath))
             {
+                options.ExcludedFiles.Add(options.CertificatePath);
                 return LoadFromFile(options.CertificatePath, options.CertificatePassword);
             }
 
-            var defaultCertFile = Path.Combine(options.Directory, DefaultCertFileName);
+            var defaultCertFile = Path.Combine(currentDirectory, DefaultCertFileName);
             if (File.Exists(defaultCertFile))
             {
+                options.ExcludedFiles.Add(defaultCertFile);
                 return LoadFromFile(defaultCertFile, options.CertificatePassword);
             }
 
