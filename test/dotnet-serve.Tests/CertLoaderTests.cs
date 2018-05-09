@@ -44,7 +44,7 @@ namespace McMaster.DotNet.Serve.Tests
                 output: _output,
                 enableTls: true))
             {
-                var resp = await ds.Client.GetWithRetriesAsync("cert.pfx");
+                var resp = await ds.Client.GetWithRetriesAsync("/cert.pfx");
                 Assert.Equal(HttpStatusCode.NotFound, resp.StatusCode);
             }
         }
@@ -71,10 +71,10 @@ namespace McMaster.DotNet.Serve.Tests
                 output: _output,
                 enableTls: true))
             {
-                var resp1 = await ds.Client.GetWithRetriesAsync("cert.pem");
+                var resp1 = await ds.Client.GetWithRetriesAsync("/cert.pem");
                 Assert.Equal(HttpStatusCode.NotFound, resp1.StatusCode);
 
-                var resp2 = await ds.Client.GetWithRetriesAsync("private.key");
+                var resp2 = await ds.Client.GetWithRetriesAsync("/private.key");
                 Assert.Equal(HttpStatusCode.NotFound, resp2.StatusCode);
             }
         }

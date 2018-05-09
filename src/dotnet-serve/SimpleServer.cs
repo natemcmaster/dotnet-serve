@@ -44,7 +44,7 @@ namespace McMaster.DotNet.Serve
         public async Task<int> RunAsync()
         {
             var cts = new CancellationTokenSource();
-            var directory = Path.GetFullPath(_options.WorkingDirectory);
+            var directory = Path.GetFullPath(_options.Directory ?? _currentDirectory);
             var port = _options.Port;
 
             _console.CancelKeyPress += (o, e) =>

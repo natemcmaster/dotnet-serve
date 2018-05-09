@@ -23,7 +23,7 @@ namespace McMaster.DotNet.Serve
 
         [Option("-d|--directory <DIR>", Description = "The root directory to serve. [Current directory]")]
         [DirectoryExists]
-        public virtual string WorkingDirectory { get; }
+        public string Directory { get; }
 
         [Option(Description = "Open a web browser when the server starts. [false]")]
         public bool OpenBrowser { get; }
