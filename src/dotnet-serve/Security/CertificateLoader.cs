@@ -100,18 +100,7 @@ namespace McMaster.DotNet.Serve
         {
             try
             {
-                X509Certificate2 certWithoutPrivateKey;
-                using (var file = File.OpenText(certPath))
-                {
-                    var pemObject = new PemReader(file).ReadPemObject();
-
-                    if (pemObject.Type != "CERTIFICATE" && pemObject.Type != "X509 CERTIFICATE")
-                    {
-                        throw new InvalidOperationException($"Failed to read X509 certificate from '{certPath}'. Unexpected format '{pemObject.Type}'.");
-                    }
-
-                    certWithoutPrivateKey = new X509Certificate2(pemObject.Content);
-                }
+                var certWithoutPrivateKey  = new X509Certificate2(certPath);
 
                 using (var keyFile = File.OpenText(keyPath))
                 {

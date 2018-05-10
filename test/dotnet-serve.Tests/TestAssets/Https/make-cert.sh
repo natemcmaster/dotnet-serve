@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-key='private.key'
-cert='cert.pem'
-pfx='cert.pfx'
+key='rsa/private.key'
+cert='rsa/cert.pem'
+pfx='pfx/cert.pfx'
 password='testPassword'
 
 openssl req -x509 \
-    -days 1 \
+    -days 1000 \
     -nodes \
     -newkey rsa:2048 \
     -keyout $key \
