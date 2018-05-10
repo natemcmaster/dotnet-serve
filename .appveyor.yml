@@ -7,6 +7,9 @@ branches:
     - master
     - appveyor
     - /^feature\/.*/
+image:
+  - Ubuntu
+  - Visual Studio 2017
 build_script:
   - ps: .\build.ps1 -IsOfficialBuild
 environment:
