@@ -1,9 +1,9 @@
 # Changelog
 
-## [Unreleased]
+## [v0.4.0]
 
 - Add support for configuring HTTPs
-- Update to 2.1.0-rc1
+- Update runtime to use 2.1.0-rc1
 
 ## [v0.3.0]
 
@@ -41,7 +41,8 @@ Changes:
 Initial release
  - Provides a simple command-line web server for dotnet
 
-[Unreleased]: https://github.com/natemcmaster/dotnet-serve/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/natemcmaster/dotnet-serve/compare/v0.4.0...HEAD
+[v0.4.0]: https://github.com/natemcmaster/dotnet-serve/compare/v0.3.0...v0.4.0
 [v0.3.0]: https://github.com/natemcmaster/dotnet-serve/compare/v0.2.1...v0.3.0
 [v0.2.1]: https://github.com/natemcmaster/dotnet-serve/compare/v0.2.0...v0.2.1
 [v0.2.0]: https://github.com/natemcmaster/dotnet-serve/compare/v0.1.0...v0.2.0

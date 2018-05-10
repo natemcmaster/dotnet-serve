@@ -75,9 +75,8 @@ dotnet serve -S
 
 ### Defaults
 
-If you just run `dotnet serve -S`, it will attempt to find a .pfx, .pem, or ASP.NET Core dev cert automatically.
+If you just run `dotnet serve -S`, it will attempt to find a .pfx or ASP.NET Core dev cert automatically.
 
 It will look for, in order:
- - A pair of files named `cert.pem` and `private.key` in the current directory
  - A file named `cert.pfx` in the current directory
  - The ASP.NET Core Developer Certificate

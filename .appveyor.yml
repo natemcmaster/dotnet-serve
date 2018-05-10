@@ -30,3 +30,13 @@ deploy:
     symbol_server: https://www.myget.org/F/natemcmaster/api/v2/package
     api_key:
       secure: KF1yGk4IHJyyfiHfFSCxJ+p5iZX+KPfCTnCihjD5iIZjasTS1lHeilpbaon4wvcM
+  - provider: GitHub
+    description: 'See https://github.com/natemcmaster/dotnet-serve/blob/master/CHANGELOG.md for details'
+    auth_token:
+      secure: 7gza5cyC0Fwp5LcFPz9dGMcHXP2jxbrnu7er9R/HkdvnhzGJVADvOtfYO7+Vow5p
+    artifact: Packages
+    draft: false
+    prerelease: true
+    on:
+      branch: master                 # release from master branch only
+      appveyor_repo_tag: true        # deploy on tag push only
