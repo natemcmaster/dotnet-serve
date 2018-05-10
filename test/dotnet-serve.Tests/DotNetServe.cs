@@ -138,7 +138,7 @@ namespace McMaster.DotNet.Serve.Tests
 
             if (certPassword != null)
             {
-                psi.ArgumentList.Add("--cert-pwd");
+                psi.ArgumentList.Add("--pfx-pwd");
                 psi.ArgumentList.Add(certPassword);
             }
 

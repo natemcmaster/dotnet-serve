@@ -41,13 +41,9 @@ Options:
   -q|--quiet                         Show less console output.
   -v|--verbose                       Show more console output.
   -S|--tls                           Enable TLS (HTTPS)
-  --cert                             A PEM encoded certificate file to use for HTTPS connections.
-                                     Defaults to file in current directory named 'cert.pem'
-  --key                              A PEM encoded private key to use for HTTPS connections.
-                                     Defaults to file in current directory named 'private.key'
-  --cert-pfx                         A PKCS#12 certificate file to use for HTTPS connections.
+  --pfx                              A PKCS#12 certificate file to use for HTTPS connections.
                                      Defaults to file in current directory named 'cert.pfx'
-  --cert-pwd                         The password to open the certificate file. (Optional)
+  --pfx-pwd                          The password to open the certificate file. (Optional)
   --razor                            Enable Razor Pages support (Experimental)
   -?|-h|--help                       Show help information
 ```
@@ -61,17 +57,8 @@ following ways.
 
 Use this when you have your certficate as a .pfx/.p12 file (PKCS#12 format).
 ```
-dotnet serve --cert-pfx myCert.pfx --cert-pwd certPass123
+dotnet serve --pfx myCert.pfx --pfx-pwd certPass123
 ```
-
-### .pem files
-
-Use this when you have your certficate and private key stored in separate files (PEM encoded).
-```
-dotnet serve --cert ./cert.pem --key ./private.pem
-```
-
-Note: currently only RSA private keys are supported.
 
 ### Using the ASP.NET Core Developer Certificate
 
