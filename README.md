@@ -1,8 +1,10 @@
 dotnet-serve
 ============
 
+[![Travis build status][travis-badge]](https://travis-ci.org/natemcmaster/dotnet-serve/branches)
 [![AppVeyor build status][appveyor-badge]](https://ci.appveyor.com/project/natemcmaster/dotnet-serve/branch/master)
 
+[travis-badge]: https://img.shields.io/travis/natemcmaster/dotnet-serve/master.svg?label=travis&style=flat-square
 [appveyor-badge]: https://img.shields.io/appveyor/ci/natemcmaster/dotnet-serve/master.svg?label=appveyor&style=flat-square
 
 [![NuGet][main-nuget-badge]][main-nuget] [![MyGet][main-myget-badge]][main-myget]
