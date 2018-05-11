@@ -25,24 +25,37 @@ namespace McMaster.DotNet.Serve
         public const string DefaultPrivateKeyFileName = "private.key";
         public const string DefaultCertPfxFileName = "cert.pfx";
 
-        public static X509Certificate2 LoadCertificate(CommandLineOptions options, string currentDirectory)
+        public static bool TryLoadCertificate(
+            CommandLineOptions options,
+            string currentDirectory,
+            out X509Certificate2 cert,
+            out Exception error)
         {
+            cert = null;
+            error = null;
+
             if (!options.UseTls)
             {
-                return null;
+                return true;
             }
 
-            var retVal = FindCertificate(options, currentDirectory);
-
-            if (retVal == null)
+            try
             {
-                throw new InvalidOperationException("Could not find a certificate to use for HTTPS connections");
+                cert = LoadCertificate(options, currentDirectory);
+                if (!cert.HasPrivateKey)
+                {
+                    throw new InvalidOperationException($"The certificate '{cert.SubjectName.Name} ({cert.Thumbprint})' is missing a private key.");
+                }
+                return true;
             }
-
-            return retVal;
+            catch (Exception ex)
+            {
+                error = new InvalidOperationException($"Failed to configure the HTTPS. {ex.Message}", ex);
+                return false;
+            }
         }
 
-        private static X509Certificate2 FindCertificate(CommandLineOptions options, string currentDirectory)
+        private static X509Certificate2 LoadCertificate(CommandLineOptions options, string currentDirectory)
         {
             if (!string.IsNullOrEmpty(options.CertPfxPath))
             {
@@ -57,7 +70,7 @@ namespace McMaster.DotNet.Serve
                     ? options.PrivateKeyPath
                     : Path.Combine(Path.GetDirectoryName(options.CertPemPath), DefaultPrivateKeyFileName);
                 options.ExcludedFiles.Add(privateKeyPath);
-                return LoadFromPfxFile(options.CertPemPath, privateKeyPath);
+                return LoadFromPem(options.CertPemPath, privateKeyPath);
             }
 
             var defaultCertFile = Path.Combine(currentDirectory, DefaultCertPemFileName);
@@ -78,10 +91,14 @@ namespace McMaster.DotNet.Serve
 
             if (options.ShouldUseLocalhost())
             {
-                return LoadDeveloperCertificate();
+                var retVal = LoadDeveloperCertificate();
+                if (retVal != null)
+                {
+                    return retVal;
+                }
             }
 
-            return null;
+            throw new InvalidOperationException("Could not find a certificate to use for HTTPS connections");
         }
 
         private static X509Certificate2 LoadFromPfxFile(string filepath, string password)
@@ -92,7 +109,7 @@ namespace McMaster.DotNet.Serve
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException($"Failed to load certificate file from '{filepath}'", ex);
+                throw new InvalidOperationException($"Failed to load certificate file from '{filepath}' with error '{ex.Message}'.", ex);
             }
         }
 

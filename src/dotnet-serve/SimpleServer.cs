@@ -27,7 +27,7 @@ namespace McMaster.DotNet.Serve
         private readonly CommandLineOptions _options;
         private readonly IConsole _console;
         private readonly string _currentDirectory;
-
+        private readonly IReporter _reporter;
         private static readonly IPAddress[] s_defaultAddresses = {
             IPAddress.Loopback,
             IPAddress.Any,
@@ -39,6 +39,11 @@ namespace McMaster.DotNet.Serve
             _options = options;
             _console = console;
             _currentDirectory = currentDirectory;
+            _reporter = new ConsoleReporter(console)
+            {
+                IsQuiet = options.Quiet,
+                IsVerbose = options.Verbose,
+            };
         }
 
         public async Task<int> RunAsync()
@@ -53,7 +58,17 @@ namespace McMaster.DotNet.Serve
                 cts.Cancel();
             };
 
-            var cert = CertificateLoader.LoadCertificate(_options, _currentDirectory);
+            if (!CertificateLoader.TryLoadCertificate(_options, _currentDirectory, out var cert, out var certLoadError))
+            {
+                _reporter.Verbose(certLoadError.ToString());
+                _reporter.Error(certLoadError.Message);
+                return 1;
+            }
+
+            if (cert != null)
+            {
+                _reporter.Verbose($"Using certificate {cert.SubjectName.Name} ({cert.Thumbprint})");
+            }
 
             void ConfigureHttps(ListenOptions options)
             {
@@ -141,25 +156,26 @@ namespace McMaster.DotNet.Serve
 
         private static void LaunchBrowser(string url)
         {
-            string processName;
-            string[] args;
+            var psi = new ProcessStartInfo();
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                processName = "open";
-                args = new[] { url };
+                psi.FileName = "open";
+                psi.ArgumentList.Add(url);
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                processName = "xdg-open";
-                args = new[] { url };
+                psi.FileName = "xdg-open";
+                psi.ArgumentList.Add(url);
             }
             else
             {
-                processName = "cmd";
-                args = new[] { "/C", "start", url };
+                psi.FileName = "cmd";
+                psi.ArgumentList.Add("/C");
+                psi.ArgumentList.Add("start");
+                psi.ArgumentList.Add(url);
             }
 
-            Process.Start(processName, ArgumentEscaper.EscapeAndConcatenate(args));
+            Process.Start(psi);
         }
     }
 }

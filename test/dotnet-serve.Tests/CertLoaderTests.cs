@@ -27,7 +27,7 @@ namespace McMaster.DotNet.Serve.Tests
             var options = new Mock<CommandLineOptions>();
             options.SetupGet(o => o.CertificatePassword).Returns("testPassword");
             options.SetupGet(o => o.UseTls).Returns(true);
-            var x509 = CertificateLoader.LoadCertificate(options.Object, path);
+            Assert.True(CertificateLoader.TryLoadCertificate(options.Object, path, out var x509, out _));
             Assert.NotNull(x509);
             Assert.Equal("E8481D606B15080024C806EFE89B00F0976BD906", x509.Thumbprint);
             Assert.True(x509.HasPrivateKey, "Cert should have private key");
@@ -55,7 +55,7 @@ namespace McMaster.DotNet.Serve.Tests
             var path = Path.Combine(AppContext.BaseDirectory, "TestAssets", "Https", keyFormat);
             var options = new Mock<CommandLineOptions>();
             options.SetupGet(o => o.UseTls).Returns(true);
-            var x509 = CertificateLoader.LoadCertificate(options.Object, path);
+            Assert.True(CertificateLoader.TryLoadCertificate(options.Object, path, out var x509, out _));
             Assert.NotNull(x509);
             Assert.Equal(thumbprint, x509.Thumbprint);
             Assert.True(x509.HasPrivateKey, "Cert should have private key");
