@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <VersionPrefix>0.4.0</VersionPrefix>
+    <VersionPrefix>0.4.1</VersionPrefix>
     <VersionSuffix>build</VersionSuffix>
     <SourceRevisionId>$(APPVEYOR_REPO_COMMIT)</SourceRevisionId>
     <PackageVersion Condition="'$(APPVEYOR_REPO_TAG)' == 'true'">$(VersionPrefix)</PackageVersion>

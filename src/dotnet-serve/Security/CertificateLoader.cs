@@ -3,7 +3,14 @@
 
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using Org.BouncyCastle.Asn1;
+using Org.BouncyCastle.Asn1.X509;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.OpenSsl;
 
 namespace McMaster.DotNet.Serve
 {
@@ -14,6 +21,8 @@ namespace McMaster.DotNet.Serve
         private const string AspNetHttpsOid = "1.3.6.1.4.1.311.84.1.1";
         private const string AspNetHttpsOidFriendlyName = "ASP.NET Core HTTPS development certificate";
 
+        public const string DefaultCertPemFileName = "cert.pem";
+        public const string DefaultPrivateKeyFileName = "private.key";
         public const string DefaultCertPfxFileName = "cert.pfx";
 
         public static X509Certificate2 LoadCertificate(CommandLineOptions options, string currentDirectory)
@@ -41,6 +50,25 @@ namespace McMaster.DotNet.Serve
                 return LoadFromPfxFile(options.CertPfxPath, options.CertificatePassword);
             }
 
+            if (!string.IsNullOrEmpty(options.CertPemPath))
+            {
+                options.ExcludedFiles.Add(options.CertPemPath);
+                var privateKeyPath = !string.IsNullOrEmpty(options.PrivateKeyPath)
+                    ? options.PrivateKeyPath
+                    : Path.Combine(Path.GetDirectoryName(options.CertPemPath), DefaultPrivateKeyFileName);
+                options.ExcludedFiles.Add(privateKeyPath);
+                return LoadFromPfxFile(options.CertPemPath, privateKeyPath);
+            }
+
+            var defaultCertFile = Path.Combine(currentDirectory, DefaultCertPemFileName);
+            var defaultKeyFile = Path.Combine(currentDirectory, DefaultPrivateKeyFileName);
+            if (File.Exists(defaultCertFile) && File.Exists(defaultKeyFile))
+            {
+                options.ExcludedFiles.Add(defaultCertFile);
+                options.ExcludedFiles.Add(defaultKeyFile);
+                return LoadFromPem(defaultCertFile, defaultKeyFile);
+            }
+
             var defaultPfxFile = Path.Combine(currentDirectory, DefaultCertPfxFileName);
             if (File.Exists(defaultPfxFile))
             {
@@ -66,6 +94,62 @@ namespace McMaster.DotNet.Serve
             {
                 throw new InvalidOperationException($"Failed to load certificate file from '{filepath}'", ex);
             }
+        }
+
+        private static X509Certificate2 LoadFromPem(string certPath, string keyPath)
+        {
+            try
+            {
+                using (var certWithoutPrivateKey = new X509Certificate2(certPath))
+                using (var keyFile = File.OpenText(keyPath))
+                {
+                    // Workaround https://github.com/dotnet/corefx/issues/20414
+                    var pemReader = new PemReader(keyFile);
+
+                    var pemObj = pemReader.ReadObject();
+                    switch (pemObj)
+                    {
+                        case RsaPrivateCrtKeyParameters rsaParams:
+                            {
+                                var rsa = CreateRSA(rsaParams);
+                                // See https://github.com/dotnet/corefx/issues/24454#issuecomment-388231655
+                                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                                {
+                                    using (var certWithKey = certWithoutPrivateKey.CopyWithPrivateKey(rsa))
+                                    {
+                                        return new X509Certificate2(certWithKey.Export(X509ContentType.Pkcs12));
+                                    }
+                                }
+                                else
+                                {
+                                    // Only works on Linux/macOS
+                                    return certWithoutPrivateKey.CopyWithPrivateKey(rsa);
+                                }
+                            }
+                    }
+
+                    throw new InvalidOperationException($"Failed to read private key from '{keyPath}'. Unexpected format: " + pemObj.GetType().Name);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Failed to load certificate file from '{certPath}' and '{keyPath}'", ex);
+            }
+        }
+
+        private static RSA CreateRSA(RsaPrivateCrtKeyParameters rsaParams)
+        {
+            return RSA.Create(new RSAParameters
+            {
+                Modulus = rsaParams.Modulus.ToByteArray(),
+                Exponent = rsaParams.PublicExponent.ToByteArray(),
+                D = rsaParams.Exponent.ToByteArray(),
+                P = rsaParams.P.ToByteArray(),
+                Q = rsaParams.Q.ToByteArray(),
+                DP = rsaParams.DP.ToByteArray(),
+                DQ = rsaParams.DQ.ToByteArray(),
+                InverseQ = rsaParams.QInv.ToByteArray(),
+            });
         }
 
         private static X509Certificate2 LoadDeveloperCertificate()

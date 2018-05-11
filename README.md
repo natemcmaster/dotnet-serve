@@ -53,6 +53,15 @@ Options:
 `dotnet-serve` supports serving requests over HTTPS. You can configure the certificates used for HTTPS in the
 following ways.
 
+### .pem files
+
+Use this when you have your certficate and private key stored in separate files (PEM encoded).
+```
+dotnet serve --cert ./cert.pem --key ./private.pem
+```
+
+Note: currently only RSA private keys are supported.
+
 ### .pfx file
 
 Use this when you have your certficate as a .pfx/.p12 file (PKCS#12 format).
@@ -78,5 +87,6 @@ dotnet serve -S
 If you just run `dotnet serve -S`, it will attempt to find a .pfx or ASP.NET Core dev cert automatically.
 
 It will look for, in order:
+ - A pair of files named `cert.pem` and `private.key` in the current directory
  - A file named `cert.pfx` in the current directory
  - The ASP.NET Core Developer Certificate
