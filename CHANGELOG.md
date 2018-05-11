@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.4.1]
+
+- Add support for configuring HTTPs
+- Update runtime to use 2.1.0-rc1
+
 ## [v0.4.0]
 
 - Add support for configuring HTTPs

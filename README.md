@@ -23,6 +23,7 @@ Once installed, run this command:
 
 ```
 dotnet tool install --global dotnet-serve
+dotnet serve --open-browser
 ```
 
 ## Usage
@@ -54,17 +55,17 @@ Options:
 
 ## Configuring HTTPS
 
-`dotnet-serve` supports serving requests over HTTPS. You can configure the certificates used for HTTPS in the
-following ways.
+`dotnet serve -S` will serve requests over HTTPS. By default, it will attempt to find an appropriate certificate
+on the mcahine.
 
-### Defaults
-
-If you just run `dotnet serve -S`, it will attempt to find a .pfx or ASP.NET Core dev cert automatically.
-
-It will look for, in order:
+By default, `dotnet serve` will look for, in order:
  - A pair of files named `cert.pem` and `private.key` in the current directory
  - A file named `cert.pfx` in the current directory
- - The ASP.NET Core Developer Certificate
+ - The ASP.NET Core Developer Certificate (localhost only)
+
+You can also manually specify certificates as command line options (see below):
+
+> _See also [this doc](./docs/GenerateCert.md) for how to create a self-signed HTTPS certificate._
 
 ### .pem files
 
@@ -77,6 +78,8 @@ Note: currently only RSA private keys are supported.
 
 ### .pfx file
 
+You can generate a self-signed
+
 Use this when you have your certficate as a .pfx/.p12 file (PKCS#12 format).
 ```
 dotnet serve --pfx myCert.pfx --pfx-pwd certPass123
@@ -84,13 +87,9 @@ dotnet serve --pfx myCert.pfx --pfx-pwd certPass123
 
 ### Using the ASP.NET Core Developer Certificate
 
-You can generated an install the ASP.NET Core developer certificate by running
+The developer certificate is automatically created the first time you use `dotnet`.
+When serving on 'localhost', dotnet-serve will discover and use when you run:
 
-```
-dotnet dev-certs https
-```
-
-Then launch `dotnet-serve` as
 ```
 dotnet serve -S
 ```
