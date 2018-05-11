@@ -16,14 +16,24 @@ A simple command-line HTTP server.
 
 It launches a server in the current working directory and serves all files in it.
 
-## Installation
+## Get started
 
-The latest release of dotnet-serve requires the [2.1.300-rc1](https://www.microsoft.com/net/download/dotnet-core/sdk-2.1.300-rc1) .NET Core SDK or newer.
+Download the [2.1.300-rc1](https://www.microsoft.com/net/download/dotnet-core/sdk-2.1.300-rc1) .NET Core SDK or newer.
 Once installed, run this command:
 
 ```
 dotnet tool install --global dotnet-serve
-dotnet serve --open-browser
+```
+
+Start a simple server and open the browser by running
+
+```
+dotnet serve -o
+```
+
+..and with HTTPS.
+```
+dotnet serve -o -S
 ```
 
 ## Usage
