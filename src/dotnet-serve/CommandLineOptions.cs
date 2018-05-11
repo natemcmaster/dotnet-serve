@@ -82,7 +82,7 @@ namespace McMaster.DotNet.Serve
                     return _useTls.Value;
                 }
 
-                return !string.IsNullOrEmpty(CertPfxPath) || !string.IsNullOrEmpty(CertPemPath);;
+                return !string.IsNullOrEmpty(CertPfxPath) || !string.IsNullOrEmpty(CertPemPath);
             }
             private set => _useTls = value;
         }
@@ -105,6 +105,9 @@ namespace McMaster.DotNet.Serve
         [Option("--razor", Description = "Enable Razor Pages support (Experimental)")]
         public bool EnableRazor { get; }
 
+        // Internal, experimental flag. If you found this, it may break in the future.
+        // I'm not supporting it yet becuase these files will still who up directory browser.
+        [Option("--exclude-file", Description = "A file to prevent from being served.", ShowInHelpText = false)]
         public List<string> ExcludedFiles { get; } = new List<string>();
 
         public string GetPathBase()

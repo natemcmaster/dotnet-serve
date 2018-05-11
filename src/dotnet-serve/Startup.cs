@@ -91,7 +91,7 @@ namespace McMaster.DotNet.Serve
                 {
                     if (excludes.Contains(ctx.Request.Path))
                     {
-                        ctx.Response.StatusCode = StatusCodes.Status404NotFound;
+                        ctx.Response.StatusCode = StatusCodes.Status403Forbidden;
                         return;
                     }
 

@@ -43,10 +43,9 @@ namespace McMaster.DotNet.Serve.Tests
                 enableTls: true))
             {
                 var resp = await ds.Client.GetWithRetriesAsync("/cert.pfx");
-                Assert.Equal(HttpStatusCode.NotFound, resp.StatusCode);
+                Assert.Equal(HttpStatusCode.Forbidden, resp.StatusCode);
             }
         }
-
 
         [Theory]
         [InlineData("rsa", "E8481D606B15080024C806EFE89B00F0976BD906")]
@@ -71,10 +70,10 @@ namespace McMaster.DotNet.Serve.Tests
                 enableTls: true))
             {
                 var resp1 = await ds.Client.GetWithRetriesAsync("/cert.pem");
-                Assert.Equal(HttpStatusCode.NotFound, resp1.StatusCode);
+                Assert.Equal(HttpStatusCode.Forbidden, resp1.StatusCode);
 
                 var resp2 = await ds.Client.GetWithRetriesAsync("/private.key");
-                Assert.Equal(HttpStatusCode.NotFound, resp2.StatusCode);
+                Assert.Equal(HttpStatusCode.Forbidden, resp2.StatusCode);
             }
         }
     }
