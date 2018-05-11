@@ -41,6 +41,10 @@ Options:
   -q|--quiet                         Show less console output.
   -v|--verbose                       Show more console output.
   -S|--tls                           Enable TLS (HTTPS)
+  --cert                             A PEM encoded certificate file to use for HTTPS connections.
+                                     Defaults to file in current directory named 'cert.pem'
+  --key                              A PEM encoded private key to use for HTTPS connections.
+                                     Defaults to file in current directory named 'private.key'
   --pfx                              A PKCS#12 certificate file to use for HTTPS connections.
                                      Defaults to file in current directory named 'cert.pfx'
   --pfx-pwd                          The password to open the certificate file. (Optional)
@@ -52,6 +56,15 @@ Options:
 
 `dotnet-serve` supports serving requests over HTTPS. You can configure the certificates used for HTTPS in the
 following ways.
+
+### Defaults
+
+If you just run `dotnet serve -S`, it will attempt to find a .pfx or ASP.NET Core dev cert automatically.
+
+It will look for, in order:
+ - A pair of files named `cert.pem` and `private.key` in the current directory
+ - A file named `cert.pfx` in the current directory
+ - The ASP.NET Core Developer Certificate
 
 ### .pem files
 
@@ -81,12 +94,3 @@ Then launch `dotnet-serve` as
 ```
 dotnet serve -S
 ```
-
-### Defaults
-
-If you just run `dotnet serve -S`, it will attempt to find a .pfx or ASP.NET Core dev cert automatically.
-
-It will look for, in order:
- - A pair of files named `cert.pem` and `private.key` in the current directory
- - A file named `cert.pfx` in the current directory
- - The ASP.NET Core Developer Certificate
