@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.0.0]
+- Update runtime to use ASP.NET Core 2.1.0.
+
 ## [v0.4.1]
 
 - Add support for configuring HTTPs with .pem encoded certificates
@@ -45,7 +48,8 @@ Changes:
 Initial release
  - Provides a simple command-line web server for dotnet
 
-[Unreleased]: https://github.com/natemcmaster/dotnet-serve/compare/v0.4.1...HEAD
+[Unreleased]: https://github.com/natemcmaster/dotnet-serve/compare/v1.0.0...HEAD
+[v1.0.0]: https://github.com/natemcmaster/dotnet-serve/compare/v0.4.1...v1.0.0
 [v0.4.1]: https://github.com/natemcmaster/dotnet-serve/compare/v0.4.0...v0.4.1
 [v0.4.0]: https://github.com/natemcmaster/dotnet-serve/compare/v0.3.0...v0.4.0
 [v0.3.0]: https://github.com/natemcmaster/dotnet-serve/compare/v0.2.1...v0.3.0
