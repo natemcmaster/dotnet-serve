@@ -20,7 +20,7 @@ It launches a server in the current working directory and serves all files in it
 
 ## Get started
 
-Download the [2.1.300-rc1](https://www.microsoft.com/net/download/dotnet-core/sdk-2.1.300-rc1) .NET Core SDK or newer.
+Download the .NET Core SDK [2.1.300](https://aka.ms/DotNetCore21) or newer.
 Once installed, run this command:
 
 ```
