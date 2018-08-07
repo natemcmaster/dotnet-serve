@@ -68,7 +68,7 @@ Options:
 ## Configuring HTTPS
 
 `dotnet serve -S` will serve requests over HTTPS. By default, it will attempt to find an appropriate certificate
-on the mcahine.
+on the machine.
 
 By default, `dotnet serve` will look for, in order:
  - A pair of files named `cert.pem` and `private.key` in the current directory
