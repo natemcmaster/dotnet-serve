@@ -10,6 +10,7 @@
     <Description>A simple command-line HTTP server.</Description>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <DebugType>embedded</DebugType>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <RootNamespace>McMaster.DotNet.Serve</RootNamespace>
   </PropertyGroup>
 
@@ -19,6 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All"/>
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.3" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.8.2" />
   </ItemGroup>
