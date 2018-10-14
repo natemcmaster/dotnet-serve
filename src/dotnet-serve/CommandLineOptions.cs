@@ -103,8 +103,8 @@ namespace McMaster.DotNet.Serve
         [Option("--pfx-pwd", Description = "The password to open the certificate file. (Optional)")]
         public virtual string CertificatePassword { get; }
 
-        [Option("-m|--mime <EXT>=<MIME>", CommandOptionType.MultipleValue, Description = "Add a mapping from file extension to MIME type.")]
-        [RegularExpression(@"^([^=]+)=([^=]+)$", ErrorMessage = "MIME mappings must have the form: ext=mime/type")]
+        [Option("-m|--mime <EXT>=<MIME>", CommandOptionType.MultipleValue, Description = "Add a mapping from file extension to MIME type. Empty MIME removes a mapping.")]
+        [RegularExpression(@"^([^=]+)=([^=]*)$", ErrorMessage = "MIME mappings must have the form: ext=mime/type")]
         public string[] MimeMappings { get; }
 
         // Internal, experimental flag. If you found this, it may break in the future.
@@ -144,7 +144,7 @@ namespace McMaster.DotNet.Serve
                     {
                         ext = "." + ext;
                     }
-                    var mime = s.Substring(sepIndex + 1);
+                    var mime = sepIndex == s.Length - 1 ? null : s.Substring(sepIndex + 1);
                     return (ext, mime);
                 })
                 .ToDictionary(p => p.ext, p => p.mime, StringComparer.OrdinalIgnoreCase);

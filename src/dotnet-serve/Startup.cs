@@ -87,11 +87,22 @@ namespace McMaster.DotNet.Serve
                 });
             }
 
+            var contentTypeProvider = new FileExtensionContentTypeProvider();
             var mimeMappings = _options.GetMimeMappings();
-            var contentTypeProvider =
-                mimeMappings != null && mimeMappings.Count > 0
-                    ? new FileExtensionContentTypeProvider(mimeMappings)
-                    : new FileExtensionContentTypeProvider();
+            if (mimeMappings != null)
+            {
+                foreach (var mapping in mimeMappings)
+                {
+                    if (mapping.Value == null)
+                    {
+                        contentTypeProvider.Mappings.Remove(mapping.Key);
+                    }
+                    else
+                    {
+                        contentTypeProvider.Mappings[mapping.Key] = mapping.Value;
+                    }
+                }
+            }
 
             app.UseFileServer(new FileServerOptions
             {
