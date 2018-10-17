@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+
+* Remove `--razor`. This was a prototype, but due to pending deprecation of some Razor APIs, this feature won't work in the future anyways. See https://github.com/aspnet/Announcements/issues/312
+
 ## [v1.0.0]
 - Update runtime to use ASP.NET Core 2.1.0.
 

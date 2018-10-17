@@ -9,7 +9,6 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using McMaster.DotNet.Serve.RazorPages;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
@@ -101,9 +100,7 @@ namespace McMaster.DotNet.Serve
                 .UseEnvironment("Production")
                 .SuppressStatusMessages(true)
                 .UseStartup<Startup>()
-                .ConfigureServices(s =>
-                    s.AddSingleton(_options)
-                    .AddSingleton<RazorPageSourceProvider>())
+                .ConfigureServices(s => s.AddSingleton(_options))
                 .Build();
 
             _console.Write(ConsoleColor.DarkYellow, "Starting server, serving ");

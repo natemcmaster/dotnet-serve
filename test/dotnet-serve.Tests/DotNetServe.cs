@@ -93,7 +93,6 @@ namespace McMaster.DotNet.Serve.Tests
         public static DotNetServe Start(
             string directory = null,
             int? port = default,
-            bool enableRazor = false,
             bool enableTls = false,
             string certPassword = null,
             ITestOutputHelper output = null)
@@ -124,11 +123,6 @@ namespace McMaster.DotNet.Serve.Tests
 
             psi.ArgumentList.Add("-p");
             psi.ArgumentList.Add(port.ToString());
-
-            if (enableRazor)
-            {
-                psi.ArgumentList.Add("--razor");
-            }
 
             if (enableTls)
             {

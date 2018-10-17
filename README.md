@@ -61,7 +61,6 @@ Options:
   --pfx                              A PKCS#12 certificate file to use for HTTPS connections.
                                      Defaults to file in current directory named 'cert.pfx'
   --pfx-pwd                          The password to open the certificate file. (Optional)
-  --razor                            Enable Razor Pages support (Experimental)
   -?|-h|--help                       Show help information
 ```
 

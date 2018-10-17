@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using McMaster.DotNet.Serve.DefaultExtensions;
-using McMaster.DotNet.Serve.RazorPages;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
@@ -20,16 +19,13 @@ namespace McMaster.DotNet.Serve
     {
         private readonly IHostingEnvironment _environment;
         private readonly CommandLineOptions _options;
-        private readonly RazorPageSourceProvider _sourceProvider;
 
         public Startup(
             IHostingEnvironment environment,
-            CommandLineOptions options,
-            RazorPageSourceProvider sourceProvider)
+            CommandLineOptions options)
         {
             _environment = environment;
             _options = options;
-            _sourceProvider = sourceProvider;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -38,19 +34,6 @@ namespace McMaster.DotNet.Serve
                 .Configure<KeyManagementOptions>(o => o.XmlRepository = new EphemeralXmlRepository())
                 .AddSingleton<IKeyManager, KeyManager>()
                 .AddSingleton<IAuthorizationPolicyProvider, NullAuthPolicyProvider>();
-
-            if (_options.EnableRazor)
-            {
-                Debug.Assert(_sourceProvider != null, "Source provider should be configured");
-                services.AddMvcCore()
-                      .AddRazorPages()
-                      .WithRazorPagesRoot("/")
-                      .AddRazorViewEngine(o =>
-                      {
-                          o.CompilationCallback = _sourceProvider.OnCompilation;
-                      })
-                      .PartManager.ApplicationParts.Add(new TpaReferencesProvider());
-            }
         }
 
         public void Configure(IApplicationBuilder app)
@@ -59,11 +42,6 @@ namespace McMaster.DotNet.Serve
                        "<html><head><title>Error {0}</title></head><body><h1>HTTP {0}</h1></body></html>");
 
             app.UseDeveloperExceptionPage();
-            if (_options.EnableRazor)
-            {
-                app.UseMvcWithDefaultRoute();
-                _sourceProvider.Initialize();
-            }
 
             var pathBase = _options.GetPathBase();
             if (!string.IsNullOrEmpty(pathBase))

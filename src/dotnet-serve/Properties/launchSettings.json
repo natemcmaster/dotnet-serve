@@ -2,8 +2,8 @@
   "profiles": {
     "dotnet-serve": {
       "commandName": "Project",
-      "commandLineArgs": "-o -p 5043 --razor",
-      "workingDirectory": "$(MSBuildProjectDirectory)/../../samples/"
+      "commandLineArgs": "-o -p 5043",
+      "workingDirectory": "$(MSBuildProjectDirectory)"
     }
   }
 }
