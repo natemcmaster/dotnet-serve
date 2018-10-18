@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Nate McMaster.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -102,6 +103,10 @@ namespace McMaster.DotNet.Serve
         [Option("--pfx-pwd", Description = "The password to open the certificate file. (Optional)")]
         public virtual string CertificatePassword { get; }
 
+        [Option("-m|--mime <EXT>=<MIME>", CommandOptionType.MultipleValue, Description = "Add a mapping from file extension to MIME type. Empty MIME removes a mapping.")]
+        [RegularExpression(@"^([^=]+)=([^=]*)$", ErrorMessage = "MIME mappings must have the form: ext=mime/type")]
+        public string[] MimeMappings { get; }
+
         // Internal, experimental flag. If you found this, it may break in the future.
         // I'm not supporting it yet becuase these files will still who up directory browser.
         [Option("--exclude-file", Description = "A file to prevent from being served.", ShowInHelpText = false)]
@@ -128,6 +133,21 @@ namespace McMaster.DotNet.Serve
                     ? new[] { ".html", ".htm" }
                     : DefaultExtensions.Extensions.Split(',').Select(x => x.StartsWith('.') ? x : "." + x).ToArray()
                 : null;
+
+        public IDictionary<string, string> GetMimeMappings() =>
+            MimeMappings
+                ?.Select(s =>
+                {
+                    var sepIndex = s.IndexOf('=');
+                    var ext = s.Substring(0, sepIndex);
+                    if (!ext.StartsWith('.'))
+                    {
+                        ext = "." + ext;
+                    }
+                    var mime = sepIndex == s.Length - 1 ? null : s.Substring(sepIndex + 1);
+                    return (ext, mime);
+                })
+                .ToDictionary(p => p.ext, p => p.mime, StringComparer.OrdinalIgnoreCase);
 
         private static string GetVersion()
             => typeof(CommandLineOptions).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;

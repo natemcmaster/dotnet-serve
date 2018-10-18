@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace McMaster.DotNet.Serve
@@ -86,6 +87,23 @@ namespace McMaster.DotNet.Serve
                 });
             }
 
+            var contentTypeProvider = new FileExtensionContentTypeProvider();
+            var mimeMappings = _options.GetMimeMappings();
+            if (mimeMappings != null)
+            {
+                foreach (var mapping in mimeMappings)
+                {
+                    if (mapping.Value == null)
+                    {
+                        contentTypeProvider.Mappings.Remove(mapping.Key);
+                    }
+                    else
+                    {
+                        contentTypeProvider.Mappings[mapping.Key] = mapping.Value;
+                    }
+                }
+            }
+
             app.UseFileServer(new FileServerOptions
             {
                 EnableDefaultFiles = true,
@@ -93,6 +111,7 @@ namespace McMaster.DotNet.Serve
                 StaticFileOptions =
                 {
                     ServeUnknownFileTypes = true,
+                    ContentTypeProvider = contentTypeProvider
                 },
             });
         }

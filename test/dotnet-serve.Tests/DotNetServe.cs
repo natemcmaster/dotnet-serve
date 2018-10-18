@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
@@ -95,6 +96,7 @@ namespace McMaster.DotNet.Serve.Tests
             int? port = default,
             bool enableTls = false,
             string certPassword = null,
+            string[] mimeMap = null,
             ITestOutputHelper output = null)
         {
             var psi = new ProcessStartInfo
@@ -133,6 +135,15 @@ namespace McMaster.DotNet.Serve.Tests
             {
                 psi.ArgumentList.Add("--pfx-pwd");
                 psi.ArgumentList.Add(certPassword);
+            }
+
+            if (mimeMap != null)
+            {
+                foreach (var mapping in mimeMap)
+                {
+                    psi.ArgumentList.Add("-m");
+                    psi.ArgumentList.Add(mapping);
+                }
             }
 
             var process = new Process
