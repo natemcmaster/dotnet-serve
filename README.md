@@ -41,7 +41,11 @@ dotnet serve -o -S
 ## Usage
 
 ```
-Usage: dotnet serve [options]
+Usage: dotnet serve [-d|--directory <DIR>] [-o|--open-browser] [--version]
+                    [-p|--port <PORT>] [-a|--address <ADDRESS>]
+                    [--path-base <PATH>] [--default-extensions[:<EXTENSIONS>]]
+                    [-q|--quiet] [-v|--verbose] [-S|--tls] [--cert] [--key]
+                    [--pfx] [--pfx-pwd] [-m|--mime <MIME>] [-?|-h|--help]
 
 Options:
   --version                          Show version information
@@ -61,6 +65,7 @@ Options:
   --pfx                              A PKCS#12 certificate file to use for HTTPS connections.
                                      Defaults to file in current directory named 'cert.pfx'
   --pfx-pwd                          The password to open the certificate file. (Optional)
+  -m|--mime <EXT>=<MIME>             Add a mapping from file extension to MIME type. Empty MIME removes a mapping.
   -?|-h|--help                       Show help information
 ```
 
