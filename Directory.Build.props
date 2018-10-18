@@ -1,4 +1,7 @@
 <Project>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
 
   <Import Project="version.props" />
   <Import Project="releasenotes.props" />
@@ -11,11 +14,16 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseUrl>https://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/natemcmaster/dotnet-serve</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/natemcmaster/dotnet-serve.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/natemcmaster/dotnet-serve</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <IsPackable>false</IsPackable>
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <LangVersion>Latest</LangVersion>
+    <AzureKeyVaultUrl>https://nmcmaster.vault.azure.net</AzureKeyVaultUrl>
+    <AzureKeyVaultClientId>6a27a2da-bb78-4baa-bd2b-150fe89ea039</AzureKeyVaultClientId>
+    <AzureKeyVaultClientSecret>$(KEYVAULT_CLIENT_SECRET)</AzureKeyVaultClientSecret>
+    <CodeSignCertName>DigiCertCodeSign</CodeSignCertName>
+    <CodeSign Condition=" '$(CI)' == 'true' ">true</CodeSign>
 
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateFullPaths Condition="'$(VSCODE_PID)' != ''">true</GenerateFullPaths>

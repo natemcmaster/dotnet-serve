@@ -1,5 +1,9 @@
 <Project>
   <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <VersionPrefix>1.1.0</VersionPrefix>
     <VersionSuffix>build</VersionSuffix>
     <SourceRevisionId>$(APPVEYOR_REPO_COMMIT)</SourceRevisionId>

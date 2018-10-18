@@ -1,5 +1,9 @@
 <Project>
   <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <PackageReleaseNotes Condition=" '$(VersionPrefix)' == '1.1.0' ">
 New feature:
 * @Tarmil: Add support for setting custom MIME types base on file extension
