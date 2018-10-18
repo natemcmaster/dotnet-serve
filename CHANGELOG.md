@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [v1.1.0]
 
 * Remove `--razor`. This was a prototype, but due to pending deprecation of some Razor APIs, this feature won't work in the future anyways. See https://github.com/aspnet/Announcements/issues/312
 * [@Tarmil]: Add support for setting custom MIME types base on file extension
@@ -53,7 +53,8 @@ Changes:
 Initial release
  - Provides a simple command-line web server for dotnet
 
-[Unreleased]: https://github.com/natemcmaster/dotnet-serve/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/natemcmaster/dotnet-serve/compare/v1.1.0...HEAD
+[v1.1.0]: https://github.com/natemcmaster/dotnet-serve/compare/v1.0.0...v1.1.0
 [v1.0.0]: https://github.com/natemcmaster/dotnet-serve/compare/v0.4.1...v1.0.0
 [v0.4.1]: https://github.com/natemcmaster/dotnet-serve/compare/v0.4.0...v0.4.1
 [v0.4.0]: https://github.com/natemcmaster/dotnet-serve/compare/v0.3.0...v0.4.0
