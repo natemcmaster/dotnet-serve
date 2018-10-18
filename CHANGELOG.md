@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 * Remove `--razor`. This was a prototype, but due to pending deprecation of some Razor APIs, this feature won't work in the future anyways. See https://github.com/aspnet/Announcements/issues/312
+* [@Tarmil]: Add support for setting custom MIME types base on file extension
 
 ## [v1.0.0]
 - Update runtime to use ASP.NET Core 2.1.0.
@@ -63,3 +64,4 @@ Initial release
 
 [@daveaglick]: https://github.com/daveaglick
 [@shanselman]: https://github.com/shanselman
+[@Tarmil]: https://github.com/Tarmil
