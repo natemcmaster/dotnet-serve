@@ -50,3 +50,4 @@
 *.sln text=auto eol=crlf
 
 *.sh eol=lf
+test/dotnet-serve.Tests/TestAssets/Mime/file.js eol=lf
