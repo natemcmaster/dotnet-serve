@@ -152,7 +152,7 @@ namespace McMaster.DotNet.Serve.Tests
                 foreach (var header in headers)
                 {
                     psi.ArgumentList.Add("-h");
-                    psi.ArgumentList.Add($"\"{header}\"");
+                    psi.ArgumentList.Add(header);
                 }
             }
 
