@@ -97,6 +97,7 @@ namespace McMaster.DotNet.Serve.Tests
             bool enableTls = false,
             string certPassword = null,
             string[] mimeMap = null,
+            string[] headers = null,
             ITestOutputHelper output = null)
         {
             var psi = new ProcessStartInfo
@@ -143,6 +144,15 @@ namespace McMaster.DotNet.Serve.Tests
                 {
                     psi.ArgumentList.Add("-m");
                     psi.ArgumentList.Add(mapping);
+                }
+            }
+
+            if (headers != null)
+            {
+                foreach (var header in headers)
+                {
+                    psi.ArgumentList.Add("-h");
+                    psi.ArgumentList.Add(header);
                 }
             }
 

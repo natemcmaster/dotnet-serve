@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using McMaster.DotNet.Serve.DefaultExtensions;
+using McMaster.DotNet.Serve.Headers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
@@ -102,6 +103,15 @@ namespace McMaster.DotNet.Serve
                         contentTypeProvider.Mappings[mapping.Key] = mapping.Value;
                     }
                 }
+            }
+
+            var headers = _options.GetHeaders();
+            if (headers != null && headers.Count > 0)
+            {
+                app.UseHeaders(new HeadersOptions
+                {
+                    Headers = headers
+                });
             }
 
             app.UseFileServer(new FileServerOptions

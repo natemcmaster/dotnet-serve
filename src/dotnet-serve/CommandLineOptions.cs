@@ -48,6 +48,10 @@ namespace McMaster.DotNet.Serve
         [Option(Description = "Show more console output.")]
         public bool Verbose { get; }
 
+        [Option("-h|--headers <HEADER_AND_VALUE>", CommandOptionType.MultipleValue, Description = "A header to return with all file/directory responses. e.g. -h \"X-XSS-Protection: 1; mode=block\"")]
+        [RegularExpression(@"^([^:]+):([^:]*)$", ErrorMessage = "Headers must have the form: HEADER:VALUE")]
+        public string[] Headers {get; }
+
         [Option("--log <LEVEL>", Description = "For advanced diagnostics.", ShowInHelpText = false)]
         public LogLevel MinLogLevel
         {
@@ -148,6 +152,17 @@ namespace McMaster.DotNet.Serve
                     return (ext, mime);
                 })
                 .ToDictionary(p => p.ext, p => p.mime, StringComparer.OrdinalIgnoreCase);
+
+        public IDictionary<string, string> GetHeaders() =>
+            Headers
+                ?.Select(s =>
+                {
+                    var sepIndex = s.IndexOf(':');
+                    var header = s.Substring(0, sepIndex);
+                    var value = sepIndex == s.Length - 1 ? null : s.Substring(sepIndex + 1).Trim();
+                    return (header, value);
+                })
+                .ToDictionary(p => p.header, p => p.value, StringComparer.OrdinalIgnoreCase);
 
         private static string GetVersion()
             => typeof(CommandLineOptions).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
