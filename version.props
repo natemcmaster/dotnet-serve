@@ -4,7 +4,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <VersionPrefix>1.1.1</VersionPrefix>
+    <VersionPrefix>1.2.0</VersionPrefix>
     <VersionSuffix>build</VersionSuffix>
     <SourceRevisionId>$(APPVEYOR_REPO_COMMIT)</SourceRevisionId>
     <PackageVersion Condition="'$(APPVEYOR_REPO_TAG)' == 'true'">$(VersionPrefix)</PackageVersion>
@@ -15,10 +15,4 @@
     <VersionSuffix Condition=" '$(VersionSuffix)' != '' ">$(VersionSuffix).$(BuildNumber)</VersionSuffix>
   </PropertyGroup>
 
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
-      <_Parameter1>BuildNumber</_Parameter1>
-      <_Parameter2>$(BuildNumber)</_Parameter2>
-    </AssemblyAttribute>
-  </ItemGroup>
 </Project>
