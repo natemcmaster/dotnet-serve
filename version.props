@@ -6,13 +6,18 @@
   <PropertyGroup>
     <VersionPrefix>1.2.0</VersionPrefix>
     <VersionSuffix>build</VersionSuffix>
-    <SourceRevisionId>$(APPVEYOR_REPO_COMMIT)</SourceRevisionId>
-    <PackageVersion Condition="'$(APPVEYOR_REPO_TAG)' == 'true'">$(VersionPrefix)</PackageVersion>
+    <SourceRevisionId Condition="'$(SourceRevisionId)' == ''">$(BUILD_SOURCEVERSION)</SourceRevisionId>
 
-    <BuildNumber Condition=" '$(BuildNumber)' == '' ">$(APPVEYOR_BUILD_NUMBER)</BuildNumber>
     <BuildNumber Condition=" '$(BuildNumber)' == '' ">0</BuildNumber>
     <FileVersion>$(VersionPrefix).$(BuildNumber)</FileVersion>
     <VersionSuffix Condition=" '$(VersionSuffix)' != '' ">$(VersionSuffix).$(BuildNumber)</VersionSuffix>
+    <VersionSuffix Condition=" '$(SourceRevisionId)' != '' ">$(VersionSuffix)+$(SourceRevisionId.Substring(0, 8))</VersionSuffix>
+
+    <PackageVersion>$(VersionPrefix)</PackageVersion>
+    <PackageVersion Condition=" '$(IsStableBuild)' != 'true' ">$(VersionPrefix)-$(VersionSuffix)</PackageVersion>
+    <InformationalVersion>$(PackageVersion)</InformationalVersion>
+    <NormalizedPackageVersion Condition="$(PackageVersion.Contains('+'))">$(PackageVersion.Substring(0, $(PackageVersion.IndexOf('+'))))</NormalizedPackageVersion>
+    <NormalizedPackageVersion Condition=" '$(NormalizedPackageVersion)' == ''">$(PackageVersion)</NormalizedPackageVersion>
   </PropertyGroup>
 
 </Project>

@@ -3,10 +3,12 @@
 param(
     [ValidateSet('Debug', 'Release')]
     $Configuration = $null,
+    [alias('kv')]
+    $KeyVaultSecret,
     [switch]
     $ci,
 	[switch]
-	$sign
+    $sign
 )
 
 Set-StrictMode -Version 1
@@ -17,14 +19,19 @@ if (-not (Test-Path Variable:/IsCoreCLR)) {
     $IsWindows = $true
 }
 
-function exec([string]$_cmd) {
-    write-host -ForegroundColor DarkGray ">>> $_cmd $args"
-    $ErrorActionPreference = 'Continue'
-    & $_cmd @args
-    $ErrorActionPreference = 'Stop'
-    if ($LASTEXITCODE -ne 0) {
-        write-error "Failed with exit code $LASTEXITCODE"
-        exit 1
+function Invoke-Block([scriptblock]$cmd) {
+    $cmd | Out-String | Write-Verbose
+    & $cmd
+
+    # Need to check both of these cases for errors as they represent different items
+    # - $?: did the powershell script block throw an error
+    # - $lastexitcode: did a windows command executed by the script block end in error
+    if ((-not $?) -or ($lastexitcode -ne 0)) {
+        if ($error -ne $null)
+        {
+            Write-Warning $error[0]
+        }
+        throw "Command failed to execute: $cmd"
     }
 }
 
@@ -42,11 +49,23 @@ if (!$Configuration) {
 
 [string[]] $MSBuildArgs = @("-p:Configuration=$Configuration")
 
+try {
+    $commitId = git rev-parse HEAD
+    $MSBuildArgs += "-p:SourceRevisionId=$commitId"
+    $commitHeight = git rev-list --count HEAD
+    $MSBuildArgs += "-p:BuildNumber=$commitHeight"
+}
+catch { }
+
 if ($ci) {
     $MSBuildArgs += '-p:CI=true'
+
+    Invoke-Block {
+        & dotnet msbuild src/dotnet-serve/ -nologo -t:UpdateCiSettings @MSBuildArgs
+    }
 }
 
-$CodeSign = $sign -or ($ci -and -not $env:APPVEYOR_PULL_REQUEST_HEAD_COMMIT -and $IsWindows)
+$CodeSign = $sign -or ($ci -and ($env:System_PullRequest_IsFork -ne 'True') -and $IsWindows)
 
 if ($CodeSign) {
     $toolsDir = "$PSScriptRoot/.build/tools"
@@ -57,9 +76,11 @@ if ($CodeSign) {
     }
 
     if (-not (Test-Path $AzureSignToolPath)) {
-        exec dotnet tool install --tool-path $toolsDir `
-        AzureSignTool `
-        --version 2.0.17
+        Invoke-Block {
+            & dotnet tool install --tool-path $toolsDir `
+                AzureSignTool `
+                --version 2.0.17
+        }
     }
 
     $nstDir = "$toolsDir/nugetsigntool/1.1.4"
@@ -74,21 +95,37 @@ if ($CodeSign) {
     $MSBuildArgs += '-p:CodeSign=true'
     $MSBuildArgs += "-p:AzureSignToolPath=$AzureSignToolPath"
     $MSBuildArgs += "-p:NuGetKeyVaultSignToolPath=$NuGetKeyVaultSignToolPath"
+    $MSBuildArgs += "-p:AzureKeyVaultClientSecret=$KeyVaultSecret"
 }
 
-$artifacts = "$PSScriptRoot/artifacts/"
+$artifacts = "$PSScriptRoot/artifacts"
 
 Remove-Item -Recurse $artifacts -ErrorAction Ignore
 
-exec dotnet build @MSBuildArgs
+# Make restore quiet
+Invoke-Block {
+    & dotnet restore '-v:q'
+}
 
-exec dotnet pack `
-    --no-build `
-    -o $artifacts @MSBuildArgs
+Invoke-Block {
+    & dotnet build `
+        --no-restore `
+        @MSBuildArgs
+}
 
-exec dotnet test `
-    "$PSScriptRoot/test/dotnet-serve.Tests/" `
-    --no-build `
-     @MSBuildArgs
+Invoke-Block {
+    & dotnet pack `
+        --no-build `
+        -o "$artifacts/packages/" @MSBuildArgs
+    }
+Invoke-Block {
+    & dotnet test `
+        "$PSScriptRoot/test/dotnet-serve.Tests/" `
+        --no-build `
+        --collect 'Code Coverage' `
+        --results-directory "$artifacts/TestResults/" `
+        --logger trx `
+        @MSBuildArgs
+}
 
 write-host -f magenta 'Done'

@@ -36,12 +36,12 @@
           Condition=" '$(CodeSign)' == 'true' "
           DependsOnTargets="GenerateNuspec"
           BeforeTargets="Pack"
-          Inputs="$(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg"
+          Inputs="$(PackageOutputAbsolutePath)$(PackageId).$(NormalizedPackageVersion).nupkg"
           Outputs="$(PackageSignCacheFile)">
     <Error Text="Missing required property: NuGetKeyVaultSignToolPath" Condition="'$(NuGetKeyVaultSignToolPath)' == ''" />
 
     <PropertyGroup>
-      <NupkgTargetPath>$(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg</NupkgTargetPath>
+      <NupkgTargetPath>$(PackageOutputAbsolutePath)$(PackageId).$(NormalizedPackageVersion).nupkg</NupkgTargetPath>
 
       <NupkgSignToolArgs>"$(NuGetKeyVaultSignToolPath)" sign</NupkgSignToolArgs>
       <NupkgSignToolArgs>$(NupkgSignToolArgs) --file-digest sha256</NupkgSignToolArgs>

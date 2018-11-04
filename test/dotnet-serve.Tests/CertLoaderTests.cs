@@ -17,7 +17,7 @@ namespace McMaster.DotNet.Serve.Tests
 
         public CertLoaderTests(ITestOutputHelper output)
         {
-            this._output = output;
+            _output = output;
         }
 
         [Fact]

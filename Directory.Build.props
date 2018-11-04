@@ -20,11 +20,11 @@
     <LangVersion>Latest</LangVersion>
     <AzureKeyVaultUrl>https://nmcmaster.vault.azure.net</AzureKeyVaultUrl>
     <AzureKeyVaultClientId>6a27a2da-bb78-4baa-bd2b-150fe89ea039</AzureKeyVaultClientId>
-    <AzureKeyVaultClientSecret>$(KEYVAULT_CLIENT_SECRET)</AzureKeyVaultClientSecret>
+    <AzureKeyVaultClientSecret Condition="'$(AzureKeyVaultClientSecret)' == '' ">$(KEYVAULT_CLIENT_SECRET)</AzureKeyVaultClientSecret>
     <CodeSignCertName>DigiCertCodeSign</CodeSignCertName>
 
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <GenerateFullPaths Condition="'$(VSCODE_PID)' != ''">true</GenerateFullPaths>
+    <GenerateFullPaths Condition="'$(VSCODE_CWD)' != ''">true</GenerateFullPaths>
 
     <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory).build\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
     <BaseOutputPath>$(MSBuildThisFileDirectory).build\bin\$(MSBuildProjectName)</BaseOutputPath>

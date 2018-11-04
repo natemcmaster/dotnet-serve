@@ -111,6 +111,11 @@ namespace McMaster.DotNet.Serve.Tests
                     "--verbose",
                 },
                 WorkingDirectory = directory ?? AppContext.BaseDirectory,
+                Environment =
+                {
+                    // Workaround https://github.com/dotnet/corefx/issues/30341
+                    ["CODE_COVERAGE_SESSION_NAME"] = "",
+                }
             };
 
             if (directory != null)

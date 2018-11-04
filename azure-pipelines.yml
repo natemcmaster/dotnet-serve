@@ -1,0 +1,43 @@
+trigger:
+  branches:
+    include:
+    - master
+    - feature/*
+
+jobs:
+- job: Windows
+  pool:
+    vmImage: vs2017-win2016
+  workspace:
+    clean: all
+  steps:
+  - powershell: ./build.ps1 -ci -kv '$(kv-access-token)'
+    displayName: Run build.ps1
+  - task: PublishTestResults@2
+    displayName: Publish test results
+    condition: always()
+    inputs:
+      testRunTitle: Windows
+      testResultsFormat: VSTest
+      testResultsFiles: artifacts/TestResults/*.trx
+  - task: PublishBuildArtifacts@1
+    displayName: Publish artifacts
+    inputs:
+      artifactName: packages
+      pathtoPublish: $(Build.Repository.LocalPath)/artifacts/packages/
+
+- job: Linux
+  pool:
+    vmImage: ubuntu-16.04
+  workspace:
+    clean: all
+  steps:
+  - script: ./build.ps1 -ci
+    displayName: Run build.ps1
+  - task: PublishTestResults@2
+    displayName: Publish test results
+    condition: always()
+    inputs:
+      testRunTitle: Linux
+      testResultsFormat: VSTest
+      testResultsFiles: artifacts/TestResults/*.trx
