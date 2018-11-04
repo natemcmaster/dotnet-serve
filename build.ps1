@@ -122,7 +122,6 @@ Invoke-Block {
     & dotnet test `
         "$PSScriptRoot/test/dotnet-serve.Tests/" `
         --no-build `
-        --collect 'Code Coverage' `
         --results-directory "$artifacts/TestResults/" `
         --logger trx `
         @MSBuildArgs
