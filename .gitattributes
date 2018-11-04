@@ -13,7 +13,7 @@
 *.png 	binary
 *.gif 	binary
 
-*.cs text=auto diff=csharp 
+*.cs text=auto diff=csharp
 *.vb text=auto
 *.resx text=auto
 *.c text=auto
@@ -50,4 +50,4 @@
 *.sln text=auto eol=crlf
 
 *.sh eol=lf
-test/dotnet-serve.Tests/TestAssets/Mime/file.js eol=lf
+test/dotnet-serve.Tests/TestAssets/Mime/* eol=lf
