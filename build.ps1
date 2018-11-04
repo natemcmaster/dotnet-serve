@@ -57,6 +57,12 @@ try {
 }
 catch { }
 
+$CodeSign = $sign -or ($ci -and ($env:System_PullRequest_IsFork -ne 'True') -and $IsWindows)
+
+if ($CodeSign) {
+    $MSBuildArgs += '-p:CodeSign=true'
+}
+
 if ($ci) {
     $MSBuildArgs += '-p:CI=true'
 
@@ -64,8 +70,6 @@ if ($ci) {
         & dotnet msbuild src/dotnet-serve/ -nologo -t:UpdateCiSettings @MSBuildArgs
     }
 }
-
-$CodeSign = $sign -or ($ci -and ($env:System_PullRequest_IsFork -ne 'True') -and $IsWindows)
 
 if ($CodeSign) {
     $toolsDir = "$PSScriptRoot/.build/tools"
@@ -92,7 +96,6 @@ if ($CodeSign) {
         Expand-Archive "$nstDir/NuGetKeyVaultSignTool.zip" -DestinationPath $nstDir
     }
 
-    $MSBuildArgs += '-p:CodeSign=true'
     $MSBuildArgs += "-p:AzureSignToolPath=$AzureSignToolPath"
     $MSBuildArgs += "-p:NuGetKeyVaultSignToolPath=$NuGetKeyVaultSignToolPath"
     $MSBuildArgs += "-p:AzureKeyVaultClientSecret=$KeyVaultSecret"
