@@ -112,7 +112,7 @@ namespace McMaster.DotNet.Serve
         public string[] MimeMappings { get; }
 
         // Internal, experimental flag. If you found this, it may break in the future.
-        // I'm not supporting it yet becuase these files will still who up directory browser.
+        // I'm not supporting it yet because these files will still show up directory browser.
         [Option("--exclude-file", Description = "A file to prevent from being served.", ShowInHelpText = false)]
         public List<string> ExcludedFiles { get; } = new List<string>();
 
