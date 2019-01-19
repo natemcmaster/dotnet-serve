@@ -4,6 +4,11 @@ trigger:
     - master
     - feature/*
 
+variables:
+- group: AzureKeyVault
+- name: DOTNET_SKIP_FIRST_TIME_EXPERIENCE
+  value: 1
+
 jobs:
 - job: Windows
   pool:
@@ -11,6 +16,10 @@ jobs:
   workspace:
     clean: all
   steps:
+  - task: DotNetCoreInstaller@0
+    displayName: Install .NET Core 2.2
+    inputs:
+      version: '2.2.102'
   - powershell: ./build.ps1 -ci -kv '$(kv-access-token)'
     displayName: Run build.ps1
   - task: PublishTestResults@2
@@ -32,6 +41,10 @@ jobs:
   workspace:
     clean: all
   steps:
+  - task: DotNetCoreInstaller@0
+    displayName: Install .NET Core 2.2
+    inputs:
+      version: '2.2.102'
   - script: ./build.ps1 -ci
     displayName: Run build.ps1
   - task: PublishTestResults@2
