@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.2.0]
+
+* [@andrewlock]: Add support for setting custom response headers ([#21])
+
+[#21]: https://github.com/natemcmaster/dotnet-serve/pull/21
+
 ## [v1.1.0]
 
 * Remove `--razor`. This was a prototype, but due to pending deprecation of some Razor APIs, this feature won't work in the future anyways. See https://github.com/aspnet/Announcements/issues/312
@@ -53,7 +59,8 @@ Changes:
 Initial release
  - Provides a simple command-line web server for dotnet
 
-[Unreleased]: https://github.com/natemcmaster/dotnet-serve/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/natemcmaster/dotnet-serve/compare/v1.2.0...HEAD
+[v1.2.0]: https://github.com/natemcmaster/dotnet-serve/compare/v1.1.0...v1.2.0
 [v1.1.0]: https://github.com/natemcmaster/dotnet-serve/compare/v1.0.0...v1.1.0
 [v1.0.0]: https://github.com/natemcmaster/dotnet-serve/compare/v0.4.1...v1.0.0
 [v0.4.1]: https://github.com/natemcmaster/dotnet-serve/compare/v0.4.0...v0.4.1
@@ -63,6 +70,7 @@ Initial release
 [v0.2.0]: https://github.com/natemcmaster/dotnet-serve/compare/v0.1.0...v0.2.0
 [v0.1.0]: https://github.com/natemcmaster/dotnet-serve/tree/v0.1.0
 
+[@andrewlock]: https://github.com/andrewlock
 [@daveaglick]: https://github.com/daveaglick
 [@shanselman]: https://github.com/shanselman
 [@Tarmil]: https://github.com/Tarmil
