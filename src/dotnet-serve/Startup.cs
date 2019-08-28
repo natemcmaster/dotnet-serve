@@ -36,6 +36,11 @@ namespace McMaster.DotNet.Serve
                 .Configure<KeyManagementOptions>(o => o.XmlRepository = new EphemeralXmlRepository())
                 .AddSingleton<IKeyManager, KeyManager>()
                 .AddSingleton<IAuthorizationPolicyProvider, NullAuthPolicyProvider>();
+
+            if (_options.UseGzip)
+            {
+                services.AddResponseCompression();
+            }
         }
 
         public void Configure(IApplicationBuilder app)
@@ -112,6 +117,11 @@ namespace McMaster.DotNet.Serve
                 {
                     Headers = headers
                 });
+            }
+
+            if (_options.UseGzip)
+            {
+                app.UseResponseCompression();
             }
 
             app.UseFileServer(new FileServerOptions
