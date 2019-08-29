@@ -37,11 +37,13 @@ dotnet serve -o -S
 ## Usage
 
 ```
-Usage: dotnet serve [-d|--directory <DIR>] [-o|--open-browser] [--version]
+Usage: dotnet serve [--version] [-d|--directory <DIR>] [-o|--open-browser]
                     [-p|--port <PORT>] [-a|--address <ADDRESS>]
                     [--path-base <PATH>] [--default-extensions[:<EXTENSIONS>]]
-                    [-q|--quiet] [-v|--verbose] [-S|--tls] [--cert] [--key]
-                    [--pfx] [--pfx-pwd] [-m|--mime <MIME>] [-?|-h|--help]
+                    [-q|--quiet] [-v|--verbose]
+                    [-h|--headers <HEADER_AND_VALUE>] [-S|--tls] [--cert]
+                    [--key] [--pfx] [--pfx-pwd] [-m|--mime <MIME>] [-z|--gzip]
+                    [-?|--help]
 
 Options:
   --version                          Show version information
@@ -53,6 +55,7 @@ Options:
   --default-extensions:<EXTENSIONS>  A comma-delimited list of extensions to use when no extension is provided in the URL. [.html,.htm]
   -q|--quiet                         Show less console output.
   -v|--verbose                       Show more console output.
+  -h|--headers <HEADER_AND_VALUE>    A header to return with all file/directory responses. e.g. -h "X-XSS-Protection: 1; mode=block"
   -S|--tls                           Enable TLS (HTTPS)
   --cert                             A PEM encoded certificate file to use for HTTPS connections.
                                      Defaults to file in current directory named 'cert.pem'
@@ -62,6 +65,7 @@ Options:
                                      Defaults to file in current directory named 'cert.pfx'
   --pfx-pwd                          The password to open the certificate file. (Optional)
   -m|--mime <EXT>=<MIME>             Add a mapping from file extension to MIME type. Empty MIME removes a mapping.
+  -z|--gzip                          Enable gzip compression
   -?|-h|--help                       Show help information
 ```
 
