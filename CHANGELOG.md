@@ -1,5 +1,13 @@
 # Changelog
 
+See [unreleased] changes.
+
+## [v1.3.0]
+
+* [@SonicGD]: Add -z|--gzip option to enable output compression ([#23])
+
+[#23]: https://github.com/natemcmaster/dotnet-serve/pull/23
+
 ## [v1.2.0]
 
 * [@andrewlock]: Add support for setting custom response headers ([#21])
@@ -59,7 +67,8 @@ Changes:
 Initial release
  - Provides a simple command-line web server for dotnet
 
-[Unreleased]: https://github.com/natemcmaster/dotnet-serve/compare/v1.2.0...HEAD
+[unreleased]: https://github.com/natemcmaster/dotnet-serve/compare/v1.3.0...HEAD
+[v1.3.0]: https://github.com/natemcmaster/dotnet-serve/compare/v1.2.0...v1.3.0
 [v1.2.0]: https://github.com/natemcmaster/dotnet-serve/compare/v1.1.0...v1.2.0
 [v1.1.0]: https://github.com/natemcmaster/dotnet-serve/compare/v1.0.0...v1.1.0
 [v1.0.0]: https://github.com/natemcmaster/dotnet-serve/compare/v0.4.1...v1.0.0
@@ -73,4 +82,5 @@ Initial release
 [@andrewlock]: https://github.com/andrewlock
 [@daveaglick]: https://github.com/daveaglick
 [@shanselman]: https://github.com/shanselman
+[@SonicGD]: https://github.com/SonicGD
 [@Tarmil]: https://github.com/Tarmil

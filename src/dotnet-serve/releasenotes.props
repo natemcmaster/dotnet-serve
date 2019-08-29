@@ -1,5 +1,8 @@
 <Project>
   <PropertyGroup>
+    <PackageReleaseNotes Condition=" '$(VersionPrefix)' == '1.3.0' ">
+* Add -z|--gzip option to enable output compression
+    </PackageReleaseNotes>
     <PackageReleaseNotes Condition=" '$(VersionPrefix)' == '1.1.0' ">
 New feature:
 * @Tarmil: Add support for setting custom MIME types base on file extension
@@ -8,6 +11,7 @@ Deprecated feature:
 * Remove `--razor`. This was a prototype, but due to pending deprecation of some Razor APIs, this feature won't work in the future anyways. See https://github.com/aspnet/Announcements/issues/312
     </PackageReleaseNotes>
     <PackageReleaseNotes>$(PackageReleaseNotes)
+
 See $(PackageProjectUrl)/blob/master/CHANGELOG.md#v$(VersionPrefix.Replace('.','')) for release notes.</PackageReleaseNotes>
   </PropertyGroup>
 </Project>
