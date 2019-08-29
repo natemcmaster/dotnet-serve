@@ -159,7 +159,7 @@ namespace McMaster.DotNet.Serve.Tests
 
             if (useGzip)
             {
-                psi.ArgumentList.Add("-Z");
+                psi.ArgumentList.Add("-z");
             }
 
             var process = new Process
