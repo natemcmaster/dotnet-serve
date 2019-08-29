@@ -36,6 +36,7 @@
     <PackageVersion>$(VersionPrefix)</PackageVersion>
     <PackageVersion Condition="'$(IncludePreReleaseLabelInPackageVersion)' == 'true'">$(PackageVersion)-$(VersionSuffix)</PackageVersion>
     <InformationalVersion Condition="'$(SourceRevisionId)' != ''">$(PackageVersion)+$(SourceRevisionId)</InformationalVersion>
+    <PackageDescription>$(Description)</PackageDescription>
     <PackageDescription Condition="'$(SourceRevisionId)' != ''">$(PackageDescription)
 
 This package was build from source code at $(RepositoryUrl)/tree/$(SourceRevisionId)
