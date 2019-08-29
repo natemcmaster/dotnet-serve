@@ -116,7 +116,7 @@ namespace McMaster.DotNet.Serve
         [Option("--exclude-file", Description = "A file to prevent from being served.", ShowInHelpText = false)]
         public List<string> ExcludedFiles { get; } = new List<string>();
 
-        [Option("-Z|--gzip", Description = "Enable gzip compression")]
+        [Option("-z|--gzip", Description = "Enable gzip compression")]
         public bool UseGzip { get; }
 
         public string GetPathBase()
