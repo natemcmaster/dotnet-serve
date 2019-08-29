@@ -98,7 +98,8 @@ namespace McMaster.DotNet.Serve.Tests
             string certPassword = null,
             string[] mimeMap = null,
             string[] headers = null,
-            ITestOutputHelper output = null)
+            ITestOutputHelper output = null,
+            bool useGzip = false)
         {
             var psi = new ProcessStartInfo
             {
@@ -154,6 +155,11 @@ namespace McMaster.DotNet.Serve.Tests
                     psi.ArgumentList.Add("-h");
                     psi.ArgumentList.Add(header);
                 }
+            }
+
+            if (useGzip)
+            {
+                psi.ArgumentList.Add("-z");
             }
 
             var process = new Process
