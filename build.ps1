@@ -3,8 +3,6 @@
 param(
     [ValidateSet('Debug', 'Release')]
     $Configuration = $null,
-    [alias('kv')]
-    $KeyVaultSecret,
     [switch]
     $ci,
 	[switch]
@@ -98,10 +96,9 @@ if ($CodeSign) {
 
     $MSBuildArgs += "-p:AzureSignToolPath=$AzureSignToolPath"
     $MSBuildArgs += "-p:NuGetKeyVaultSignToolPath=$NuGetKeyVaultSignToolPath"
-    $MSBuildArgs += "-p:AzureKeyVaultClientSecret=$KeyVaultSecret"
 }
 
-$artifacts = "$PSScriptRoot/artifacts"
+$artifacts = "$PSScriptRoot/artifacts/"
 
 Remove-Item -Recurse $artifacts -ErrorAction Ignore
 
@@ -119,13 +116,12 @@ Invoke-Block {
 Invoke-Block {
     & dotnet pack `
         --no-build `
-        -o "$artifacts/packages/" @MSBuildArgs
+        -o $artifacts @MSBuildArgs
     }
 Invoke-Block {
     & dotnet test `
         "$PSScriptRoot/test/dotnet-serve.Tests/" `
         --no-build `
-        --results-directory "$artifacts/TestResults/" `
         --logger trx `
         @MSBuildArgs
 }
