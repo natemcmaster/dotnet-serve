@@ -1,23 +1,19 @@
 <Project>
-  <PropertyGroup>
-    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-  </PropertyGroup>
-
-  <Import Project="version.props" />
 
   <PropertyGroup>
+    <Description>A simple command-line HTTP server.</Description>
     <Authors>Nate McMaster</Authors>
     <Product>dotnet-serve</Product>
     <Copyright>Copyright © Nate McMaster</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageLicenseUrl>https://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/natemcmaster/dotnet-serve</PackageProjectUrl>
     <RepositoryUrl>https://github.com/natemcmaster/dotnet-serve</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <IsPackable>false</IsPackable>
     <NoPackageAnalysis>true</NoPackageAnalysis>
-    <LangVersion>Latest</LangVersion>
+    <LangVersion>7.3</LangVersion>
     <AzureKeyVaultUrl>https://nmcmaster.vault.azure.net</AzureKeyVaultUrl>
     <AzureKeyVaultClientId>6a27a2da-bb78-4baa-bd2b-150fe89ea039</AzureKeyVaultClientId>
     <AzureKeyVaultClientSecret>$(KEYVAULT_CLIENT_SECRET)</AzureKeyVaultClientSecret>
@@ -30,6 +26,23 @@
     <BaseOutputPath>$(MSBuildThisFileDirectory).build\bin\$(MSBuildProjectName)</BaseOutputPath>
   </PropertyGroup>
 
-  <Import Project="releasenotes.props" />
+  <PropertyGroup>
+    <VersionPrefix>1.3.0</VersionPrefix>
+    <VersionSuffix>build</VersionSuffix>
+    <IncludePreReleaseLabelInPackageVersion Condition="'$(IsStableBuild)' != 'true'">true</IncludePreReleaseLabelInPackageVersion>
+    <BuildNumber Condition=" '$(BuildNumber)' == '' ">$([MSBuild]::ValueOrDefault($(BUILD_NUMBER), 0))</BuildNumber>
+    <VersionSuffix>$(VersionSuffix).$(BuildNumber)</VersionSuffix>
+    <SourceRevisionId Condition="'$(SourceRevisionId)' == ''">$(BUILD_SOURCEVERSION)</SourceRevisionId>
+    <PackageVersion>$(VersionPrefix)</PackageVersion>
+    <PackageVersion Condition="'$(IncludePreReleaseLabelInPackageVersion)' == 'true'">$(PackageVersion)-$(VersionSuffix)</PackageVersion>
+    <InformationalVersion Condition="'$(SourceRevisionId)' != ''">$(PackageVersion)+$(SourceRevisionId)</InformationalVersion>
+    <PackageDescription Condition="'$(SourceRevisionId)' != ''">$(PackageDescription)
+
+This package was build from source code at $(RepositoryUrl)/tree/$(SourceRevisionId)
+    </PackageDescription>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildProjectDirectory)/releasenotes.props"
+          Condition="Exists('$(MSBuildProjectDirectory)/releasenotes.props')" />
 
 </Project>

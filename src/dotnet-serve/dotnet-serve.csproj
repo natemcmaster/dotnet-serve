@@ -6,7 +6,6 @@
     <IsPackable>true</IsPackable>
     <PackAsTool>true</PackAsTool>
     <AssemblyName>dotnet-serve</AssemblyName>
-    <Description>A simple command-line HTTP server.</Description>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <DebugType>embedded</DebugType>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>

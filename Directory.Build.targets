@@ -1,8 +1,4 @@
 <Project>
-  <PropertyGroup>
-    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-  </PropertyGroup>
-
   <Target Name="UpdateCiSettings">
     <Message Importance="High" Text="##vso[build.updatebuildnumber]$(PackageVersion)" />
   </Target>

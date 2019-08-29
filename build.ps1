@@ -58,6 +58,7 @@ catch { }
 $CodeSign = $sign -or ($ci -and ($env:System_PullRequest_IsFork -ne 'True') -and $IsWindows)
 
 if ($CodeSign) {
+    Invoke-Block { & dotnet tool restore }
     $MSBuildArgs += '-p:CodeSign=true'
 }
 
@@ -67,35 +68,6 @@ if ($ci) {
     Invoke-Block {
         & dotnet msbuild src/dotnet-serve/ -nologo -t:UpdateCiSettings @MSBuildArgs
     }
-}
-
-if ($CodeSign) {
-    $toolsDir = "$PSScriptRoot/.build/tools"
-
-    $AzureSignToolPath = "$toolsDir/azuresigntool"
-    if ($IsWindows) {
-        $AzureSignToolPath += ".exe"
-    }
-
-    if (-not (Test-Path $AzureSignToolPath)) {
-        Invoke-Block {
-            & dotnet tool install --tool-path $toolsDir `
-                AzureSignTool `
-                --version 2.0.17
-        }
-    }
-
-    $nstDir = "$toolsDir/nugetsigntool/1.1.4"
-    $NuGetKeyVaultSignToolPath = "$nstDir/tools/net471/NuGetKeyVaultSignTool.exe"
-    if (-not (Test-Path $NuGetKeyVaultSignToolPath)) {
-        New-Item $nstDir -ItemType Directory -ErrorAction Ignore | Out-Null
-        Invoke-WebRequest https://github.com/onovotny/NuGetKeyVaultSignTool/releases/download/v1.1.4/NuGetKeyVaultSignTool.1.1.4.nupkg `
-            -OutFile "$nstDir/NuGetKeyVaultSignTool.zip"
-        Expand-Archive "$nstDir/NuGetKeyVaultSignTool.zip" -DestinationPath $nstDir
-    }
-
-    $MSBuildArgs += "-p:AzureSignToolPath=$AzureSignToolPath"
-    $MSBuildArgs += "-p:NuGetKeyVaultSignToolPath=$NuGetKeyVaultSignToolPath"
 }
 
 $artifacts = "$PSScriptRoot/artifacts/"
