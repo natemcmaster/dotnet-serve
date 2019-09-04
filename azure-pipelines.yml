@@ -136,7 +136,7 @@ stages:
             displayName: 'GitHub release (create)'
             inputs:
               gitHubConnection: 'GitHub natemcmaster'
-              repositoryName: natemcmaster/dotnet-servd
+              repositoryName: natemcmaster/dotnet-serve
               tagSource: manual
               tag: 'v$(Build.BuildNumber)'
               title: '$(Build.BuildNumber)'
