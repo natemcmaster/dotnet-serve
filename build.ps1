@@ -64,10 +64,6 @@ if ($CodeSign) {
 
 if ($ci) {
     $MSBuildArgs += '-p:CI=true'
-
-    Invoke-Block {
-        & dotnet msbuild src/dotnet-serve/ -nologo -t:UpdateCiSettings @MSBuildArgs
-    }
 }
 
 $artifacts = "$PSScriptRoot/artifacts/"
