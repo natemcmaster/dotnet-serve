@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using McMaster.Extensions.Xunit;
 using Moq;
 using Xunit;
 using Xunit.Abstractions;
@@ -45,7 +46,10 @@ namespace McMaster.DotNet.Serve.Tests
             Assert.Equal(HttpStatusCode.Forbidden, resp.StatusCode);
         }
 
-        [Theory]
+        [SkippableTheory]
+#if NETCOREAPP3_0
+        [SkipOnOS(OS.Windows)] // see https://github.com/dotnet/corefx/issues/41226
+#endif
         [InlineData("rsa", "E8481D606B15080024C806EFE89B00F0976BD906")]
         public void ItLoadsPemAndKeyFileByDefault(string keyFormat, string thumbprint)
         {
@@ -58,7 +62,10 @@ namespace McMaster.DotNet.Serve.Tests
             Assert.True(x509.HasPrivateKey, "Cert should have private key");
         }
 
-        [Theory]
+        [SkippableTheory]
+#if NETCOREAPP3_0
+        [SkipOnOS(OS.Windows)] // see https://github.com/dotnet/corefx/issues/41226
+#endif
         [InlineData("rsa")]
         public async Task ItDoesNotServePemFiles(string keyFormat)
         {

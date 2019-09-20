@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29230.61
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C769ED8F-FD49-48BF-AE78-1F6ABCEAD42B}"
 EndProject
@@ -16,17 +16,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		CHANGELOG.md = CHANGELOG.md
 		CONTRIBUTING.md = CONTRIBUTING.md
 		Directory.Build.props = Directory.Build.props
-		Directory.Build.targets = Directory.Build.targets
-		dotnet-serve.sln.licenseheader = dotnet-serve.sln.licenseheader
 		LICENSE.txt = LICENSE.txt
-		NuGet.config = NuGet.config
 		README.md = README.md
-		version.props = version.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{2266ACA2-C30A-43CC-8C29-55D8EFA74BA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotnet-serve.Tests", "test\dotnet-serve.Tests\dotnet-serve.Tests.csproj", "{4F5C8689-CAC3-4301-A48B-132E195C5EFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnet-serve.Tests", "test\dotnet-serve.Tests\dotnet-serve.Tests.csproj", "{4F5C8689-CAC3-4301-A48B-132E195C5EFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

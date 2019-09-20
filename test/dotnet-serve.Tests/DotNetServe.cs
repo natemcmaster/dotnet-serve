@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
@@ -14,17 +13,8 @@ namespace McMaster.DotNet.Serve.Tests
 {
     class DotNetServe : IDisposable
     {
-        private const string TargetFramework
-#if NETCOREAPP2_1
-            = "netcoreapp2.1";
-#elif NETCOREAPP3_0
-            = "netcoreapp3.0";
-#else
-#error Update target frameworks
-#endif
-
         private static readonly string s_dotnetServe
-            = Path.Combine(AppContext.BaseDirectory, "tool", TargetFramework, "dotnet-serve.dll");
+            = Path.Combine(AppContext.BaseDirectory, "tool", "dotnet-serve.dll");
 
         private static int s_nextPort
 #if NETCOREAPP2_1 // avoid conflicts if tests for both target frameworks run at the same time.

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;netcoreapp3.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0;netcoreapp2.1</TargetFrameworks>
     <DefaultItemExcludes>$(DefaultItemExcludes);TestAssets\**\*</DefaultItemExcludes>
     <RootNamespace>McMaster.DotNet.Server.Tests</RootNamespace>
     <WarningsNotAsErrors>$(WarningsNotAsErrors);AD0001</WarningsNotAsErrors>
@@ -23,16 +23,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="McMaster.Extensions.XUnit" Version="0.1.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.0" />
     <PackageReference Include="Moq" Version="4.10.1" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
   </ItemGroup>
 
-  <Target Name="PublishDotNetServe" BeforeTargets="CoreCompile">
+  <Target Name="PublishDotNetServe" AfterTargets="ResolveProjectReferences">
     <MSBuild Projects="..\..\src\dotnet-serve\dotnet-serve.csproj"
              Targets="Publish"
-             Properties="PublishDir=$(TargetDir)\tool\$(TargetFramework)\;Configuration=$(Configuration);TargetFramework=$(TargetFramework)" />
+             Properties="PublishDir=$(TargetDir)\tool\;Configuration=$(Configuration);TargetFramework=$(TargetFramework)" />
   </Target>
 
 </Project>

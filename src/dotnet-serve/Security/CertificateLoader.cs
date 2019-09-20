@@ -149,17 +149,30 @@ namespace McMaster.DotNet.Serve
 
         private static RSA CreateRSA(RsaPrivateCrtKeyParameters rsaParams)
         {
-            return RSA.Create(new RSAParameters
+            try
             {
-                Modulus = rsaParams.Modulus.ToByteArray(),
-                Exponent = rsaParams.PublicExponent.ToByteArray(),
-                D = rsaParams.Exponent.ToByteArray(),
-                P = rsaParams.P.ToByteArray(),
-                Q = rsaParams.Q.ToByteArray(),
-                DP = rsaParams.DP.ToByteArray(),
-                DQ = rsaParams.DQ.ToByteArray(),
-                InverseQ = rsaParams.QInv.ToByteArray(),
-            });
+                return RSA.Create(new RSAParameters
+                {
+                    Modulus = rsaParams.Modulus.ToByteArray(),
+                    Exponent = rsaParams.PublicExponent.ToByteArray(),
+                    D = rsaParams.Exponent.ToByteArray(),
+                    P = rsaParams.P.ToByteArray(),
+                    Q = rsaParams.Q.ToByteArray(),
+                    DP = rsaParams.DP.ToByteArray(),
+                    DQ = rsaParams.DQ.ToByteArray(),
+                    InverseQ = rsaParams.QInv.ToByteArray(),
+                });
+            }
+            catch (CryptographicException)
+            {
+#if NETCOREAPP3_0
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    Console.Error.WriteLine("There are known issues loading PEM certificates on Windows with .NET Core 3.0. See https://github.com/natemcmaster/dotnet-serve/issues/27.");
+                }
+#endif
+                throw;
+            }
         }
 
         private static X509Certificate2 LoadDeveloperCertificate()
