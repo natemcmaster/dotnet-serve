@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFrameworks>netcoreapp2.1;netcoreapp3.0</TargetFrameworks>
     <DefaultItemExcludes>$(DefaultItemExcludes);TestAssets\**\*</DefaultItemExcludes>
     <RootNamespace>McMaster.DotNet.Server.Tests</RootNamespace>
     <WarningsNotAsErrors>$(WarningsNotAsErrors);AD0001</WarningsNotAsErrors>
@@ -15,18 +15,24 @@
     <ProjectReference Include="..\..\src\dotnet-serve\dotnet-serve.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.4" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
+    <!-- Required becuase the SDK doesn't do transitive package refs from PackAsTool for netcoreapp2.1 -->
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.4.1" />
+    <PackageReference Include="Portable.BouncyCastle" Version="1.8.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.0" />
     <PackageReference Include="Moq" Version="4.10.1" />
-    <PackageReference Include="Portable.BouncyCastle" Version="1.8.4" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
   </ItemGroup>
 
-  <Target Name="PublishDotNetServe" BeforeTargets="Build">
-    <MSBuild Projects="..\..\src\dotnet-serve\dotnet-serve.csproj" Targets="Publish" Properties="PublishDir=$(TargetDir)\tool\;Configuration=$(Configuration)" />
+  <Target Name="PublishDotNetServe" BeforeTargets="CoreCompile">
+    <MSBuild Projects="..\..\src\dotnet-serve\dotnet-serve.csproj"
+             Targets="Publish"
+             Properties="PublishDir=$(TargetDir)\tool\$(TargetFramework)\;Configuration=$(Configuration);TargetFramework=$(TargetFramework)" />
   </Target>
 
 </Project>

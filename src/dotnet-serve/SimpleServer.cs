@@ -42,17 +42,10 @@ namespace McMaster.DotNet.Serve
             };
         }
 
-        public async Task<int> RunAsync()
+        public async Task<int> RunAsync(CancellationToken cancellationToken)
         {
-            var cts = new CancellationTokenSource();
             var directory = Path.GetFullPath(_options.Directory ?? _currentDirectory);
             var port = _options.Port;
-
-            _console.CancelKeyPress += (o, e) =>
-            {
-                _console.WriteLine("Shutting down...");
-                cts.Cancel();
-            };
 
             if (!CertificateLoader.TryLoadCertificate(_options, _currentDirectory, out var cert, out var certLoadError))
             {
@@ -112,9 +105,9 @@ namespace McMaster.DotNet.Serve
                 _console.WriteLine(ConsoleColor.DarkYellow, $"Using default extensions " + string.Join(", ", defaultExtensions));
             }
 
-            await host.StartAsync(cts.Token);
+            await host.StartAsync(cancellationToken);
             AfterServerStart(host);
-            await host.WaitForShutdownAsync(cts.Token);
+            await host.WaitForShutdownAsync(cancellationToken);
             return 0;
         }
 

@@ -1,5 +1,0 @@
-{
-  // Rollforward across major versions of ASP.NET Core
-  // The default setting only will only rollforward across minor versions
-  "rollForward": "Major"
-}

@@ -14,8 +14,26 @@ namespace McMaster.DotNet.Serve.Tests
 {
     class DotNetServe : IDisposable
     {
-        private static readonly string s_dotnetServe = Path.Combine(AppContext.BaseDirectory, "tool", "dotnet-serve.dll");
-        private static int s_nextPort = 9000;
+        private const string TargetFramework
+#if NETCOREAPP2_1
+            = "netcoreapp2.1";
+#elif NETCOREAPP3_0
+            = "netcoreapp3.0";
+#else
+#error Update target frameworks
+#endif
+
+        private static readonly string s_dotnetServe
+            = Path.Combine(AppContext.BaseDirectory, "tool", TargetFramework, "dotnet-serve.dll");
+
+        private static int s_nextPort
+#if NETCOREAPP2_1 // avoid conflicts if tests for both target frameworks run at the same time.
+            = 9000;
+#elif NETCOREAPP3_0
+            = 10000;
+#else
+#error Update target frameworks
+#endif
 
         private readonly Process _process;
         private readonly ITestOutputHelper _output;

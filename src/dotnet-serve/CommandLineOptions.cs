@@ -107,7 +107,7 @@ namespace McMaster.DotNet.Serve
         [Option("--pfx-pwd", Description = "The password to open the certificate file. (Optional)")]
         public virtual string CertificatePassword { get; }
 
-        [Option("-m|--mime <EXT>=<MIME>", CommandOptionType.MultipleValue, Description = "Add a mapping from file extension to MIME type. Empty MIME removes a mapping.")]
+        [Option("-m|--mime <MAPPING>", CommandOptionType.MultipleValue, Description = "Add a mapping from file extension to MIME type. Empty MIME removes a mapping.\nExpected format is <EXT>=<MIME>.")]
         [RegularExpression(@"^([^=]+)=([^=]*)$", ErrorMessage = "MIME mappings must have the form: ext=mime/type")]
         public string[] MimeMappings { get; }
 

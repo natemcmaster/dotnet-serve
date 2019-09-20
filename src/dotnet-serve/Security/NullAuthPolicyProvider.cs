@@ -16,6 +16,11 @@ namespace McMaster.DotNet.Serve
                 Enumerable.Empty<string>()));
         }
 
+        public Task<AuthorizationPolicy> GetFallbackPolicyAsync()
+        {
+            return Task.FromResult(default(AuthorizationPolicy));
+        }
+
         public Task<AuthorizationPolicy> GetPolicyAsync(string policyName)
             => GetDefaultPolicyAsync();
     }

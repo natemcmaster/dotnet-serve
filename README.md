@@ -16,7 +16,7 @@ It launches a server in the current working directory and serves all files in it
 
 ## Get started
 
-Download the .NET Core SDK [2.1.300](https://aka.ms/DotNetCore21) or newer.
+Download .NET Core [2.1](https://get.dot.net) or newer.
 Once installed, run this command:
 
 ```
@@ -37,37 +37,34 @@ dotnet serve -o -S
 ## Usage
 
 ```
-Usage: dotnet serve [--version] [-d|--directory <DIR>] [-o|--open-browser]
-                    [-p|--port <PORT>] [-a|--address <ADDRESS>]
-                    [--path-base <PATH>] [--default-extensions[:<EXTENSIONS>]]
-                    [-q|--quiet] [-v|--verbose]
-                    [-h|--headers <HEADER_AND_VALUE>] [-S|--tls] [--cert]
-                    [--key] [--pfx] [--pfx-pwd] [-m|--mime <MIME>] [-z|--gzip]
-                    [-?|--help]
+Usage: dotnet serve [options]
 
 Options:
-  --version                          Show version information
-  -d|--directory <DIR>               The root directory to serve. [Current directory]
-  -o|--open-browser                  Open a web browser when the server starts. [false]
-  -p|--port <PORT>                   Port to use [8080]. Use 0 for a dynamic port.
-  -a|--address <ADDRESS>             Address to use [127.0.0.1]
-  --path-base <PATH>                 The base URL path of postpended to the site url.
-  --default-extensions:<EXTENSIONS>  A comma-delimited list of extensions to use when no extension is provided in the URL. [.html,.htm]
-  -q|--quiet                         Show less console output.
-  -v|--verbose                       Show more console output.
-  -h|--headers <HEADER_AND_VALUE>    A header to return with all file/directory responses. e.g. -h "X-XSS-Protection: 1; mode=block"
-  -S|--tls                           Enable TLS (HTTPS)
-  --cert                             A PEM encoded certificate file to use for HTTPS connections.
-                                     Defaults to file in current directory named 'cert.pem'
-  --key                              A PEM encoded private key to use for HTTPS connections.
-                                     Defaults to file in current directory named 'private.key'
-  --pfx                              A PKCS#12 certificate file to use for HTTPS connections.
-                                     Defaults to file in current directory named 'cert.pfx'
-  --pfx-pwd                          The password to open the certificate file. (Optional)
-  -m|--mime <EXT>=<MIME>             Add a mapping from file extension to MIME type. Empty MIME removes a mapping.
-  -z|--gzip                          Enable gzip compression
-  -?|-h|--help                       Show help information
+  --version                            Show version information
+  -d|--directory <DIR>                 The root directory to serve. [Current directory]
+  -o|--open-browser                    Open a web browser when the server starts. [false]
+  -p|--port <PORT>                     Port to use [8080]. Use 0 for a dynamic port.
+  -a|--address <ADDRESS>               Address to use [127.0.0.1]
+  --path-base <PATH>                   The base URL path of postpended to the site url.
+  --default-extensions[:<EXTENSIONS>]  A comma-delimited list of extensions to use when no extension is provided in the URL. [.html,.htm]
+  -q|--quiet                           Show less console output.
+  -v|--verbose                         Show more console output.
+  -h|--headers <HEADER_AND_VALUE>      A header to return with all file/directory responses. e.g. -h "X-XSS-Protection: 1; mode=block"
+  -S|--tls                             Enable TLS (HTTPS)
+  --cert                               A PEM encoded certificate file to use for HTTPS connections.
+                                       Defaults to file in current directory named 'cert.pem'
+  --key                                A PEM encoded private key to use for HTTPS connections.
+                                       Defaults to file in current directory named 'private.key'
+  --pfx                                A PKCS#12 certificate file to use for HTTPS connections.
+                                       Defaults to file in current directory named 'cert.pfx'
+  --pfx-pwd                            The password to open the certificate file. (Optional)
+  -m|--mime <MAPPING>                  Add a mapping from file extension to MIME type. Empty MIME removes a mapping.
+                                       Expected format is <EXT>=<MIME>.
+  -z|--gzip                            Enable gzip compression
+  -?|--help                            Show help information
 ```
+
+> Tip: single letters for options can be combined. Example: `dotnet serve -Sozq`
 
 ## Configuring HTTPS
 

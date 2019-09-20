@@ -88,7 +88,6 @@ Invoke-Block {
     }
 Invoke-Block {
     & dotnet test `
-        "$PSScriptRoot/test/dotnet-serve.Tests/" `
         --no-build `
         --logger trx `
         @MSBuildArgs

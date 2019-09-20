@@ -9,6 +9,10 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+#if NETCOREAPP2_1
+using IWebHostEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
+#endif
+
 namespace McMaster.DotNet.Serve.DefaultExtensions
 {
     class DefaultExtensionsMiddleware
@@ -18,7 +22,7 @@ namespace McMaster.DotNet.Serve.DefaultExtensions
         private readonly DefaultExtensionsOptions _options;
         private readonly ILogger _logger;
 
-        public DefaultExtensionsMiddleware(RequestDelegate next, IHostingEnvironment hostingEnv, IOptions<DefaultExtensionsOptions> options, ILoggerFactory loggerFactory)
+        public DefaultExtensionsMiddleware(RequestDelegate next, IWebHostEnvironment hostingEnv, IOptions<DefaultExtensionsOptions> options, ILoggerFactory loggerFactory)
         {
             if (hostingEnv == null)
             {

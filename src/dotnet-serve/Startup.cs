@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using McMaster.DotNet.Serve.DefaultExtensions;
 using McMaster.DotNet.Serve.Headers;
@@ -15,15 +14,19 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
 
+#if NETCOREAPP2_1
+using IWebHostEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
+#endif
+
 namespace McMaster.DotNet.Serve
 {
     class Startup
     {
-        private readonly IHostingEnvironment _environment;
+        private readonly IWebHostEnvironment _environment;
         private readonly CommandLineOptions _options;
 
         public Startup(
-            IHostingEnvironment environment,
+            IWebHostEnvironment environment,
             CommandLineOptions options)
         {
             _environment = environment;

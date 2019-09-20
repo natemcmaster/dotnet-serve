@@ -2,33 +2,26 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Threading;
 using McMaster.Extensions.CommandLineUtils;
 
 namespace McMaster.DotNet.Serve
 {
     class Program
     {
-        // Return codes
-        private const int ERROR = 2;
-        private const int OK = 0;
-
         public static int Main(string[] args)
         {
             DebugHelper.HandleDebugSwitch(ref args);
 
             try
             {
-                var app = new CommandLineApplication<CommandLineOptions>();
+                using var app = new CommandLineApplication<CommandLineOptions>();
                 app.ValueParsers.Add(new IPAddressParser());
                 app.Conventions.UseDefaultConventions();
-                app.OnExecute(async () =>
+                app.OnExecuteAsync(async ct =>
                 {
                     var server = new SimpleServer(app.Model, PhysicalConsole.Singleton, Directory.GetCurrentDirectory());
-                    return await server.RunAsync();
+                    return await server.RunAsync(ct);
                 });
                 return app.Execute(args);
             }
@@ -37,7 +30,7 @@ namespace McMaster.DotNet.Serve
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Error.WriteLine("Unexpected error: " + ex.ToString());
                 Console.ResetColor();
-                return ERROR;
+                return 2;
             }
         }
     }
