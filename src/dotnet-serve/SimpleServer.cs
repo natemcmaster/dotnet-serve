@@ -24,11 +24,6 @@ namespace McMaster.DotNet.Serve
         private readonly IConsole _console;
         private readonly string _currentDirectory;
         private readonly IReporter _reporter;
-        private static readonly IPAddress[] s_defaultAddresses = {
-            IPAddress.Loopback,
-            IPAddress.Any,
-            IPAddress.IPv6Any,
-        };
 
         public SimpleServer(CommandLineOptions options, IConsole console, string currentDirectory)
         {

@@ -37,14 +37,12 @@ namespace McMaster.DotNet.Serve.Tests
         public async Task ItDoesNotServePfxFile()
         {
             var path = Path.Combine(AppContext.BaseDirectory, "TestAssets", "Https", "pfx");
-            using (var ds = DotNetServe.Start(path,
+            using var ds = DotNetServe.Start(path,
                 certPassword: "testPassword",
                 output: _output,
-                enableTls: true))
-            {
-                var resp = await ds.Client.GetWithRetriesAsync("/cert.pfx");
-                Assert.Equal(HttpStatusCode.Forbidden, resp.StatusCode);
-            }
+                enableTls: true);
+            var resp = await ds.Client.GetWithRetriesAsync("/cert.pfx");
+            Assert.Equal(HttpStatusCode.Forbidden, resp.StatusCode);
         }
 
         [Theory]
@@ -65,16 +63,14 @@ namespace McMaster.DotNet.Serve.Tests
         public async Task ItDoesNotServePemFiles(string keyFormat)
         {
             var path = Path.Combine(AppContext.BaseDirectory, "TestAssets", "Https", keyFormat);
-            using (var ds = DotNetServe.Start(path,
+            using var ds = DotNetServe.Start(path,
                 output: _output,
-                enableTls: true))
-            {
-                var resp1 = await ds.Client.GetWithRetriesAsync("/cert.pem");
-                Assert.Equal(HttpStatusCode.Forbidden, resp1.StatusCode);
+                enableTls: true);
+            var resp1 = await ds.Client.GetWithRetriesAsync("/cert.pem");
+            Assert.Equal(HttpStatusCode.Forbidden, resp1.StatusCode);
 
-                var resp2 = await ds.Client.GetWithRetriesAsync("/private.key");
-                Assert.Equal(HttpStatusCode.Forbidden, resp2.StatusCode);
-            }
+            var resp2 = await ds.Client.GetWithRetriesAsync("/private.key");
+            Assert.Equal(HttpStatusCode.Forbidden, resp2.StatusCode);
         }
     }
 }

@@ -9,6 +9,6 @@ namespace McMaster.DotNet.Serve.Headers
 {
     public class HeadersOptions
     {
-        public IDictionary<string,string> Headers { get; set; }
+        public IDictionary<string, string> Headers { get; set; }
     }
 }

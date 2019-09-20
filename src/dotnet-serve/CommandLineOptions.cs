@@ -50,7 +50,7 @@ namespace McMaster.DotNet.Serve
 
         [Option("-h|--headers <HEADER_AND_VALUE>", CommandOptionType.MultipleValue, Description = "A header to return with all file/directory responses. e.g. -h \"X-XSS-Protection: 1; mode=block\"")]
         [RegularExpression(@"^([^:]+):([^:]*)$", ErrorMessage = "Headers must have the form: HEADER:VALUE")]
-        public string[] Headers {get; }
+        public string[] Headers { get; }
 
         [Option("--log <LEVEL>", Description = "For advanced diagnostics.", ShowInHelpText = false)]
         public LogLevel MinLogLevel

@@ -23,15 +23,10 @@ namespace McMaster.DotNet.Serve.Tests
         public async Task ItCompressesOutput()
         {
             var path = Path.Combine(AppContext.BaseDirectory, "TestAssets", "Mime");
-            using (var ds = DotNetServe.Start(path,
-                output: _output,
-                useGzip: true
-            ))
-            {
-                ds.Client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate");
-                var resp = await ds.Client.GetWithRetriesAsync("file.js");
-                Assert.Equal("gzip", resp.Content.Headers.ContentEncoding.First());
-            }
+            using var ds = DotNetServe.Start(path, output: _output, useGzip: true);
+            ds.Client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate");
+            var resp = await ds.Client.GetWithRetriesAsync("file.js");
+            Assert.Equal("gzip", resp.Content.Headers.ContentEncoding.First());
         }
     }
 }

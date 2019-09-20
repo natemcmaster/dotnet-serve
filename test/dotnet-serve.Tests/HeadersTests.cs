@@ -36,18 +36,14 @@ namespace McMaster.DotNet.Serve.Tests
             };
 
             var path = Path.Combine(AppContext.BaseDirectory, "TestAssets", "Mime");
-            using (var ds = DotNetServe.Start(path,
-                output: _output,
-                headers: headerArguments))
-            {
-                var resp = await ds.Client.GetWithRetriesAsync("/file.js");
+            using var ds = DotNetServe.Start(path, output: _output, headers: headerArguments);
+            var resp = await ds.Client.GetWithRetriesAsync("/file.js");
 
-                foreach (var header in headers)
-                {
-                    var respHeader = Assert.Single(resp.Headers, h => h.Key == header.Key);
-                    var respHeaderValue = Assert.Single(respHeader.Value);
-                    Assert.Equal(respHeaderValue, header.Value);
-                }
+            foreach (var header in headers)
+            {
+                var respHeader = Assert.Single(resp.Headers, h => h.Key == header.Key);
+                var respHeaderValue = Assert.Single(respHeader.Value);
+                Assert.Equal(respHeaderValue, header.Value);
             }
         }
     }

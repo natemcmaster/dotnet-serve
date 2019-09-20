@@ -38,12 +38,10 @@ namespace McMaster.DotNet.Serve.Tests
         private readonly Process _process;
         private readonly ITestOutputHelper _output;
         private readonly SemaphoreSlim _outputReceived = new SemaphoreSlim(0);
-        private int _port;
 
         private DotNetServe(Process process, int port, bool useHttps, ITestOutputHelper output)
         {
             _process = process;
-            _port = port;
             _output = output;
             var protocol = useHttps
                 ? "https"

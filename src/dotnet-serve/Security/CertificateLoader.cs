@@ -114,36 +114,32 @@ namespace McMaster.DotNet.Serve
         {
             try
             {
-                using (var certWithoutPrivateKey = new X509Certificate2(certPath))
-                using (var keyFile = File.OpenText(keyPath))
+                using var certWithoutPrivateKey = new X509Certificate2(certPath);
+                using var keyFile = File.OpenText(keyPath);
+                // Workaround https://github.com/dotnet/corefx/issues/20414
+                var pemReader = new PemReader(keyFile);
+
+                var pemObj = pemReader.ReadObject();
+                switch (pemObj)
                 {
-                    // Workaround https://github.com/dotnet/corefx/issues/20414
-                    var pemReader = new PemReader(keyFile);
-
-                    var pemObj = pemReader.ReadObject();
-                    switch (pemObj)
-                    {
-                        case RsaPrivateCrtKeyParameters rsaParams:
+                    case RsaPrivateCrtKeyParameters rsaParams:
+                        {
+                            var rsa = CreateRSA(rsaParams);
+                            // See https://github.com/dotnet/corefx/issues/24454#issuecomment-388231655
+                            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                             {
-                                var rsa = CreateRSA(rsaParams);
-                                // See https://github.com/dotnet/corefx/issues/24454#issuecomment-388231655
-                                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                                {
-                                    using (var certWithKey = certWithoutPrivateKey.CopyWithPrivateKey(rsa))
-                                    {
-                                        return new X509Certificate2(certWithKey.Export(X509ContentType.Pkcs12));
-                                    }
-                                }
-                                else
-                                {
-                                    // Only works on Linux/macOS
-                                    return certWithoutPrivateKey.CopyWithPrivateKey(rsa);
-                                }
+                                using var certWithKey = certWithoutPrivateKey.CopyWithPrivateKey(rsa);
+                                return new X509Certificate2(certWithKey.Export(X509ContentType.Pkcs12));
                             }
-                    }
-
-                    throw new InvalidOperationException($"Failed to read private key from '{keyPath}'. Unexpected format: " + pemObj.GetType().Name);
+                            else
+                            {
+                                // Only works on Linux/macOS
+                                return certWithoutPrivateKey.CopyWithPrivateKey(rsa);
+                            }
+                        }
                 }
+
+                throw new InvalidOperationException($"Failed to read private key from '{keyPath}'. Unexpected format: " + pemObj.GetType().Name);
             }
             catch (Exception ex)
             {
@@ -168,22 +164,20 @@ namespace McMaster.DotNet.Serve
 
         private static X509Certificate2 LoadDeveloperCertificate()
         {
-            using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
+            using var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+            store.Open(OpenFlags.ReadOnly);
+            var certs = store.Certificates.Find(X509FindType.FindByExtension, AspNetHttpsOid, validOnly: false);
+            if (certs.Count == 1)
             {
-                store.Open(OpenFlags.ReadOnly);
-                var certs = store.Certificates.Find(X509FindType.FindByExtension, AspNetHttpsOid, validOnly: false);
-                if (certs.Count == 1)
-                {
-                    return certs[0];
-                }
-
-                if (certs.Count > 1)
-                {
-                    throw new InvalidOperationException($"Ambiguous certficiate match. Multiple certificates found with extension '{AspNetHttpsOid}' ({AspNetHttpsOidFriendlyName}).");
-                }
-
-                return null;
+                return certs[0];
             }
+
+            if (certs.Count > 1)
+            {
+                throw new InvalidOperationException($"Ambiguous certficiate match. Multiple certificates found with extension '{AspNetHttpsOid}' ({AspNetHttpsOidFriendlyName}).");
+            }
+
+            return null;
         }
     }
 }
