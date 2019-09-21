@@ -23,6 +23,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-*" PrivateAssets="All" Publish="false"/>
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.4.1" />
-    <PackageReference Include="Portable.BouncyCastle" Version="1.8.4" />
+    <PackageReference Include="Portable.BouncyCastle" Version="1.8.5" />
   </ItemGroup>
 </Project>
