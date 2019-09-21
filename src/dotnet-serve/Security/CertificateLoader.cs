@@ -124,7 +124,7 @@ namespace McMaster.DotNet.Serve
                 {
                     case RsaPrivateCrtKeyParameters rsaParams:
                         {
-                            var rsa = CreateRSA(rsaParams);
+                            var rsa = rsaParams.ToRSA();
                             // See https://github.com/dotnet/corefx/issues/24454#issuecomment-388231655
                             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                             {
@@ -144,34 +144,6 @@ namespace McMaster.DotNet.Serve
             catch (Exception ex)
             {
                 throw new InvalidOperationException($"Failed to load certificate file from '{certPath}' and '{keyPath}'", ex);
-            }
-        }
-
-        private static RSA CreateRSA(RsaPrivateCrtKeyParameters rsaParams)
-        {
-            try
-            {
-                return RSA.Create(new RSAParameters
-                {
-                    Modulus = rsaParams.Modulus.ToByteArray(),
-                    Exponent = rsaParams.PublicExponent.ToByteArray(),
-                    D = rsaParams.Exponent.ToByteArray(),
-                    P = rsaParams.P.ToByteArray(),
-                    Q = rsaParams.Q.ToByteArray(),
-                    DP = rsaParams.DP.ToByteArray(),
-                    DQ = rsaParams.DQ.ToByteArray(),
-                    InverseQ = rsaParams.QInv.ToByteArray(),
-                });
-            }
-            catch (CryptographicException)
-            {
-#if NETCOREAPP3_0
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    Console.Error.WriteLine("There are known issues loading PEM certificates on Windows with .NET Core 3.0. See https://github.com/natemcmaster/dotnet-serve/issues/27.");
-                }
-#endif
-                throw;
             }
         }
 
