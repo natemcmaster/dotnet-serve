@@ -1,5 +1,8 @@
 <Project>
   <PropertyGroup>
+    <PackageReleaseNotes Condition=" '$(VersionPrefix)' == '1.4.1' ">
+* Fix loading PEM certificates and keys on .NET Core 3.0
+    </PackageReleaseNotes>
     <PackageReleaseNotes Condition=" '$(VersionPrefix)' == '1.4.0' ">
 * Support running on .NET Core 3.0
     </PackageReleaseNotes>
