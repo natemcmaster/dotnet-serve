@@ -105,7 +105,8 @@ namespace McMaster.DotNet.Serve.Tests
             string[] mimeMap = null,
             string[] headers = null,
             ITestOutputHelper output = null,
-            bool useGzip = false)
+            bool useGzip = false,
+            bool useBrotli = false)
         {
             var psi = new ProcessStartInfo
             {
@@ -166,6 +167,11 @@ namespace McMaster.DotNet.Serve.Tests
             if (useGzip)
             {
                 psi.ArgumentList.Add("-z");
+            }
+
+            if (useBrotli)
+            {
+                psi.ArgumentList.Add("-b");
             }
 
             var process = new Process
