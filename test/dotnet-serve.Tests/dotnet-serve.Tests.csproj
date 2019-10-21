@@ -11,6 +11,10 @@
     <Content Include="TestAssets\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">
+    <Compile Remove="BrotliTests.cs" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\dotnet-serve\dotnet-serve.csproj" />
   </ItemGroup>
@@ -31,9 +35,7 @@
   </ItemGroup>
 
   <Target Name="PublishDotNetServe" AfterTargets="ResolveProjectReferences">
-    <MSBuild Projects="..\..\src\dotnet-serve\dotnet-serve.csproj"
-             Targets="Publish"
-             Properties="PublishDir=$(TargetDir)\tool\;Configuration=$(Configuration);TargetFramework=$(TargetFramework)" />
+    <MSBuild Projects="..\..\src\dotnet-serve\dotnet-serve.csproj" Targets="Publish" Properties="PublishDir=$(TargetDir)\tool\;Configuration=$(Configuration);TargetFramework=$(TargetFramework)" />
   </Target>
 
 </Project>

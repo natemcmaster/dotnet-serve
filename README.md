@@ -61,6 +61,7 @@ Options:
   -m|--mime <MAPPING>                  Add a mapping from file extension to MIME type. Empty MIME removes a mapping.
                                        Expected format is <EXT>=<MIME>.
   -z|--gzip                            Enable gzip compression
+  -b|--brotli                          Enable brotli compression (requires .NET Core 3+)
   -?|--help                            Show help information
 ```
 

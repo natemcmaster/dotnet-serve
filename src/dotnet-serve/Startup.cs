@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -40,10 +41,23 @@ namespace McMaster.DotNet.Serve
                 .AddSingleton<IKeyManager, KeyManager>()
                 .AddSingleton<IAuthorizationPolicyProvider, NullAuthPolicyProvider>();
 
-            if (_options.UseGzip)
+            services.AddResponseCompression(options =>
             {
-                services.AddResponseCompression();
-            }
+                options.Providers.Clear();
+
+                if (_options.UseGzip)
+                {
+                    options.Providers.Add<GzipCompressionProvider>();
+                }
+
+
+#if NETCOREAPP3_0
+                if (_options.UseBrotli)
+                {
+                    options.Providers.Add<BrotliCompressionProvider>();
+                }
+#endif
+            });
         }
 
         public void Configure(IApplicationBuilder app)
@@ -122,7 +136,7 @@ namespace McMaster.DotNet.Serve
                 });
             }
 
-            if (_options.UseGzip)
+            if (_options.UseGzip || _options.UseBrotli)
             {
                 app.UseResponseCompression();
             }

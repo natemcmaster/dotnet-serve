@@ -119,6 +119,11 @@ namespace McMaster.DotNet.Serve
         [Option("-z|--gzip", Description = "Enable gzip compression")]
         public bool UseGzip { get; }
 
+#if !NETCOREAPP2_1
+        [Option("-b|--brotli", Description = "Enable brotli compression")]
+#endif
+        public bool UseBrotli { get; }
+
         public string GetPathBase()
         {
             if (string.IsNullOrEmpty(PathBase))
