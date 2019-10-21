@@ -50,14 +50,13 @@ namespace McMaster.DotNet.Serve
                     options.Providers.Add<GzipCompressionProvider>();
                 }
 
+
+#if NETCOREAPP3_0
                 if (_options.UseBrotli)
                 {
-#if NETCOREAPP2_1
-                    throw new NotSupportedException();
-#else
                     options.Providers.Add<BrotliCompressionProvider>();
-#endif
                 }
+#endif
             });
         }
 

@@ -121,6 +121,7 @@ namespace McMaster.DotNet.Serve
 
 #if !NETCOREAPP2_1
         [Option("-b|--brotli", Description = "Enable brotli compression")]
+#endif
         public bool UseBrotli { get; }
 
         public string GetPathBase()
