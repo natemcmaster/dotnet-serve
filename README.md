@@ -3,12 +3,10 @@ dotnet-serve
 
 [![Build Status](https://dev.azure.com/natemcmaster/github/_apis/build/status/dotnet-serve)](https://dev.azure.com/natemcmaster/github/_build/latest?definitionId=1)
 
-[![NuGet][main-nuget-badge]][main-nuget] [![MyGet][main-myget-badge]][main-myget]
+[![NuGet][main-nuget-badge]][main-nuget]
 
 [main-nuget]: https://www.nuget.org/packages/dotnet-serve/
 [main-nuget-badge]: https://img.shields.io/nuget/v/dotnet-serve.svg?style=flat-square&label=nuget
-[main-myget]: https://www.myget.org/feed/natemcmaster/package/nuget/dotnet-serve
-[main-myget-badge]: https://img.shields.io/www.myget/natemcmaster/vpre/dotnet-serve.svg?style=flat-square&label=myget
 
 A simple command-line HTTP server.
 

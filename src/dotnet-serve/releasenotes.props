@@ -1,5 +1,9 @@
 <Project>
   <PropertyGroup>
+    <PackageReleaseNotes Condition=" '$(VersionPrefix)' == '1.5.0' ">
+New feature:
+* @ysmoradi: add support for Brotli compression (#32)
+    </PackageReleaseNotes>
     <PackageReleaseNotes Condition=" '$(VersionPrefix)' == '1.4.1' ">
 * Fix loading PEM certificates and keys on .NET Core 3.0
     </PackageReleaseNotes>
