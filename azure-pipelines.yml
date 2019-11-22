@@ -50,4 +50,4 @@ jobs:
   - publish: 'artifacts/'
     artifact: 'Packages'
     displayName: Publish artifacts
-    condition: and(success(), eq('windows-2019', variables['vmImage']))
+    condition: and(succeeded(), eq('windows-2019', variables['vmImage']))
