@@ -73,7 +73,14 @@ namespace McMaster.DotNet.Serve
                 {
                     if (_options.ShouldUseLocalhost())
                     {
-                        o.ListenLocalhost(port, ConfigureHttps);
+                        if (port == 0)
+                        {
+                            o.ListenAnyIP(0, ConfigureHttps);
+                        }
+                        else
+                        {
+                            o.ListenLocalhost(port, ConfigureHttps);
+                        }
                     }
                     else
                     {
@@ -114,7 +121,7 @@ namespace McMaster.DotNet.Serve
             _console.WriteLine("Listening on:");
             foreach (var a in addresses.Addresses)
             {
-                _console.WriteLine(ConsoleColor.Green, "  " + a + pathBase);
+                _console.WriteLine(ConsoleColor.Green, "  " + NormalizeToLoopbackAddress(a) + pathBase);
             }
 
             _console.WriteLine("");
@@ -122,10 +129,7 @@ namespace McMaster.DotNet.Serve
 
             if (_options.OpenBrowser)
             {
-                var url = addresses.Addresses.First();
-                // normalize to loopback if binding to IPAny
-                url = url.Replace("0.0.0.0", "localhost");
-                url = url.Replace("[::]", "localhost");
+                var url = NormalizeToLoopbackAddress(addresses.Addresses.First());
 
                 if (!string.IsNullOrEmpty(pathBase))
                 {
@@ -133,6 +137,15 @@ namespace McMaster.DotNet.Serve
                 }
 
                 LaunchBrowser(url);
+            }
+
+            static string NormalizeToLoopbackAddress(string url)
+            {
+                // normalize to loopback if binding to IPAny
+                url = url.Replace("0.0.0.0", "localhost");
+                url = url.Replace("[::]", "localhost");
+
+                return url;
             }
         }
 
