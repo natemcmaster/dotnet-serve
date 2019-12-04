@@ -1,5 +1,9 @@
 <Project>
   <PropertyGroup>
+    <PackageReleaseNotes Condition=" '$(VersionPrefix)' == '1.6.0' ">
+Improvement:
+* @pranavkm: fix `dotnet-serve -p 0`  (#32)
+    </PackageReleaseNotes>
     <PackageReleaseNotes Condition=" '$(VersionPrefix)' == '1.5.0' ">
 New feature:
 * @ysmoradi: add support for Brotli compression (#32)
