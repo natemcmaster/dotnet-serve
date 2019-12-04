@@ -2,7 +2,7 @@
   <PropertyGroup>
     <PackageReleaseNotes Condition=" '$(VersionPrefix)' == '1.6.0' ">
 Improvement:
-* @pranavkm: fix `dotnet-serve -p 0`  (#32)
+* @pranavkm: fix `dotnet-serve -p 0`  (#40)
     </PackageReleaseNotes>
     <PackageReleaseNotes Condition=" '$(VersionPrefix)' == '1.5.0' ">
 New feature:
