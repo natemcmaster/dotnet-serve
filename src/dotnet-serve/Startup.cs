@@ -39,8 +39,12 @@ namespace McMaster.DotNet.Serve
             services
                 .Configure<KeyManagementOptions>(o => o.XmlRepository = new EphemeralXmlRepository())
                 .AddSingleton<IKeyManager, KeyManager>()
-                .AddCors()
                 .AddSingleton<IAuthorizationPolicyProvider, NullAuthPolicyProvider>();
+
+            if (_options.EnableCors)
+            {
+                services.AddCors();
+            }
 
             services.AddResponseCompression(options =>
             {
@@ -63,12 +67,15 @@ namespace McMaster.DotNet.Serve
 
         public void Configure(IApplicationBuilder app)
         {
-            app.UseCors(corsPolicy =>
+            if (_options.EnableCors)
             {
-                corsPolicy.AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader();
-            });
+                app.UseCors(corsPolicy =>
+                {
+                    corsPolicy.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+                });
+            }
             app.UseStatusCodePages("text/html",
                        "<html><head><title>Error {0}</title></head><body><h1>HTTP {0}</h1></body></html>");
 

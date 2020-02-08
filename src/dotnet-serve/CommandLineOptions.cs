@@ -124,6 +124,9 @@ namespace McMaster.DotNet.Serve
 #endif
         public bool UseBrotli { get; }
 
+        [Option("-c|--cors",Description ="Enable CORS (It will enable CORS for all origin and all methods)")]
+        public bool EnableCors { get; }
+
         public string GetPathBase()
         {
             if (string.IsNullOrEmpty(PathBase))
