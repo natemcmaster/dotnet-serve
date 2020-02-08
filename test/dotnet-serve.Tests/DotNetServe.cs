@@ -107,7 +107,7 @@ namespace McMaster.DotNet.Serve.Tests
             ITestOutputHelper output = null,
             bool useGzip = false,
             bool useBrotli = false,
-            bool enableCors =false )
+            bool enableCors = false)
         {
             var psi = new ProcessStartInfo
             {

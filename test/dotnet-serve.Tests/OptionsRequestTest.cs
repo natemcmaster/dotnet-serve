@@ -5,15 +5,22 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace McMaster.DotNet.Serve.Tests
 {
     public class OptionsRequestTest
     {
+        private readonly ITestOutputHelper _output;
+
+        public OptionsRequestTest(ITestOutputHelper output)
+        {
+            this._output = output;
+        }
         [Fact]
         public async Task ItAllowsOptionsRequestIfCORSIsEnabled()
         {
-            using var ds = DotNetServe.Start(enableCors: true);
+            using var ds = DotNetServe.Start(enableCors: true, output: _output);
             var request = new HttpRequestMessage(HttpMethod.Options, ds.Client.BaseAddress);
             request.Headers.Add("Origin", "www.google.com");
             request.Headers.Add("Access-Control-Request-Method", "GET");
