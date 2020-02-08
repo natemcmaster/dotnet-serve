@@ -22,7 +22,7 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
     <!-- Required becuase the SDK doesn't do transitive package refs from PackAsTool for netcoreapp2.1 -->
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.5.0" />
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.5.1" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.8.5.2" />
   </ItemGroup>
 
