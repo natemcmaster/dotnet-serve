@@ -60,6 +60,7 @@ Options:
                                        Expected format is <EXT>=<MIME>.
   -z|--gzip                            Enable gzip compression
   -b|--brotli                          Enable brotli compression (requires .NET Core 3+)
+  -c|--cors                            Enable CORS (It will enable CORS for all origin and all methods)
   -?|--help                            Show help information
 ```
 
