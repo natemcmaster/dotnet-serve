@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Nate McMaster.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -17,14 +18,22 @@ namespace McMaster.DotNet.Serve.Tests
         {
             this._output = output;
         }
+
+        private Dictionary<string, List<string>> PrepareCORSHeaders()
+        {
+            var headers = new Dictionary<string, List<string>>
+            {
+                { "Origin", new List<string> { "www.google.com" } },
+                { "Access-Control-Request-Method", new List<string> { "GET" } }
+            };
+            return headers;
+        }
+
         [Fact]
         public async Task ItAllowsOptionsRequestIfCORSIsEnabled()
         {
             using var ds = DotNetServe.Start(enableCors: true, output: _output);
-            var request = new HttpRequestMessage(HttpMethod.Options, ds.Client.BaseAddress);
-            request.Headers.Add("Origin", "www.google.com");
-            request.Headers.Add("Access-Control-Request-Method", "GET");
-            var result = await ds.Client.SendAsync(request);
+            var result = await ds.Client.SendOptionsWithRetriesAsync(ds.Client.BaseAddress.AbsoluteUri, PrepareCORSHeaders(), output: _output);
             //Making sure we are getting 204 and not 404
             Assert.Equal(System.Net.HttpStatusCode.NoContent, result.StatusCode);
 
@@ -36,10 +45,7 @@ namespace McMaster.DotNet.Serve.Tests
         public async Task ItDoesNotAllowOptionsRequestIfCORSIsNotEnabled()
         {
             using var ds = DotNetServe.Start();
-            var request = new HttpRequestMessage(HttpMethod.Options, ds.Client.BaseAddress);
-            request.Headers.Add("Origin", "www.google.com");
-            request.Headers.Add("Access-Control-Request-Method", "GET");
-            var result = await ds.Client.SendAsync(request);
+            var result = await ds.Client.SendOptionsWithRetriesAsync(ds.Client.BaseAddress.AbsoluteUri, PrepareCORSHeaders(), output: _output);
             //Making sure we are getting 404 instead of 204 if CORS is not enabled
             Assert.Equal(System.Net.HttpStatusCode.NotFound, result.StatusCode);
         }
