@@ -1,5 +1,9 @@
 <Project>
   <PropertyGroup>
+    <PackageReleaseNotes Condition=" '$(VersionPrefix)' == '1.7.0' ">
+Improvement:
+* @ansariabr: add support for a --cors options which can be used to enable CORS and OPTIONS requests (#45)
+    </PackageReleaseNotes>
     <PackageReleaseNotes Condition=" '$(VersionPrefix)' == '1.6.0' ">
 Improvement:
 * @pranavkm: fix `dotnet-serve -p 0`  (#40)
