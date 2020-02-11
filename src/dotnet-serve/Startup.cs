@@ -41,6 +41,11 @@ namespace McMaster.DotNet.Serve
                 .AddSingleton<IKeyManager, KeyManager>()
                 .AddSingleton<IAuthorizationPolicyProvider, NullAuthPolicyProvider>();
 
+            if (_options.EnableCors)
+            {
+                services.AddCors();
+            }
+
             services.AddResponseCompression(options =>
             {
                 options.Providers.Clear();
@@ -62,6 +67,15 @@ namespace McMaster.DotNet.Serve
 
         public void Configure(IApplicationBuilder app)
         {
+            if (_options.EnableCors)
+            {
+                app.UseCors(corsPolicy =>
+                {
+                    corsPolicy.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+                });
+            }
             app.UseStatusCodePages("text/html",
                        "<html><head><title>Error {0}</title></head><body><h1>HTTP {0}</h1></body></html>");
 
@@ -140,7 +154,6 @@ namespace McMaster.DotNet.Serve
             {
                 app.UseResponseCompression();
             }
-
             app.UseFileServer(new FileServerOptions
             {
                 EnableDefaultFiles = true,

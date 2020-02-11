@@ -106,7 +106,8 @@ namespace McMaster.DotNet.Serve.Tests
             string[] headers = null,
             ITestOutputHelper output = null,
             bool useGzip = false,
-            bool useBrotli = false)
+            bool useBrotli = false,
+            bool enableCors = false)
         {
             var psi = new ProcessStartInfo
             {
@@ -172,6 +173,11 @@ namespace McMaster.DotNet.Serve.Tests
             if (useBrotli)
             {
                 psi.ArgumentList.Add("-b");
+            }
+
+            if (enableCors)
+            {
+                psi.ArgumentList.Add("-c");
             }
 
             var process = new Process
