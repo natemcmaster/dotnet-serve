@@ -1,7 +1,7 @@
 dotnet-serve
 ============
 
-[![Build Status](https://dev.azure.com/natemcmaster/github/_apis/build/status/dotnet-serve?branchName=main)](https://dev.azure.com/natemcmaster/github/_build/latest?definitionId=1&branchName=main)
+[![Build Status](https://dev.azure.com/natemcmaster/github/_apis/build/status/dotnet-serve?branchName=main)](https://dev.azure.com/natemcmaster/github/_build?definitionId=1)
 
 [![NuGet][main-nuget-badge]][main-nuget]
 
