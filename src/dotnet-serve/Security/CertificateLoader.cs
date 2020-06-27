@@ -159,7 +159,18 @@ namespace McMaster.DotNet.Serve
 
             if (certs.Count > 1)
             {
-                throw new InvalidOperationException($"Ambiguous certficiate match. Multiple certificates found with extension '{AspNetHttpsOid}' ({AspNetHttpsOidFriendlyName}).");
+                // Returning a certificate which has the latest expiry date
+                var expiryDate = DateTime.MinValue;
+                var thumbprint = string.Empty;
+                foreach (var certificate in certs)
+                {
+                    if (certificate.NotAfter > expiryDate)
+                    {
+                        expiryDate = certificate.NotAfter;
+                        thumbprint = certificate.Thumbprint;
+                    }
+                }
+                return certs.Find(X509FindType.FindByThumbprint, thumbprint, validOnly: false)[0];
             }
 
             return null;
