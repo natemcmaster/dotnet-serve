@@ -7,7 +7,6 @@ pr:
 - '*'
 
 variables:
-- group: AzureKeyVault
 - name: BuildNumber
   value: $[counter('buildnumber')]
 
@@ -37,8 +36,6 @@ jobs:
       includePreviewVersions: true
   - powershell: ./build.ps1 -ci
     displayName: Run build.ps1
-    env:
-      KEYVAULT_CLIENT_SECRET: $(kv-access-token)
   - task: PublishTestResults@2
     displayName: Upload test results
     condition: always()

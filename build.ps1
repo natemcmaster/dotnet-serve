@@ -4,9 +4,7 @@ param(
     [ValidateSet('Debug', 'Release')]
     $Configuration = $null,
     [switch]
-    $ci,
-	[switch]
-    $sign
+    $ci
 )
 
 Set-StrictMode -Version 1
@@ -55,13 +53,6 @@ try {
 }
 catch { }
 
-$CodeSign = $sign -or ($ci -and ($env:System_PullRequest_IsFork -ne 'True') -and $IsWindows)
-
-if ($CodeSign) {
-    Invoke-Block { & dotnet tool restore }
-    $MSBuildArgs += '-p:CodeSign=true'
-}
-
 if ($ci) {
     $MSBuildArgs += '-p:CI=true'
 }
@@ -70,14 +61,8 @@ $artifacts = "$PSScriptRoot/artifacts/"
 
 Remove-Item -Recurse $artifacts -ErrorAction Ignore
 
-# Make restore quiet
-Invoke-Block {
-    & dotnet restore '-v:q'
-}
-
 Invoke-Block {
     & dotnet build `
-        --no-restore `
         @MSBuildArgs
 }
 

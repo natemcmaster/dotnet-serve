@@ -4,6 +4,5 @@
   </Target>
 
   <Import Project="..\Directory.Build.targets" Condition="Exists('..\Directory.Build.targets')" />
-  <Import Project="CodeSign.targets" />
 
 </Project>
