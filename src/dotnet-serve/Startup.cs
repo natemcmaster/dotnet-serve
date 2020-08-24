@@ -41,7 +41,7 @@ namespace McMaster.DotNet.Serve
                 .AddSingleton<IKeyManager, KeyManager>()
                 .AddSingleton<IAuthorizationPolicyProvider, NullAuthPolicyProvider>();
 
-            if (_options.EnableCors)
+            if (_options.EnableCors == true)
             {
                 services.AddCors();
             }
@@ -50,14 +50,14 @@ namespace McMaster.DotNet.Serve
             {
                 options.Providers.Clear();
 
-                if (_options.UseGzip)
+                if (_options.UseGzip == true)
                 {
                     options.Providers.Add<GzipCompressionProvider>();
                 }
 
 
 #if NETCOREAPP3_0
-                if (_options.UseBrotli)
+                if (_options.UseBrotli == true)
                 {
                     options.Providers.Add<BrotliCompressionProvider>();
                 }
@@ -67,7 +67,7 @@ namespace McMaster.DotNet.Serve
 
         public void Configure(IApplicationBuilder app)
         {
-            if (_options.EnableCors)
+            if (_options.EnableCors == true)
             {
                 app.UseCors(corsPolicy =>
                 {
@@ -150,7 +150,7 @@ namespace McMaster.DotNet.Serve
                 });
             }
 
-            if (_options.UseGzip || _options.UseBrotli)
+            if (_options.UseGzip == true || _options.UseBrotli == true)
             {
                 app.UseResponseCompression();
             }

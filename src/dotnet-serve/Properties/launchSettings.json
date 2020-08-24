@@ -2,7 +2,7 @@
   "profiles": {
     "dotnet-serve": {
       "commandName": "Project",
-      "commandLineArgs": "-o -p 5043 -h \"X-XSS-Protection: 1; mode=block\" -h \"x-frame-options: SAMEORIGIN\" ",
+      "commandLineArgs": "-p 5043 -h \"X-XSS-Protection: 1; mode=block\" ",
       "workingDirectory": "$(MSBuildProjectDirectory)"
     }
   }

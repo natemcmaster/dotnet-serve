@@ -1,0 +1,9 @@
+[serve]
+	header = x-frame-options: SAMEORIGIN
+	mime = .netconfig=text/plain
+	mime = .cs=text/plain
+	mime = .vb=text/plain
+	mime = .csproj=text/xml
+	exclude-file = dotnet-serve.csproj
+	exclude-file = releasenotes.props
+	open-browser

@@ -61,6 +61,7 @@ Options:
   -z|--gzip                            Enable gzip compression
   -b|--brotli                          Enable brotli compression (requires .NET Core 3+)
   -c|--cors                            Enable CORS (It will enable CORS for all origin and all methods)
+  --save-options                       Save specified options to .netconfig for subsequent runs.
   -?|--help                            Show help information
 ```
 
@@ -106,3 +107,44 @@ When serving on 'localhost', dotnet-serve will discover and use when you run:
 ```
 dotnet serve -S
 ```
+
+## Reusing options with .netconfig
+
+`dotnet-serve` supports reading and saving options using [dotnet-config](https://dotnetconfig.org/), 
+which provides hierarchical inherited configuration for any .NET tool. This means you can save your 
+frequently used options to `.netconfig` so you don't need to specify them every time and for every 
+folder you serve across your machine.
+
+To save the options used in a particular run to the current directory's `.netconfig`, just append 
+`--save-options`:
+
+```
+dotnet serve -p 8080 --gzip --cors --quiet --save-options
+```
+
+After running that command, a new `.netconfig` will be created (if there isn't one already there) 
+with the following section for `dotnet-serve`:
+
+```
+[serve]
+	port = 8000
+	quiet
+	gzip
+	cors
+	header = X-My-Option: foo
+	header = X-Another: bar
+```
+
+(note multiple `header`, `mime` type mappings and `exclude-file` entries can be provided as
+individual variables)
+
+You can place those settings in any parent folder and it will be reused across all descendent 
+folders, or they can also be saved to the global (user profile) or system locations. To easily 
+configure these options at those levels, use the `dotnet-config` tool itself:
+
+```
+dotnet config --global --set serve.port 8000
+```
+
+This will default the port to `8000` whenever a port is not specified in the command line. You 
+can open the saved `.netconfig` at `%USERPROFILE%\.netconfig` or `~/.netconfig`.

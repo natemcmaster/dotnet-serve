@@ -32,8 +32,8 @@ namespace McMaster.DotNet.Serve
             _currentDirectory = currentDirectory;
             _reporter = new ConsoleReporter(console)
             {
-                IsQuiet = options.Quiet,
-                IsVerbose = options.Verbose,
+                IsQuiet = options.Quiet == true,
+                IsVerbose = options.Verbose == true,
             };
         }
 
@@ -73,20 +73,20 @@ namespace McMaster.DotNet.Serve
                 {
                     if (_options.ShouldUseLocalhost())
                     {
-                        if (port == 0)
+                        if (port.GetValueOrDefault() == 0)
                         {
                             o.ListenAnyIP(0, ConfigureHttps);
                         }
                         else
                         {
-                            o.ListenLocalhost(port, ConfigureHttps);
+                            o.ListenLocalhost(port.GetValueOrDefault(), ConfigureHttps);
                         }
                     }
                     else
                     {
                         foreach (var a in _options.Addresses)
                         {
-                            o.Listen(a, port, ConfigureHttps);
+                            o.Listen(a, port.GetValueOrDefault(), ConfigureHttps);
                         }
                     }
                 })
@@ -127,7 +127,7 @@ namespace McMaster.DotNet.Serve
             _console.WriteLine("");
             _console.WriteLine("Press CTRL+C to exit");
 
-            if (_options.OpenBrowser)
+            if (_options.OpenBrowser == true)
             {
                 var url = NormalizeToLoopbackAddress(addresses.Addresses.First());
 

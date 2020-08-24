@@ -24,14 +24,14 @@ namespace McMaster.DotNet.Serve
 
         [Option("-d|--directory <DIR>", Description = "The root directory to serve. [Current directory]")]
         [DirectoryExists]
-        public string Directory { get; }
+        public string Directory { get; internal set; }
 
         [Option(Description = "Open a web browser when the server starts. [false]")]
-        public bool OpenBrowser { get; }
+        public bool? OpenBrowser { get; internal set; }
 
         [Option(Description = "Port to use [8080]. Use 0 for a dynamic port.")]
         [Range(0, 65535, ErrorMessage = "Invalid port. Ports must be in the range of 0 to 65535.")]
-        public int Port { get; } = 8080;
+        public int? Port { get; internal set; }
 
         [Option("-a|--address <ADDRESS>", Description = "Address to use [127.0.0.1]")]
         public IPAddress[] Addresses { get; }
@@ -43,14 +43,14 @@ namespace McMaster.DotNet.Serve
         public (bool HasValue, string Extensions) DefaultExtensions { get; }
 
         [Option(Description = "Show less console output.")]
-        public bool Quiet { get; }
+        public bool? Quiet { get; internal set; }
 
         [Option(Description = "Show more console output.")]
-        public bool Verbose { get; }
+        public bool? Verbose { get; internal set; }
 
         [Option("-h|--headers <HEADER_AND_VALUE>", CommandOptionType.MultipleValue, Description = "A header to return with all file/directory responses. e.g. -h \"X-XSS-Protection: 1; mode=block\"")]
         [RegularExpression(@"^([^:]+):([^:]*)$", ErrorMessage = "Headers must have the form: HEADER:VALUE")]
-        public string[] Headers { get; }
+        public string[] Headers { get; internal set; }
 
         [Option("--log <LEVEL>", Description = "For advanced diagnostics.", ShowInHelpText = false)]
         public LogLevel MinLogLevel
@@ -62,12 +62,12 @@ namespace McMaster.DotNet.Serve
                     return _logLevel.Value;
                 }
 
-                if (Quiet)
+                if (Quiet == true)
                 {
                     return LogLevel.Error;
                 }
 
-                if (Verbose)
+                if (Verbose == true)
                 {
                     return LogLevel.Debug;
                 }
@@ -89,27 +89,29 @@ namespace McMaster.DotNet.Serve
 
                 return !string.IsNullOrEmpty(CertPfxPath) || !string.IsNullOrEmpty(CertPemPath);
             }
-            private set => _useTls = value;
+            internal set => _useTls = value;
         }
+
+        internal bool UseTlsSpecified => _useTls.HasValue;
 
         [Option("--cert", Description = "A PEM encoded certificate file to use for HTTPS connections.\nDefaults to file in current directory named '" + CertificateLoader.DefaultCertPemFileName + "'")]
         [FileExists]
-        public string CertPemPath { get; }
+        public string CertPemPath { get; internal set; }
 
         [Option("--key", Description = "A PEM encoded private key to use for HTTPS connections.\nDefaults to file in current directory named '" + CertificateLoader.DefaultPrivateKeyFileName + "'")]
         [FileExists]
-        public string PrivateKeyPath { get; }
+        public string PrivateKeyPath { get; internal set; }
 
         [Option("--pfx", Description = "A PKCS#12 certificate file to use for HTTPS connections.\nDefaults to file in current directory named '" + CertificateLoader.DefaultCertPfxFileName + "'")]
         [FileExists]
-        public string CertPfxPath { get; }
+        public string CertPfxPath { get; internal set; }
 
         [Option("--pfx-pwd", Description = "The password to open the certificate file. (Optional)")]
-        public virtual string CertificatePassword { get; }
+        public virtual string CertificatePassword { get; internal set; }
 
         [Option("-m|--mime <MAPPING>", CommandOptionType.MultipleValue, Description = "Add a mapping from file extension to MIME type. Empty MIME removes a mapping.\nExpected format is <EXT>=<MIME>.")]
         [RegularExpression(@"^([^=]+)=([^=]*)$", ErrorMessage = "MIME mappings must have the form: ext=mime/type")]
-        public string[] MimeMappings { get; }
+        public string[] MimeMappings { get; internal set; }
 
         // Internal, experimental flag. If you found this, it may break in the future.
         // I'm not supporting it yet because these files will still show up directory browser.
@@ -117,15 +119,21 @@ namespace McMaster.DotNet.Serve
         public List<string> ExcludedFiles { get; } = new List<string>();
 
         [Option("-z|--gzip", Description = "Enable gzip compression")]
-        public bool UseGzip { get; }
+        public bool? UseGzip { get; internal set; }
 
 #if !NETCOREAPP2_1
         [Option("-b|--brotli", Description = "Enable brotli compression")]
 #endif
-        public bool UseBrotli { get; }
+        public bool? UseBrotli { get; internal set; }
 
         [Option("-c|--cors",Description ="Enable CORS (It will enable CORS for all origin and all methods)")]
-        public bool EnableCors { get; }
+        public bool? EnableCors { get; internal set; }
+
+        [Option("--save-options", Description = "Save specified options to .netconfig for subsequent runs.")]
+        public bool SaveOptions { get; }
+
+        [Option("--config-file", Description = "Use the given .netconfig file.")]
+        public string ConfigFile { get; }
 
         public string GetPathBase()
         {
