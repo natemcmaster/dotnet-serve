@@ -46,17 +46,24 @@ namespace McMaster.DotNet.Serve.Tests
             var type = typeof(CommandLineOptions);
             var property = type.GetProperty(propertyName);
 
-            var backingField = type
-              .GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
-              .First(field =>
-                field.Attributes.HasFlag(FieldAttributes.Private) &&
-                field.Attributes.HasFlag(FieldAttributes.InitOnly) &&
-                field.CustomAttributes.Any(attr => attr.AttributeType == typeof(CompilerGeneratedAttribute)) &&
-                (field.DeclaringType == property.DeclaringType) &&
-                field.FieldType.IsAssignableFrom(property.PropertyType) &&
-                field.Name.StartsWith("<" + property.Name + ">")
-              );
-            backingField.SetValue(options, value);
+            if (property.CanWrite)
+            {
+                property.SetValue(options, value);
+            }
+            else
+            {
+                var backingField = type
+                  .GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
+                  .First(field =>
+                    field.Attributes.HasFlag(FieldAttributes.Private) &&
+                    field.Attributes.HasFlag(FieldAttributes.InitOnly) &&
+                    field.CustomAttributes.Any(attr => attr.AttributeType == typeof(CompilerGeneratedAttribute)) &&
+                    (field.DeclaringType == property.DeclaringType) &&
+                    field.FieldType.IsAssignableFrom(property.PropertyType) &&
+                    field.Name.StartsWith("<" + property.Name + ">")
+                  );
+                backingField.SetValue(options, value);
+            }
         }
     }
 }
