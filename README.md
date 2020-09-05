@@ -148,3 +148,6 @@ dotnet config --global --set serve.port 8000
 
 This will default the port to `8000` whenever a port is not specified in the command line. You 
 can open the saved `.netconfig` at `%USERPROFILE%\.netconfig` or `~/.netconfig`.
+
+The `cert`, `key` and `pfx` values, in particular, can be relative paths that are resolved
+relative to the location of the declaring `.netconfig` file, which can be very convenient.

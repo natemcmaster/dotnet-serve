@@ -75,9 +75,9 @@ namespace McMaster.DotNet.Serve
             model.OpenBrowser ??= config.GetBoolean("open-browser"); 
             model.Quiet ??= config.GetBoolean("quiet");
             model.Verbose ??= config.GetBoolean("verbose");
-            model.CertPemPath ??= config.GetString("cert");
-            model.PrivateKeyPath ??= config.GetString("key");
-            model.CertPfxPath ??= config.GetString("pfx");
+            model.CertPemPath ??= config.GetNormalizedPath("cert");
+            model.PrivateKeyPath ??= config.GetNormalizedPath("key");
+            model.CertPfxPath ??= config.GetNormalizedPath("pfx");
             model.CertificatePassword ??= config.GetString("pfx-pwd");
             model.UseGzip ??= config.GetBoolean("gzip");
             model.UseBrotli ??= config.GetBoolean("brotli");
