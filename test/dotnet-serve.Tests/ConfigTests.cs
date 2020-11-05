@@ -40,6 +40,7 @@ namespace McMaster.DotNet.Serve.Tests
     mime = .fs=text/plain
     exclude-file = app.config
     exclude-file = appsettings.json
+    path-base = foo
 ");
 
             var program = new TestProgram();
@@ -60,6 +61,7 @@ namespace McMaster.DotNet.Serve.Tests
             Assert.Equal("password", options.CertificatePassword);
             Assert.True(options.UseGzip);
             Assert.True(options.EnableCors);
+            Assert.Equal("foo", options.PathBase);
 
             Assert.Contains("X-H1: value", options.Headers);
             Assert.Contains("X-H2: value", options.Headers);

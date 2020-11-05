@@ -82,6 +82,7 @@ namespace McMaster.DotNet.Serve
             model.UseGzip ??= config.GetBoolean("gzip");
             model.UseBrotli ??= config.GetBoolean("brotli");
             model.EnableCors ??= config.GetBoolean("cors");
+            model.PathBase ??= config.GetString("path-base");
 
             if (!model.UseTlsSpecified && config.TryGetBoolean("tls", out var tls))
             {

@@ -37,7 +37,7 @@ namespace McMaster.DotNet.Serve
         public IPAddress[] Addresses { get; }
 
         [Option("--path-base <PATH>", Description = "The base URL path of postpended to the site url.")]
-        private string PathBase { get; }
+        public string PathBase { get; internal set; }
 
         [Option("--default-extensions:<EXTENSIONS>", CommandOptionType.SingleOrNoValue, Description = "A comma-delimited list of extensions to use when no extension is provided in the URL. [.html,.htm]")]
         public (bool HasValue, string Extensions) DefaultExtensions { get; }
