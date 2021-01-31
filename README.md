@@ -1,12 +1,16 @@
 dotnet-serve
 ============
 
-[![Build Status](https://dev.azure.com/natemcmaster/github/_apis/build/status/dotnet-serve?branchName=main)](https://dev.azure.com/natemcmaster/github/_build?definitionId=1)
+[![Build Status][ci-badge]][ci] [![Code Coverage][codecov-badge]][codecov]
+[![NuGet][nuget-badge] ![NuGet Downloads][nuget-download-badge]][nuget]
 
-[![NuGet][main-nuget-badge]][main-nuget]
-
-[main-nuget]: https://www.nuget.org/packages/dotnet-serve/
-[main-nuget-badge]: https://img.shields.io/nuget/v/dotnet-serve.svg?style=flat-square&label=nuget
+[ci]: https://github.com/natemcmaster/dotnet-serve/actions?query=workflow%3ACI+branch%3Amain
+[ci-badge]: https://github.com/natemcmaster/dotnet-serve/workflows/CI/badge.svg
+[codecov]: https://codecov.io/gh/natemcmaster/dotnet-serve
+[codecov-badge]: https://codecov.io/gh/natemcmaster/dotnet-serve/branch/main/graph/badge.svg?token=l6uSsHZ8nA
+[nuget]: https://www.nuget.org/packages/dotnet-serve/
+[nuget-badge]: https://img.shields.io/nuget/v/dotnet-serve.svg?style=flat-square
+[nuget-download-badge]: https://img.shields.io/nuget/dt/dotnet-serve?style=flat-square
 
 A simple command-line HTTP server.
 
@@ -14,8 +18,7 @@ It launches a server in the current working directory and serves all files in it
 
 ## Get started
 
-Download .NET Core [2.1](https://get.dot.net) or newer.
-Once installed, run this command:
+[Install .NET Core or .NET 5+](https://get.dot.net) and run this command:
 
 ```
 dotnet tool install --global dotnet-serve
@@ -110,22 +113,22 @@ dotnet serve -S
 
 ## Reusing options with .netconfig
 
-`dotnet-serve` supports reading and saving options using [dotnet-config](https://dotnetconfig.org/), 
-which provides hierarchical inherited configuration for any .NET tool. This means you can save your 
-frequently used options to `.netconfig` so you don't need to specify them every time and for every 
+`dotnet-serve` supports reading and saving options using [dotnet-config](https://dotnetconfig.org/),
+which provides hierarchical inherited configuration for any .NET tool. This means you can save your
+frequently used options to `.netconfig` so you don't need to specify them every time and for every
 folder you serve across your machine.
 
-To save the options used in a particular run to the current directory's `.netconfig`, just append 
+To save the options used in a particular run to the current directory's `.netconfig`, just append
 `--save-options`:
 
 ```
 dotnet serve -p 8080 --gzip --cors --quiet --save-options
 ```
 
-After running that command, a new `.netconfig` will be created (if there isn't one already there) 
+After running that command, a new `.netconfig` will be created (if there isn't one already there)
 with the following section for `dotnet-serve`:
 
-```
+```ini
 [serve]
 	port = 8000
 	quiet
@@ -138,15 +141,15 @@ with the following section for `dotnet-serve`:
 (note multiple `header`, `mime` type mappings and `exclude-file` entries can be provided as
 individual variables)
 
-You can place those settings in any parent folder and it will be reused across all descendent 
-folders, or they can also be saved to the global (user profile) or system locations. To easily 
+You can place those settings in any parent folder and it will be reused across all descendent
+folders, or they can also be saved to the global (user profile) or system locations. To easily
 configure these options at those levels, use the `dotnet-config` tool itself:
 
 ```
 dotnet config --global --set serve.port 8000
 ```
 
-This will default the port to `8000` whenever a port is not specified in the command line. You 
+This will default the port to `8000` whenever a port is not specified in the command line. You
 can open the saved `.netconfig` at `%USERPROFILE%\.netconfig` or `~/.netconfig`.
 
 The `cert`, `key` and `pfx` values, in particular, can be relative paths that are resolved
