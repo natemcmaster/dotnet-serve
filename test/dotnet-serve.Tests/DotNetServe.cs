@@ -19,7 +19,7 @@ namespace McMaster.DotNet.Serve.Tests
         private static int s_nextPort
 #if NETCOREAPP2_1 // avoid conflicts if tests for both target frameworks run at the same time.
             = 9000;
-#elif NETCOREAPP3_0
+#elif NETCOREAPP3_1
             = 10000;
 #else
 #error Update target frameworks

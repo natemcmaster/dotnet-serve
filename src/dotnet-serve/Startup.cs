@@ -56,7 +56,7 @@ namespace McMaster.DotNet.Serve
                 }
 
 
-#if NETCOREAPP3_0
+#if NETCOREAPP3_1
                 if (_options.UseBrotli == true)
                 {
                     options.Providers.Add<BrotliCompressionProvider>();

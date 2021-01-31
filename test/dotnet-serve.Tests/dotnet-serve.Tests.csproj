@@ -4,8 +4,6 @@
     <TargetFrameworks>netcoreapp3.1;netcoreapp2.1</TargetFrameworks>
     <DefaultItemExcludes>$(DefaultItemExcludes);TestAssets\**\*;TestResults\**\*</DefaultItemExcludes>
     <RootNamespace>McMaster.DotNet.Serve.Tests</RootNamespace>
-    <WarningsNotAsErrors>$(WarningsNotAsErrors);AD0001</WarningsNotAsErrors>
-    <CoverletOutputFormat>lcov</CoverletOutputFormat>
   </PropertyGroup>
 
   <ItemGroup>
