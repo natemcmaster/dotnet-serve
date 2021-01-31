@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;netcoreapp2.1</TargetFrameworks>
+    <TargetFrameworks>net5.0;netcoreapp3.1;netcoreapp2.1</TargetFrameworks>
     <DefaultItemExcludes>$(DefaultItemExcludes);TestAssets\**\*;TestResults\**\*</DefaultItemExcludes>
     <RootNamespace>McMaster.DotNet.Serve.Tests</RootNamespace>
   </PropertyGroup>

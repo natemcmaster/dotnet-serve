@@ -21,6 +21,8 @@ namespace McMaster.DotNet.Serve.Tests
             = 9000;
 #elif NETCOREAPP3_1
             = 10000;
+#elif NET5_0
+            = 11000;
 #else
 #error Update target frameworks
 #endif
