@@ -41,7 +41,7 @@ namespace McMaster.DotNet.Serve.Tests
         /// <summary>
         /// Helper method for setting the backing field for getter-only auto-properties
         /// </summary>
-        static void SetPropertyValue(CommandLineOptions options, string propertyName, object value)
+        private static void SetPropertyValue(CommandLineOptions options, string propertyName, object value)
         {
             var type = typeof(CommandLineOptions);
             var property = type.GetProperty(propertyName);

@@ -17,7 +17,7 @@ namespace McMaster.DotNet.Serve
         FullName = "dotnet-serve",
         Description = "A simple command-line HTTP server")]
     [VersionOptionFromMember(MemberName = nameof(GetVersion))]
-    class CommandLineOptions
+    internal class CommandLineOptions
     {
         private LogLevel? _logLevel;
         private bool? _useTls;
@@ -126,7 +126,7 @@ namespace McMaster.DotNet.Serve
 #endif
         public bool? UseBrotli { get; internal set; }
 
-        [Option("-c|--cors",Description ="Enable CORS (It will enable CORS for all origin and all methods)")]
+        [Option("-c|--cors", Description = "Enable CORS (It will enable CORS for all origin and all methods)")]
         public bool? EnableCors { get; internal set; }
 
         [Option("--save-options", Description = "Save specified options to .netconfig for subsequent runs.")]

@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 
 namespace McMaster.DotNet.Serve
 {
-    class SimpleServer
+    internal class SimpleServer
     {
         private readonly CommandLineOptions _options;
         private readonly IConsole _console;

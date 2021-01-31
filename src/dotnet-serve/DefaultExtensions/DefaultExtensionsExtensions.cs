@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace McMaster.DotNet.Serve.DefaultExtensions
 {
-    static class DefaultExtensionsExtensions
+    internal static class DefaultExtensionsExtensions
     {
         public static IApplicationBuilder UseDefaultExtensions(this IApplicationBuilder app, DefaultExtensionsOptions options)
         {

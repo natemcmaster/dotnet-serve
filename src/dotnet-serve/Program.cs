@@ -2,17 +2,17 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using McMaster.Extensions.CommandLineUtils;
-using DotNetConfig;
-using System.Threading.Tasks;
 using System.Threading;
-using System.Collections.Generic;
+using System.Threading.Tasks;
+using DotNetConfig;
+using McMaster.Extensions.CommandLineUtils;
 
 namespace McMaster.DotNet.Serve
 {
-    class Program
+    internal class Program
     {
         public static int Main(string[] args)
         {
@@ -54,7 +54,7 @@ namespace McMaster.DotNet.Serve
 
         public List<string> Errors { get; } = new List<string>();
 
-        void Error(string message)
+        private void Error(string message)
         {
             Errors.Add(message);
             Console.ForegroundColor = ConsoleColor.Red;
@@ -68,11 +68,11 @@ namespace McMaster.DotNet.Serve
             return server.RunAsync(ct);
         }
 
-        static void ReadConfig(ConfigSection config, CommandLineOptions model)
+        private static void ReadConfig(ConfigSection config, CommandLineOptions model)
         {
             model.Port ??= (int?)config.GetNumber("port");
             model.Directory ??= config.GetString("directory");
-            model.OpenBrowser ??= config.GetBoolean("open-browser"); 
+            model.OpenBrowser ??= config.GetBoolean("open-browser");
             model.Quiet ??= config.GetBoolean("quiet");
             model.Verbose ??= config.GetBoolean("verbose");
             model.CertPemPath ??= config.GetNormalizedPath("cert");
@@ -125,7 +125,7 @@ namespace McMaster.DotNet.Serve
                 config.GetAll("exclude-file").Select(x => x.RawValue));
         }
 
-        static void WriteConfig(ConfigSection config, CommandLineOptions model)
+        private static void WriteConfig(ConfigSection config, CommandLineOptions model)
         {
             if (model.Port != null)
             {

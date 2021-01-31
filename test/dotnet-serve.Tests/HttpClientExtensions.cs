@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 
 namespace McMaster.DotNet.Serve.Tests
 {
-    static class HttpClientExtensions
+    internal static class HttpClientExtensions
     {
         public static async Task<string> GetStringWithRetriesAsync(this HttpClient client, string uri, int retries = 10, ITestOutputHelper output = null)
         {

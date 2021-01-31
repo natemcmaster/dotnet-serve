@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.DataProtection.Repositories;
 
 namespace McMaster.DotNet.Serve
 {
-    class EphemeralXmlRepository : IXmlRepository
+    internal class EphemeralXmlRepository : IXmlRepository
     {
-        private readonly List<XElement> _storedElements = new List<XElement>();
+        private readonly List<XElement> _storedElements = new();
 
         public virtual IReadOnlyCollection<XElement> GetAllElements()
         {

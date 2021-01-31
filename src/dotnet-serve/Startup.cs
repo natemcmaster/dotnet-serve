@@ -21,7 +21,7 @@ using IWebHostEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace McMaster.DotNet.Serve
 {
-    class Startup
+    internal class Startup
     {
         private readonly IWebHostEnvironment _environment;
         private readonly CommandLineOptions _options;

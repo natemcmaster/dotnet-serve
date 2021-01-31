@@ -3,7 +3,7 @@
 
 namespace McMaster.DotNet.Serve.DefaultExtensions
 {
-    class DefaultExtensionsOptions
+    internal class DefaultExtensionsOptions
     {
         public string[] Extensions { get; set; }
     }

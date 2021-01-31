@@ -12,7 +12,7 @@ using Microsoft.Extensions.Options;
 namespace McMaster.DotNet.Serve
 {
     // forwards to XmlKeyManager, but with logging disabled
-    class KeyManager : IKeyManager
+    internal class KeyManager : IKeyManager
     {
         private readonly XmlKeyManager _wrapped;
 

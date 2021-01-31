@@ -1,8 +1,10 @@
-﻿using System;
+﻿// Copyright (c) Nate McMaster.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using DotNetConfig;
 using Xunit;
 
 namespace McMaster.DotNet.Serve.Tests
@@ -203,7 +205,7 @@ namespace McMaster.DotNet.Serve.Tests
             Assert.Contains("appsettings.json", options.ExcludedFiles);
         }
 
-        class TestProgram : Program
+        private class TestProgram : Program
         {
             protected override Task<int> OnRunAsync(CommandLineOptions options, CancellationToken ct)
             {

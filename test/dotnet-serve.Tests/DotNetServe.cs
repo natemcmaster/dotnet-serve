@@ -11,7 +11,7 @@ using Xunit.Abstractions;
 
 namespace McMaster.DotNet.Serve.Tests
 {
-    class DotNetServe : IDisposable
+    internal class DotNetServe : IDisposable
     {
         private static readonly string s_dotnetServe
             = Path.Combine(AppContext.BaseDirectory, "tool", "dotnet-serve.dll");
@@ -27,7 +27,7 @@ namespace McMaster.DotNet.Serve.Tests
 
         private readonly Process _process;
         private readonly ITestOutputHelper _output;
-        private readonly SemaphoreSlim _outputReceived = new SemaphoreSlim(0);
+        private readonly SemaphoreSlim _outputReceived = new(0);
 
         private DotNetServe(Process process, int port, bool useHttps, ITestOutputHelper output)
         {

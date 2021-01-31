@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace McMaster.DotNet.Serve.Headers
 {
-    static class HeadersExtensions
+    internal static class HeadersExtensions
     {
         public static IApplicationBuilder UseHeaders(this IApplicationBuilder app, HeadersOptions options)
         {

@@ -15,7 +15,7 @@ using IWebHostEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace McMaster.DotNet.Serve.DefaultExtensions
 {
-    class DefaultExtensionsMiddleware
+    internal class DefaultExtensionsMiddleware
     {
         private readonly RequestDelegate _next;
         private readonly IFileProvider _fileProvider;

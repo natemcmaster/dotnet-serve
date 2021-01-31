@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace McMaster.DotNet.Serve
 {
-    class NullAuthPolicyProvider : IAuthorizationPolicyProvider
+    internal class NullAuthPolicyProvider : IAuthorizationPolicyProvider
     {
         public Task<AuthorizationPolicy> GetDefaultPolicyAsync()
         {

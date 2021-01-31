@@ -8,7 +8,7 @@ using McMaster.Extensions.CommandLineUtils.Abstractions;
 
 namespace McMaster.DotNet.Serve
 {
-    class IPAddressParser : IValueParser<IPAddress>
+    internal class IPAddressParser : IValueParser<IPAddress>
     {
         public Type TargetType => typeof(IPAddress);
 

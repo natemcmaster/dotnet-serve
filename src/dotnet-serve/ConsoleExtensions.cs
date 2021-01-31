@@ -6,7 +6,7 @@ using McMaster.Extensions.CommandLineUtils;
 
 namespace McMaster.DotNet.Serve
 {
-    static class ConsoleExtensions
+    internal static class ConsoleExtensions
     {
         public static void Write(this IConsole console, ConsoleColor color, string message)
         {
