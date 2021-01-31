@@ -31,8 +31,9 @@ namespace McMaster.DotNet.Serve.Tests
 
 #if NETCOREAPP2_1
         [Fact(Skip = "Not sure why, but this fails on GitHub workers")]
-#endif
+#else
         [Fact]
+#endif
         public async Task ItAllowsOptionsRequestIfCORSIsEnabled()
         {
             using var ds = DotNetServe.Start(enableCors: true, output: _output);
