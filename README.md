@@ -41,12 +41,15 @@ dotnet serve -o -S
 Usage: dotnet serve [options]
 
 Options:
-  --version                            Show version information
+  --version                            Show version information.
   -d|--directory <DIR>                 The root directory to serve. [Current directory]
   -o|--open-browser                    Open a web browser when the server starts. [false]
   -p|--port <PORT>                     Port to use [8080]. Use 0 for a dynamic port.
   -a|--address <ADDRESS>               Address to use [127.0.0.1]
   --path-base <PATH>                   The base URL path of postpended to the site url.
+  --reverse-proxy <MAPPING>            Map a path pattern to another url.
+                                       Expected format is <SOURCE_PATH_PATTERN>=<DESTINATION_URL_PREFIX>.
+                                       SOURCE_PATH_PATTERN uses ASP.NET routing syntax. Use {**all} to match anything.
   --default-extensions[:<EXTENSIONS>]  A comma-delimited list of extensions to use when no extension is provided in the URL. [.html,.htm]
   -q|--quiet                           Show less console output.
   -v|--verbose                         Show more console output.
@@ -65,7 +68,8 @@ Options:
   -b|--brotli                          Enable brotli compression
   -c|--cors                            Enable CORS (It will enable CORS for all origin and all methods)
   --save-options                       Save specified options to .netconfig for subsequent runs.
-  -?|--help                            Show help information
+  --config-file                        Use the given .netconfig file.
+  -?|--help                            Show help information.
 ```
 
 > Tip: single letters for options can be combined. Example: `dotnet serve -Sozq`
@@ -110,6 +114,16 @@ When serving on 'localhost', dotnet-serve will discover and use when you run:
 ```
 dotnet serve -S
 ```
+
+## Reverse Proxy
+
+`dotnet-serve --reverse-proxy /api/{**all}=http://localhost:5000`
+will proxy all requests matching `/api/*` to `http://localhost:5000/api/*`.
+
+The source path pattern uses ASP.NET routing syntax.
+[See the ASP.NET docs for more info.](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0#route-template-reference)
+
+Multiple `--reverse-proxy <MAPPING>` directives can be defined.
 
 ## Reusing options with .netconfig
 

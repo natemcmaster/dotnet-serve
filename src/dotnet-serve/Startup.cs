@@ -1,6 +1,7 @@
 // Copyright (c) Nate McMaster.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Net;
 using McMaster.DotNet.Serve.DefaultExtensions;
 using McMaster.DotNet.Serve.Headers;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
+using Yarp.ReverseProxy.Forwarder;
 
 namespace McMaster.DotNet.Serve;
 
@@ -54,9 +56,13 @@ internal class Startup
                 options.Providers.Add<BrotliCompressionProvider>();
             }
         });
+
+        // Reverse proxy:
+        services.AddRouting();
+        services.AddHttpForwarder();
     }
 
-    public void Configure(IApplicationBuilder app)
+    public void Configure(IApplicationBuilder app, IHttpForwarder forwarder)
     {
         if (_options.EnableCors == true)
         {
@@ -72,6 +78,8 @@ internal class Startup
 
         app.UseDeveloperExceptionPage();
 
+        ConfigureReverseProxy(app, forwarder);
+
         var pathBase = _options.GetPathBase();
         if (!string.IsNullOrEmpty(pathBase))
         {
@@ -80,6 +88,35 @@ internal class Startup
         else
         {
             ConfigureFileServer(app);
+        }
+    }
+
+    private void ConfigureReverseProxy(IApplicationBuilder app, IHttpForwarder forwarder)
+    {
+        var mappings = _options.GetReverseProxyMappings();
+        if (mappings?.Any() == true)
+        {
+            var httpClient = new HttpMessageInvoker(new SocketsHttpHandler()
+            {
+                UseProxy = false,
+                AllowAutoRedirect = false,
+                AutomaticDecompression = DecompressionMethods.None,
+                UseCookies = false
+            });
+
+            var requestOptions = new ForwarderRequestConfig { ActivityTimeout = TimeSpan.FromSeconds(100) };
+
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                foreach (var mapping in mappings)
+                {
+                    endpoints.Map(mapping.Key, async httpContext =>
+                    {
+                        await forwarder.SendAsync(httpContext, mapping.Value, httpClient, requestOptions);
+                    });
+                }
+            });
         }
     }
 

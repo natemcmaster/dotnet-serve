@@ -115,6 +115,22 @@ internal class Program
             }
         }
 
+        var reverseProxies = config.GetAll("reverse-proxy").Select(e => e.RawValue).ToArray();
+        if (reverseProxies.Length > 0)
+        {
+            if (model.ReverseProxyMappings == null)
+            {
+                model.ReverseProxyMappings = reverseProxies;
+            }
+            else
+            {
+                var all = new string[model.ReverseProxyMappings.Length + reverseProxies.Length];
+                model.ReverseProxyMappings.CopyTo(all, 0);
+                reverseProxies.CopyTo(all, model.ReverseProxyMappings.Length);
+                model.ReverseProxyMappings = all;
+            }
+        }
+
         model.ExcludedFiles.AddRange(
             config.GetAll("exclude-file").Select(x => x.RawValue));
     }
@@ -183,6 +199,14 @@ internal class Program
             foreach (var mime in model.MimeMappings)
             {
                 config.AddString("mime", mime);
+            }
+        }
+
+        if (model.ReverseProxyMappings != null)
+        {
+            foreach (var reverseProxy in model.ReverseProxyMappings)
+            {
+                config.AddString("reverse-proxy", reverseProxy);
             }
         }
 
