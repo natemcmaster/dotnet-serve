@@ -100,6 +100,7 @@ internal class DotNetServe : IDisposable
         string certPassword = null,
         string[] mimeMap = null,
         string[] headers = null,
+        string[] reverseProxyMap = null,
         ITestOutputHelper output = null,
         bool useGzip = false,
         bool useBrotli = false,
@@ -148,6 +149,15 @@ internal class DotNetServe : IDisposable
             foreach (var mapping in mimeMap)
             {
                 psi.ArgumentList.Add("-m");
+                psi.ArgumentList.Add(mapping);
+            }
+        }
+
+        if (reverseProxyMap != null)
+        {
+            foreach (var mapping in reverseProxyMap)
+            {
+                psi.ArgumentList.Add("--reverse-proxy");
                 psi.ArgumentList.Add(mapping);
             }
         }
