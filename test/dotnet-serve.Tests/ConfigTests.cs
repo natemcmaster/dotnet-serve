@@ -260,6 +260,7 @@ namespace McMaster.DotNet.Serve.Tests
         [InlineData("=")]
         [InlineData("=hello")]
         [InlineData("hello=")]
+        [InlineData("hello=hell=o")]
         [InlineData(" ")]
         [InlineData(" = ")]
         [InlineData(" =hello")]

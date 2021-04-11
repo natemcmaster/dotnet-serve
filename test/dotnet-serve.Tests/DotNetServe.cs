@@ -106,6 +106,7 @@ namespace McMaster.DotNet.Serve.Tests
             string certPassword = null,
             string[] mimeMap = null,
             string[] headers = null,
+            string[] reverseProxyMap = null,
             ITestOutputHelper output = null,
             bool useGzip = false,
             bool useBrotli = false,
@@ -154,6 +155,15 @@ namespace McMaster.DotNet.Serve.Tests
                 foreach (var mapping in mimeMap)
                 {
                     psi.ArgumentList.Add("-m");
+                    psi.ArgumentList.Add(mapping);
+                }
+            }
+
+            if (reverseProxyMap != null)
+            {
+                foreach (var mapping in reverseProxyMap)
+                {
+                    psi.ArgumentList.Add("--reverse-proxy");
                     psi.ArgumentList.Add(mapping);
                 }
             }
