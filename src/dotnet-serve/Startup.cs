@@ -19,10 +19,6 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
 using Yarp.ReverseProxy.Service.Proxy;
 
-#if NETCOREAPP2_1
-using IWebHostEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
-#endif
-
 namespace McMaster.DotNet.Serve
 {
     internal class Startup
@@ -59,13 +55,10 @@ namespace McMaster.DotNet.Serve
                     options.Providers.Add<GzipCompressionProvider>();
                 }
 
-
-#if !NETCOREAPP2_1
                 if (_options.UseBrotli == true)
                 {
                     options.Providers.Add<BrotliCompressionProvider>();
                 }
-#endif
             });
 
             // Reverse proxy:
