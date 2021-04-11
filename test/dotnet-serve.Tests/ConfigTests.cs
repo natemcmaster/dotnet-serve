@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -42,6 +43,8 @@ namespace McMaster.DotNet.Serve.Tests
     mime = .fs=text/plain
     exclude-file = app.config
     exclude-file = appsettings.json
+    reverse-proxy = /api/{{**all}}=http://localhost:5000
+    reverse-proxy = /myPath\\=example=https://example.com # Note that '\' must be doubled in dotnet-config...
     path-base = foo
 ");
 
@@ -74,6 +77,9 @@ namespace McMaster.DotNet.Serve.Tests
 
             Assert.Contains("app.config", options.ExcludedFiles);
             Assert.Contains("appsettings.json", options.ExcludedFiles);
+
+            Assert.Contains("/api/{**all}=http://localhost:5000", options.ReverseProxyMappings);
+            Assert.Contains("/myPath\\=example=https://example.com", options.ReverseProxyMappings);
         }
 
         [Fact]
@@ -203,6 +209,70 @@ namespace McMaster.DotNet.Serve.Tests
 
             Assert.Contains("app.config", options.ExcludedFiles);
             Assert.Contains("appsettings.json", options.ExcludedFiles);
+        }
+
+        [Fact]
+        public void ConfigurationReverseProxiesAugmentOptions()
+        {
+            var configFile = Path.GetTempFileName();
+
+            File.WriteAllText(configFile, @$"
+[config]
+    root
+
+[serve]
+    reverse-proxy = /api/{{**all}}=http://localhost:5000
+");
+
+            var program = new TestProgram();
+            program.Run("--config-file", configFile, "--reverse-proxy", "/myPath\\=example=https://example.com");
+
+            var options = program.Options;
+
+            Assert.True(options != null, string.Join(Environment.NewLine, program.Errors));
+
+            Assert.Contains("/api/{**all}=http://localhost:5000", options.ReverseProxyMappings);
+            Assert.Contains("/myPath\\=example=https://example.com", options.ReverseProxyMappings);
+        }
+
+        [Theory]
+        [InlineData("/api/{**all}=http://localhost:5000", "/api/{**all}", "http://localhost:5000")]
+        [InlineData("/myPath\\=example=https://example.com", "/myPath=example", "https://example.com")]
+        [InlineData("/myPath\\=example=https://example.com/another\\=equals", "/myPath=example", "https://example.com/another=equals")]
+        [InlineData("/myPath=https://example.com/another\\=equals", "/myPath", "https://example.com/another=equals")]
+        public void GetReverseProxyMappingsParseEscapedEquals(string rawProxyMapping, string expectedSourcePath, string expectedDestinationUrlPrefix)
+        {
+            var program = new TestProgram();
+            program.Run("--reverse-proxy", rawProxyMapping);
+
+            var options = program.Options;
+            Assert.True(options != null, string.Join(Environment.NewLine, program.Errors));
+
+            var parsedMappings = options.GetReverseProxyMappings();
+            Assert.True(parsedMappings.Count == 1);
+
+            Assert.Equal(expectedSourcePath, parsedMappings.Single().Key);
+            Assert.Equal(expectedDestinationUrlPrefix, parsedMappings.Single().Value);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("=")]
+        [InlineData("=hello")]
+        [InlineData("hello=")]
+        [InlineData(" ")]
+        [InlineData(" = ")]
+        [InlineData(" =hello")]
+        [InlineData("hello= ")]
+        public void GetReverseProxyMappingsThrowsOnInvalidInput(string rawProxyMapping)
+        {
+            var program = new TestProgram();
+            program.Run("--reverse-proxy", rawProxyMapping);
+
+            var options = program.Options;
+            Assert.True(options != null, string.Join(Environment.NewLine, program.Errors));
+
+            Assert.Throws<ArgumentException>(() => options.GetReverseProxyMappings());
         }
 
         private class TestProgram : Program
