@@ -9,10 +9,6 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-#if NETCOREAPP2_1
-using IWebHostEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
-#endif
-
 namespace McMaster.DotNet.Serve.DefaultExtensions
 {
     internal class DefaultExtensionsMiddleware

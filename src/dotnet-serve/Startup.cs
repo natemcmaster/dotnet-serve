@@ -4,8 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
+using System.Net.Http;
 using McMaster.DotNet.Serve.DefaultExtensions;
 using McMaster.DotNet.Serve.Headers;
+using McMaster.DotNet.Serve.ReverseProxy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
@@ -14,10 +17,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
-
-#if NETCOREAPP2_1
-using IWebHostEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
-#endif
+using Yarp.ReverseProxy.Service.Proxy;
 
 namespace McMaster.DotNet.Serve
 {
@@ -55,17 +55,19 @@ namespace McMaster.DotNet.Serve
                     options.Providers.Add<GzipCompressionProvider>();
                 }
 
-
-#if !NETCOREAPP2_1
                 if (_options.UseBrotli == true)
                 {
                     options.Providers.Add<BrotliCompressionProvider>();
                 }
-#endif
             });
+
+            // Reverse proxy:
+            services.AddRouting();
+            services.AddAuthorization();
+            services.AddHttpProxy();
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, IHttpProxy httpProxy)
         {
             if (_options.EnableCors == true)
             {
@@ -81,6 +83,8 @@ namespace McMaster.DotNet.Serve
 
             app.UseDeveloperExceptionPage();
 
+            ConfigureReverseProxy(app, httpProxy);
+
             var pathBase = _options.GetPathBase();
             if (!string.IsNullOrEmpty(pathBase))
             {
@@ -90,6 +94,37 @@ namespace McMaster.DotNet.Serve
             {
                 ConfigureFileServer(app);
             }
+        }
+
+        private void ConfigureReverseProxy(IApplicationBuilder app, IHttpProxy httpProxy)
+        {
+            var httpClient = new HttpMessageInvoker(new SocketsHttpHandler()
+            {
+                UseProxy = false,
+                AllowAutoRedirect = false,
+                AutomaticDecompression = DecompressionMethods.None,
+                UseCookies = false
+            });
+
+            var transformer = new CustomTransformer();
+            var requestOptions = new RequestProxyOptions { Timeout = TimeSpan.FromSeconds(100) };
+
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
+            {
+                var mappings = _options.GetReverseProxyMappings();
+                if (mappings != null)
+                {
+                    foreach (var mapping in mappings)
+                    {
+                        endpoints.Map(mapping.Key, async httpContext =>
+                        {
+                            await httpProxy.ProxyAsync(httpContext, mapping.Value, httpClient, requestOptions, transformer);
+                        });
+                    }
+                }
+            });
         }
 
         private void ConfigureFileServer(IApplicationBuilder app)

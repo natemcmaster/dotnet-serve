@@ -17,9 +17,8 @@ namespace McMaster.DotNet.Serve.Tests
             = Path.Combine(AppContext.BaseDirectory, "tool", "dotnet-serve.dll");
 
         private static int s_nextPort
-#if NETCOREAPP2_1 // avoid conflicts if tests for both target frameworks run at the same time.
-            = 9000;
-#elif NETCOREAPP3_1
+// Avoid conflicts if tests for both target frameworks run at the same time.
+#if NETCOREAPP3_1
             = 10000;
 #elif NET5_0
             = 11000;
@@ -106,6 +105,7 @@ namespace McMaster.DotNet.Serve.Tests
             string certPassword = null,
             string[] mimeMap = null,
             string[] headers = null,
+            string[] reverseProxyMap = null,
             ITestOutputHelper output = null,
             bool useGzip = false,
             bool useBrotli = false,
@@ -154,6 +154,15 @@ namespace McMaster.DotNet.Serve.Tests
                 foreach (var mapping in mimeMap)
                 {
                     psi.ArgumentList.Add("-m");
+                    psi.ArgumentList.Add(mapping);
+                }
+            }
+
+            if (reverseProxyMap != null)
+            {
+                foreach (var mapping in reverseProxyMap)
+                {
+                    psi.ArgumentList.Add("--reverse-proxy");
                     psi.ArgumentList.Add(mapping);
                 }
             }
