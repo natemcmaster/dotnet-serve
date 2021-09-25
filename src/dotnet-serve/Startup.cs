@@ -15,10 +15,6 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
 
-#if NETCOREAPP2_1
-using IWebHostEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
-#endif
-
 namespace McMaster.DotNet.Serve
 {
     internal class Startup
@@ -56,12 +52,10 @@ namespace McMaster.DotNet.Serve
                 }
 
 
-#if !NETCOREAPP2_1
                 if (_options.UseBrotli == true)
                 {
                     options.Providers.Add<BrotliCompressionProvider>();
                 }
-#endif
             });
         }
 
