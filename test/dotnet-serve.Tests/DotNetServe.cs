@@ -16,16 +16,7 @@ namespace McMaster.DotNet.Serve.Tests
         private static readonly string s_dotnetServe
             = Path.Combine(AppContext.BaseDirectory, "tool", "dotnet-serve.dll");
 
-        private static int s_nextPort
-#if NETCOREAPP2_1 // avoid conflicts if tests for both target frameworks run at the same time.
-            = 9000;
-#elif NETCOREAPP3_1
-            = 10000;
-#elif NET5_0
-            = 11000;
-#else
-#error Update target frameworks
-#endif
+        private static int s_nextPort = 9000;
 
         private readonly Process _process;
         private readonly ITestOutputHelper _output;

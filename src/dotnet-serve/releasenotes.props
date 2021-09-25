@@ -1,5 +1,8 @@
 <Project>
   <PropertyGroup>
+    <PackageReleaseNotes Condition=" $(VersionPrefix.StartsWith('1.9.')) ">
+Dropped support for running on older versions of .NET Core. This tool now requires .NET 5 or newer.
+    </PackageReleaseNotes>
     <PackageReleaseNotes Condition=" $(VersionPrefix.StartsWith('1.7.')) ">
 Improvement:
 * @ansariabr: add support for a --cors options which can be used to enable CORS and OPTIONS requests (#45)

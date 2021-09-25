@@ -18,7 +18,7 @@ It launches a server in the current working directory and serves all files in it
 
 ## Get started
 
-[Install .NET Core or .NET 5+](https://get.dot.net) and run this command:
+[Install .NET 5 or newer](https://get.dot.net) and run this command:
 
 ```
 dotnet tool install --global dotnet-serve
@@ -62,7 +62,7 @@ Options:
   -m|--mime <MAPPING>                  Add a mapping from file extension to MIME type. Empty MIME removes a mapping.
                                        Expected format is <EXT>=<MIME>.
   -z|--gzip                            Enable gzip compression
-  -b|--brotli                          Enable brotli compression (requires .NET Core 3+)
+  -b|--brotli                          Enable brotli compression
   -c|--cors                            Enable CORS (It will enable CORS for all origin and all methods)
   --save-options                       Save specified options to .netconfig for subsequent runs.
   -?|--help                            Show help information

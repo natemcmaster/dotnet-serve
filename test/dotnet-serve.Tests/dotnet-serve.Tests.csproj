@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;netcoreapp3.1;netcoreapp2.1</TargetFrameworks>
+    <TargetFramework>net5.0</TargetFramework>
     <DefaultItemExcludes>$(DefaultItemExcludes);TestAssets\**\*;TestResults\**\*</DefaultItemExcludes>
     <RootNamespace>McMaster.DotNet.Serve.Tests</RootNamespace>
   </PropertyGroup>
@@ -10,19 +10,8 @@
     <Content Include="TestAssets\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">
-    <Compile Remove="BrotliTests.cs" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\src\dotnet-serve\dotnet-serve.csproj" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
-    <!-- Required becuase the SDK doesn't do transitive package refs from PackAsTool for netcoreapp2.1 -->
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="3.1.0" />
-    <PackageReference Include="Portable.BouncyCastle" Version="1.8.10" />
   </ItemGroup>
 
   <ItemGroup>
