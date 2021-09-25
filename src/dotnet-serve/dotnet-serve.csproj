@@ -18,5 +18,8 @@
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="3.1.0" />
     <PackageReference Include="DotNetConfig" Version="1.0.6" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.8.10" />
+
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
+
 </Project>

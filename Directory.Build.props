@@ -9,6 +9,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/natemcmaster/dotnet-serve</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/natemcmaster/dotnet-serve</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <IsPackable>false</IsPackable>
@@ -24,7 +25,7 @@
 
   <PropertyGroup>
     <BuildNumber Condition=" '$(BuildNumber)' == '' ">$([MSBuild]::ValueOrDefault($(GITHUB_RUN_NUMBER), 0))</BuildNumber>
-    <VersionPrefix>1.8.$(BuildNumber)</VersionPrefix>
+    <VersionPrefix>1.9.$(BuildNumber)</VersionPrefix>
     <SourceRevisionId Condition="'$(SourceRevisionId)' == ''">$(GITHUB_SHA)</SourceRevisionId>
     <PackageDescription>$(Description)</PackageDescription>
     <PackageDescription Condition="'$(SourceRevisionId)' != ''">$(PackageDescription)
