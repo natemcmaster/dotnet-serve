@@ -1,25 +1,19 @@
 ﻿// Copyright (c) Nate McMaster.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
+namespace McMaster.DotNet.Serve.Tests;
 
-namespace McMaster.DotNet.Serve.Tests
+public class ConfigTests
 {
-    public class ConfigTests
+    [Fact]
+    public void ConfigurationProvidesDefaultOptions()
     {
-        [Fact]
-        public void ConfigurationProvidesDefaultOptions()
-        {
-            var certFile = Path.GetTempFileName();
-            var keyFile = Path.GetTempFileName();
-            var pfxFile = Path.GetTempFileName();
-            var configFile = Path.GetTempFileName();
+        var certFile = Path.GetTempFileName();
+        var keyFile = Path.GetTempFileName();
+        var pfxFile = Path.GetTempFileName();
+        var configFile = Path.GetTempFileName();
 
-            File.WriteAllText(configFile, @$"
+        File.WriteAllText(configFile, @$"
 [config]
     root
 
@@ -45,46 +39,46 @@ namespace McMaster.DotNet.Serve.Tests
     path-base = foo
 ");
 
-            var program = new TestProgram();
-            program.Run("--config-file", configFile);
+        var program = new TestProgram();
+        program.Run("--config-file", configFile);
 
-            var options = program.Options;
+        var options = program.Options;
 
-            Assert.True(options != null, string.Join(Environment.NewLine, program.Errors));
+        Assert.True(options != null, string.Join(Environment.NewLine, program.Errors));
 
-            Assert.Equal(4242, options.Port);
-            Assert.Equal(Path.GetTempPath(), options.Directory);
-            Assert.True(options.OpenBrowser);
-            Assert.True(options.Quiet);
-            Assert.True(options.Verbose);
-            Assert.Equal(certFile, options.CertPemPath);
-            Assert.Equal(keyFile, options.PrivateKeyPath);
-            Assert.Equal(pfxFile, options.CertPfxPath);
-            Assert.Equal("password", options.CertificatePassword);
-            Assert.True(options.UseGzip);
-            Assert.True(options.EnableCors);
-            Assert.Equal("foo", options.PathBase);
+        Assert.Equal(4242, options.Port);
+        Assert.Equal(Path.GetTempPath(), options.Directory);
+        Assert.True(options.OpenBrowser);
+        Assert.True(options.Quiet);
+        Assert.True(options.Verbose);
+        Assert.Equal(certFile, options.CertPemPath);
+        Assert.Equal(keyFile, options.PrivateKeyPath);
+        Assert.Equal(pfxFile, options.CertPfxPath);
+        Assert.Equal("password", options.CertificatePassword);
+        Assert.True(options.UseGzip);
+        Assert.True(options.EnableCors);
+        Assert.Equal("foo", options.PathBase);
 
-            Assert.Contains("X-H1: value", options.Headers);
-            Assert.Contains("X-H2: value", options.Headers);
+        Assert.Contains("X-H1: value", options.Headers);
+        Assert.Contains("X-H2: value", options.Headers);
 
-            Assert.Contains(".cs=text/plain", options.MimeMappings);
-            Assert.Contains(".vb=text/plain", options.MimeMappings);
-            Assert.Contains(".fs=text/plain", options.MimeMappings);
+        Assert.Contains(".cs=text/plain", options.MimeMappings);
+        Assert.Contains(".vb=text/plain", options.MimeMappings);
+        Assert.Contains(".fs=text/plain", options.MimeMappings);
 
-            Assert.Contains("app.config", options.ExcludedFiles);
-            Assert.Contains("appsettings.json", options.ExcludedFiles);
-        }
+        Assert.Contains("app.config", options.ExcludedFiles);
+        Assert.Contains("appsettings.json", options.ExcludedFiles);
+    }
 
-        [Fact]
-        public void CommandLineOverridesConfiguration()
-        {
-            var certFile = Path.GetTempFileName();
-            var keyFile = Path.GetTempFileName();
-            var pfxFile = Path.GetTempFileName();
-            var configFile = Path.GetTempFileName();
+    [Fact]
+    public void CommandLineOverridesConfiguration()
+    {
+        var certFile = Path.GetTempFileName();
+        var keyFile = Path.GetTempFileName();
+        var pfxFile = Path.GetTempFileName();
+        var configFile = Path.GetTempFileName();
 
-            File.WriteAllText(configFile, @$"
+        File.WriteAllText(configFile, @$"
 [config]
     root
 
@@ -102,40 +96,40 @@ namespace McMaster.DotNet.Serve.Tests
     cors = no
 ");
 
-            var program = new TestProgram();
-            program.Run(
-                "--config-file", configFile,
-                "-p", "4242",
-                "-d", Path.GetTempPath(),
-                "--cert", certFile,
-                "--key", keyFile,
-                "--pfx", pfxFile,
-                "--pfx-pwd", "password",
-                "-oqvzc");
+        var program = new TestProgram();
+        program.Run(
+            "--config-file", configFile,
+            "-p", "4242",
+            "-d", Path.GetTempPath(),
+            "--cert", certFile,
+            "--key", keyFile,
+            "--pfx", pfxFile,
+            "--pfx-pwd", "password",
+            "-oqvzc");
 
-            var options = program.Options;
+        var options = program.Options;
 
-            Assert.True(options != null, string.Join(Environment.NewLine, program.Errors));
+        Assert.True(options != null, string.Join(Environment.NewLine, program.Errors));
 
-            Assert.Equal(4242, options.Port);
-            Assert.Equal(Path.GetTempPath(), options.Directory);
-            Assert.True(options.OpenBrowser);
-            Assert.True(options.Quiet);
-            Assert.True(options.Verbose);
-            Assert.Equal(certFile, options.CertPemPath);
-            Assert.Equal(keyFile, options.PrivateKeyPath);
-            Assert.Equal(pfxFile, options.CertPfxPath);
-            Assert.Equal("password", options.CertificatePassword);
-            Assert.True(options.UseGzip);
-            Assert.True(options.EnableCors);
-        }
+        Assert.Equal(4242, options.Port);
+        Assert.Equal(Path.GetTempPath(), options.Directory);
+        Assert.True(options.OpenBrowser);
+        Assert.True(options.Quiet);
+        Assert.True(options.Verbose);
+        Assert.Equal(certFile, options.CertPemPath);
+        Assert.Equal(keyFile, options.PrivateKeyPath);
+        Assert.Equal(pfxFile, options.CertPfxPath);
+        Assert.Equal("password", options.CertificatePassword);
+        Assert.True(options.UseGzip);
+        Assert.True(options.EnableCors);
+    }
 
-        [Fact]
-        public void ConfigurationHeadersAugmentOptions()
-        {
-            var configFile = Path.GetTempFileName();
+    [Fact]
+    public void ConfigurationHeadersAugmentOptions()
+    {
+        var configFile = Path.GetTempFileName();
 
-            File.WriteAllText(configFile, @$"
+        File.WriteAllText(configFile, @$"
 [config]
     root
 
@@ -144,23 +138,23 @@ namespace McMaster.DotNet.Serve.Tests
 ");
 
 
-            var program = new TestProgram();
-            program.Run("--config-file", configFile, "-h", "X-H2: value");
+        var program = new TestProgram();
+        program.Run("--config-file", configFile, "-h", "X-H2: value");
 
-            var options = program.Options;
+        var options = program.Options;
 
-            Assert.True(options != null, string.Join(Environment.NewLine, program.Errors));
+        Assert.True(options != null, string.Join(Environment.NewLine, program.Errors));
 
-            Assert.Contains("X-H1: value", options.Headers);
-            Assert.Contains("X-H2: value", options.Headers);
-        }
+        Assert.Contains("X-H1: value", options.Headers);
+        Assert.Contains("X-H2: value", options.Headers);
+    }
 
-        [Fact]
-        public void ConfigurationMimeAugmentOptions()
-        {
-            var configFile = Path.GetTempFileName();
+    [Fact]
+    public void ConfigurationMimeAugmentOptions()
+    {
+        var configFile = Path.GetTempFileName();
 
-            File.WriteAllText(configFile, @$"
+        File.WriteAllText(configFile, @$"
 [config]
     root
 
@@ -169,24 +163,24 @@ namespace McMaster.DotNet.Serve.Tests
     mime = .fs=text/plain
 ");
 
-            var program = new TestProgram();
-            program.Run("--config-file", configFile, "-m", ".cs=text/plain");
+        var program = new TestProgram();
+        program.Run("--config-file", configFile, "-m", ".cs=text/plain");
 
-            var options = program.Options;
+        var options = program.Options;
 
-            Assert.True(options != null, string.Join(Environment.NewLine, program.Errors));
+        Assert.True(options != null, string.Join(Environment.NewLine, program.Errors));
 
-            Assert.Contains(".cs=text/plain", options.MimeMappings);
-            Assert.Contains(".vb=text/plain", options.MimeMappings);
-            Assert.Contains(".fs=text/plain", options.MimeMappings);
-        }
+        Assert.Contains(".cs=text/plain", options.MimeMappings);
+        Assert.Contains(".vb=text/plain", options.MimeMappings);
+        Assert.Contains(".fs=text/plain", options.MimeMappings);
+    }
 
-        [Fact]
-        public void ConfigurationExcludedFilesAugmentOptions()
-        {
-            var configFile = Path.GetTempFileName();
+    [Fact]
+    public void ConfigurationExcludedFilesAugmentOptions()
+    {
+        var configFile = Path.GetTempFileName();
 
-            File.WriteAllText(configFile, @$"
+        File.WriteAllText(configFile, @$"
 [config]
     root
 
@@ -194,26 +188,25 @@ namespace McMaster.DotNet.Serve.Tests
     exclude-file = app.config
 ");
 
-            var program = new TestProgram();
-            program.Run("--config-file", configFile, "--exclude-file", "appsettings.json");
+        var program = new TestProgram();
+        program.Run("--config-file", configFile, "--exclude-file", "appsettings.json");
 
-            var options = program.Options;
+        var options = program.Options;
 
-            Assert.True(options != null, string.Join(Environment.NewLine, program.Errors));
+        Assert.True(options != null, string.Join(Environment.NewLine, program.Errors));
 
-            Assert.Contains("app.config", options.ExcludedFiles);
-            Assert.Contains("appsettings.json", options.ExcludedFiles);
-        }
+        Assert.Contains("app.config", options.ExcludedFiles);
+        Assert.Contains("appsettings.json", options.ExcludedFiles);
+    }
 
-        private class TestProgram : Program
+    private class TestProgram : Program
+    {
+        protected override Task<int> OnRunAsync(CommandLineOptions options, CancellationToken ct)
         {
-            protected override Task<int> OnRunAsync(CommandLineOptions options, CancellationToken ct)
-            {
-                Options = options;
-                return Task.FromResult(0);
-            }
-
-            public CommandLineOptions Options { get; private set; }
+            Options = options;
+            return Task.FromResult(0);
         }
+
+        public CommandLineOptions Options { get; private set; }
     }
 }

@@ -13,7 +13,8 @@
     <RepositoryUrl>https://github.com/natemcmaster/dotnet-serve</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <IsPackable>false</IsPackable>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>10.0</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
