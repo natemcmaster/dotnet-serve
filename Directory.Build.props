@@ -26,7 +26,7 @@
 
   <PropertyGroup>
     <BuildNumber Condition=" '$(BuildNumber)' == '' ">$([MSBuild]::ValueOrDefault($(GITHUB_RUN_NUMBER), 0))</BuildNumber>
-    <VersionPrefix>1.9.$(BuildNumber)</VersionPrefix>
+    <VersionPrefix>1.10.$(BuildNumber)</VersionPrefix>
     <SourceRevisionId Condition="'$(SourceRevisionId)' == ''">$(GITHUB_SHA)</SourceRevisionId>
     <PackageDescription>$(Description)</PackageDescription>
     <PackageDescription Condition="'$(SourceRevisionId)' != ''">$(PackageDescription)
