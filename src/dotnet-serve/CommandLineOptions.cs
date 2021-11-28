@@ -36,6 +36,9 @@ internal class CommandLineOptions
     [Option("--path-base <PATH>", Description = "The base URL path of postpended to the site url.")]
     public string PathBase { get; internal set; }
 
+    [Option("--reverse-proxy <MAPPING>", CommandOptionType.MultipleValue, Description = "Map a path pattern to another url.\nExpected format is <SOURCE_PATH_PATTERN>=<DESTINATION_URL_PREFIX>.\nSOURCE_PATH_PATTERN uses ASP.NET routing syntax. Use {**all} to match anything.")]
+    public string[] ReverseProxyMappings { get; internal set; }
+
     [Option("--default-extensions:<EXTENSIONS>", CommandOptionType.SingleOrNoValue, Description = "A comma-delimited list of extensions to use when no extension is provided in the URL. [.html,.htm]")]
     public (bool HasValue, string Extensions) DefaultExtensions { get; }
 
@@ -166,6 +169,33 @@ internal class CommandLineOptions
                 return (ext, mime);
             })
             .ToDictionary(p => p.ext, p => p.mime, StringComparer.OrdinalIgnoreCase);
+
+    public IDictionary<string, string> GetReverseProxyMappings() =>
+        ReverseProxyMappings
+            ?.Select(s => s.Trim())
+            .Select(s =>
+            {
+                const string errorMessage = "The format of the key-value pair is invalid." +
+                                            " It must contain exactly one '=' separator." +
+                                            " Make sure non-separator '=' characters are escaped ('\\=').";
+
+                int sepIndex = -1;
+                for (int i = 1; i < s.Length; i++)
+                    if (s[i] == '=' && s[i - 1] != '\\')
+                    {
+                        if (sepIndex != -1)
+                            throw new ArgumentException(errorMessage);
+                        sepIndex = i;
+                    }
+
+                if (sepIndex < 0 || (sepIndex + 1) >= s.Length)
+                    throw new ArgumentException(errorMessage);
+
+                var key = s[..sepIndex].Replace("\\=", "=");
+                var value = s[(sepIndex + 1)..].Replace("\\=", "=");
+                return (key, value);
+            })
+            .ToDictionary(p => p.key, p => p.value, StringComparer.Ordinal);
 
     public IDictionary<string, string> GetHeaders() =>
         Headers
