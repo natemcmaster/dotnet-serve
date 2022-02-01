@@ -5,6 +5,7 @@
     <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
     <IsPackable>true</IsPackable>
     <PackAsTool>true</PackAsTool>
+    <RollForward>Major</RollForward>
     <AssemblyName>dotnet-serve</AssemblyName>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <DebugType>embedded</DebugType>
