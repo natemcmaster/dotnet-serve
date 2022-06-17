@@ -45,6 +45,17 @@ internal class Startup
         {
             options.Providers.Clear();
 
+            if (_options.UseGzip == true || _options.UseBrotli == true)
+            {
+                options.MimeTypes =
+                    ResponseCompressionDefaults.MimeTypes.Concat(
+                        new[] {
+                            "application/dll",
+                            "application/dat"
+                        }
+                    );
+            }
+
             if (_options.UseGzip == true)
             {
                 options.Providers.Add<GzipCompressionProvider>();
@@ -153,6 +164,10 @@ internal class Startup
         }
 
         var contentTypeProvider = new FileExtensionContentTypeProvider();
+
+        contentTypeProvider.Mappings.Add(".dll", "application/dll");
+        contentTypeProvider.Mappings.Add(".dat", "application/dat");
+
         var mimeMappings = _options.GetMimeMappings();
         if (mimeMappings != null)
         {
