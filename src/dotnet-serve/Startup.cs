@@ -47,13 +47,9 @@ internal class Startup
 
             if (_options.UseGzip == true || _options.UseBrotli == true)
             {
-                options.MimeTypes =
-                    ResponseCompressionDefaults.MimeTypes.Concat(
-                        new[] {
-                            "application/dll",
-                            "application/dat"
-                        }
-                    );
+                options.MimeTypes = ResponseCompressionDefaults.MimeTypes
+                    .Append("application/dll")
+                    .Append("application/dat");
             }
 
             if (_options.UseGzip == true)
