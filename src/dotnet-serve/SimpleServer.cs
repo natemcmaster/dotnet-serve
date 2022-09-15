@@ -98,7 +98,8 @@ internal class SimpleServer
         var defaultExtensions = _options.GetDefaultExtensions();
         if (defaultExtensions != null)
         {
-            _console.WriteLine(ConsoleColor.DarkYellow, $"Using default extensions " + string.Join(", ", defaultExtensions));
+            _console.WriteLine(ConsoleColor.DarkYellow,
+                $"Using default extensions " + string.Join(", ", defaultExtensions));
         }
 
         await host.StartAsync(cancellationToken);
@@ -112,7 +113,7 @@ internal class SimpleServer
         var addresses = host.ServerFeatures.Get<IServerAddressesFeature>();
         var pathBase = _options.GetPathBase();
 
-        _console.WriteLine("Listening on:");
+        _console.WriteLine(GetListeningAddressText(addresses));
         foreach (var a in addresses.Addresses)
         {
             _console.WriteLine(ConsoleColor.Green, "  " + NormalizeToLoopbackAddress(a) + pathBase);
@@ -131,6 +132,20 @@ internal class SimpleServer
             }
 
             LaunchBrowser(url);
+        }
+
+        static string GetListeningAddressText(IServerAddressesFeature addresses)
+        {
+            if (addresses.Addresses.Any())
+            {
+                var url = addresses.Addresses.First();
+                if (url.Contains("0.0.0.0") || url.Contains("[::]"))
+                {
+                    return "Listening on any IP:";
+                }
+            }
+
+            return "Listening on:";
         }
 
         static string NormalizeToLoopbackAddress(string url)
