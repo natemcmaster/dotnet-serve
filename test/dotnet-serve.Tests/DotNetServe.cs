@@ -104,7 +104,8 @@ internal class DotNetServe : IDisposable
         ITestOutputHelper output = null,
         bool useGzip = false,
         bool useBrotli = false,
-        bool enableCors = false)
+        bool enableCors = false,
+        string fallbackFile = null)
     {
         var psi = new ProcessStartInfo
         {
@@ -184,6 +185,12 @@ internal class DotNetServe : IDisposable
         if (enableCors)
         {
             psi.ArgumentList.Add("-c");
+        }
+
+        if (fallbackFile != null)
+        {
+            psi.ArgumentList.Add("--fallback-file");
+            psi.ArgumentList.Add(fallbackFile);
         }
 
         var process = new Process

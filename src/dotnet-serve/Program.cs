@@ -77,6 +77,7 @@ internal class Program
         model.UseBrotli ??= config.GetBoolean("brotli");
         model.EnableCors ??= config.GetBoolean("cors");
         model.PathBase ??= config.GetString("path-base");
+        model.FallbackFile ??= config.GetString("fallback-file");
 
         if (!model.UseTlsSpecified && config.TryGetBoolean("tls", out var tls))
         {
