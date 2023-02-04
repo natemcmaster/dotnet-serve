@@ -193,6 +193,7 @@ internal class Startup
         {
             app.UseResponseCompression();
         }
+
         app.UseFileServer(new FileServerOptions
         {
             EnableDefaultFiles = true,
@@ -203,5 +204,15 @@ internal class Startup
                     ContentTypeProvider = contentTypeProvider
                 },
         });
+
+        if (!string.IsNullOrEmpty(_options.FallbackFile))
+        {
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapFallbackToFile(_options.FallbackFile);
+            });
+        }
     }
 }

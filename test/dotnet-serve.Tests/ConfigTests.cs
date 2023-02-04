@@ -39,6 +39,7 @@ public class ConfigTests
     reverse-proxy = /api/{{**all}}=http://localhost:5000
     reverse-proxy = /myPath\\=example=https://example.com # Note that '\' must be doubled in dotnet-config...
     path-base = foo
+    fallback-file = fallback.html
 ");
 
         var program = new TestProgram();
@@ -60,6 +61,7 @@ public class ConfigTests
         Assert.True(options.UseGzip);
         Assert.True(options.EnableCors);
         Assert.Equal("foo", options.PathBase);
+        Assert.Equal("fallback.html", options.FallbackFile);
 
         Assert.Contains("X-H1: value", options.Headers);
         Assert.Contains("X-H2: value", options.Headers);
@@ -82,6 +84,7 @@ public class ConfigTests
         var keyFile = Path.GetTempFileName();
         var pfxFile = Path.GetTempFileName();
         var configFile = Path.GetTempFileName();
+        var fallbackFile = Path.GetTempFileName();
 
         File.WriteAllText(configFile, @$"
 [config]
@@ -99,6 +102,7 @@ public class ConfigTests
     pfx-pwd = pwd
     gzip = 0
     cors = no
+    fallback-file = fallback-file.html
 ");
 
         var program = new TestProgram();
@@ -110,7 +114,8 @@ public class ConfigTests
             "--key", keyFile,
             "--pfx", pfxFile,
             "--pfx-pwd", "password",
-            "-oqvzc");
+            "-oqvzc",
+            "--fallback-file", fallbackFile);
 
         var options = program.Options;
 
@@ -124,6 +129,7 @@ public class ConfigTests
         Assert.Equal(certFile, options.CertPemPath);
         Assert.Equal(keyFile, options.PrivateKeyPath);
         Assert.Equal(pfxFile, options.CertPfxPath);
+        Assert.Equal(fallbackFile, options.FallbackFile);
         Assert.Equal("password", options.CertificatePassword);
         Assert.True(options.UseGzip);
         Assert.True(options.EnableCors);
