@@ -6,7 +6,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/.build/bin/dotnet-serve/Debug/net5.0/dotnet-serve.dll",
+      "program": "${workspaceFolder}/.build/bin/dotnet-serve/Debug/net6.0/dotnet-serve.dll",
       "args": [],
       "cwd": "${workspaceFolder}/src/dotnet-serve",
       "console": "internalConsole",

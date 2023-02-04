@@ -11,16 +11,7 @@ internal class DotNetServe : IDisposable
     private static readonly string s_dotnetServe
         = Path.Combine(AppContext.BaseDirectory, "tool", "dotnet-serve.dll");
 
-    private static int s_nextPort
-        // separate port ranges per framework when tests are run in parallel
-#if NET5_0
-        = 9000;
-#elif NET6_0
-        = 10000;
-#else
-#error Update target frameworks
-#endif
-
+    private static int s_nextPort = 9000;
     private readonly Process _process;
     private readonly ITestOutputHelper _output;
     private readonly SemaphoreSlim _outputReceived = new(0);
