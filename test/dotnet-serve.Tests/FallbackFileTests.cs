@@ -16,7 +16,7 @@ public class FallbackFileTests
     }
 
     [Fact]
-    public async Task ItResponseFallbackFile()
+    public async Task ItRespondsWithFallbackFile()
     {
         var path = Path.Combine(AppContext.BaseDirectory, "TestAssets", "FallbackFile");
         using var ds = DotNetServe.Start(path,
@@ -28,7 +28,7 @@ public class FallbackFileTests
     }
 
     [Fact]
-    public async Task ItResponseNotFound()
+    public async Task ItRespondsNotFound()
     {
         var path = Path.Combine(AppContext.BaseDirectory, "TestAssets", "FallbackFile");
         using var ds = DotNetServe.Start(path,

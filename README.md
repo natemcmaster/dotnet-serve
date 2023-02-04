@@ -68,7 +68,9 @@ Options:
   -b|--brotli                          Enable brotli compression
   -c|--cors                            Enable CORS (It will enable CORS for all origin and all methods)
   --save-options                       Save specified options to .netconfig for subsequent runs.
-  --config-file                        Use the given .netconfig file.
+  --config-file                          Use the given .netconfig file.
+  --fallback-file                       The path to a file which is served for requests that do not match known file names.
+                                       This is commonly used for single-page web applications.
   -?|--help                            Show help information.
 ```
 

@@ -133,7 +133,8 @@ internal class CommandLineOptions
     [Option("--config-file", Description = "Use the given .netconfig file.")]
     public string ConfigFile { get; }
 
-    [Option("--fallback-file", Description = "Use the given fallback file.")]
+    [Option("--fallback-file", Description = "The path to a file which is served for requests that do not match known file names.")]
+    [FileExists]
     public string FallbackFile { get; internal set; }
 
     public string GetPathBase()
