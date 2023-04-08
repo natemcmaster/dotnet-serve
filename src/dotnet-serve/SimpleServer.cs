@@ -73,7 +73,7 @@ internal class SimpleServer
                     }
                     else
                     {
-                        o.ListenLocalhost(port.GetValueOrDefault(), ConfigureHttps);
+                        o.ListenAnyIP(port.GetValueOrDefault(), ConfigureHttps);
                     }
                 }
                 else
