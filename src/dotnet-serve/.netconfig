@@ -6,3 +6,4 @@
 	mime = .csproj=text/xml
 	exclude-file = dotnet-serve.csproj
 	exclude-file = releasenotes.props
+	open-browser
