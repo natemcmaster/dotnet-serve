@@ -18,7 +18,7 @@ It launches a server in the current working directory and serves all files in it
 
 ## Get started
 
-[Install .NET 5 or newer](https://get.dot.net) and run this command:
+[Install .NET 6 or newer](https://get.dot.net) and run this command:
 
 ```
 dotnet tool install --global dotnet-serve

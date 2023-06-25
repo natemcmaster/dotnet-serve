@@ -20,14 +20,12 @@ $artifacts = "$PSScriptRoot/artifacts/"
 
 Remove-Item -Recurse $artifacts -ErrorAction Ignore
 
-exec dotnet tool restore
-
 [string[]] $formatArgs=@()
 if ($ci) {
-    $formatArgs += '--check'
+    $formatArgs += '--verify-no-changes'
 }
 
-exec dotnet tool run dotnet-format -- -v detailed @formatArgs
+exec dotnet format -v detailed @formatArgs
 exec dotnet build --configuration $Configuration
 exec dotnet pack --no-build --configuration $Configuration -o $artifacts
 exec dotnet test --no-build --configuration $Configuration `

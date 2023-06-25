@@ -21,10 +21,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Setup .NET 6
-        uses: actions/setup-dotnet@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: "6.0.x"
+          dotnet-version: "7.0.x"
       - name: Run build script
         id: build_script
         run: ./build.ps1 -ci
@@ -67,6 +67,7 @@ jobs:
         with:
           name: ${{ env.PACKAGE_VERSION }}
           tag_name: v${{ env.PACKAGE_VERSION }}
+          generate_release_notes: true
           body: |
             ## How to get this update
             Update to the latest version:
