@@ -27,6 +27,8 @@ public class MimeTests
     [InlineData("/file.js", "contents_of_file.js\n", "application/my-js", "js=application/my-js")]
     // Remove a default mapping.
     [InlineData("/file.js", "contents_of_file.js\n", null, "js=")]
+    // Add a mapping with charset.
+    [InlineData("/file.log", "contents of file.log\n", "text/plain; charset=utf-8", ".log=text/plain; charset=utf-8")]
     public async Task ItAppliesMimeMappings(string file, string expectedContents, string expectedMime, params string[] mimeMap)
     {
         var path = Path.Combine(AppContext.BaseDirectory, "TestAssets", "Mime");
@@ -38,9 +40,9 @@ public class MimeTests
         }
         else
         {
-            Assert.Equal(resp.Content.Headers.ContentType.MediaType, expectedMime);
+            Assert.Equal(expectedMime, resp.Content.Headers.ContentType.ToString());
         }
         var respTxt = await resp.Content.ReadAsStringAsync();
-        Assert.Equal(respTxt, expectedContents);
+        Assert.Equal(expectedContents, respTxt);
     }
 }

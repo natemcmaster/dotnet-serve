@@ -110,7 +110,7 @@ internal class CommandLineOptions
     public virtual string CertificatePassword { get; internal set; }
 
     [Option("-m|--mime <MAPPING>", CommandOptionType.MultipleValue, Description = "Add a mapping from file extension to MIME type. Empty MIME removes a mapping.\nExpected format is <EXT>=<MIME>.")]
-    [RegularExpression(@"^([^=]+)=([^=]*)$", ErrorMessage = "MIME mappings must have the form: ext=mime/type")]
+    [RegularExpression(@"^([^=]+)=(.*)$", ErrorMessage = "MIME mappings must have the form: ext=mime/type")]
     public string[] MimeMappings { get; internal set; }
 
     // Internal, experimental flag. If you found this, it may break in the future.
