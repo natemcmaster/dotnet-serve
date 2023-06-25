@@ -54,7 +54,9 @@ Usage: dotnet serve [options]
 Options:
   --version                            Show version information.
   -d|--directory <DIR>                 The root directory to serve. [Current directory]
-  -o|--open-browser                    Open a web browser when the server starts. [false]
+  -o|--open-browser[:<PATH>]           Open a web browser when the server starts. [Default false]
+                                       You can also provide the subpath to launch by using -o:<PATH>.
+                                       Example: -o:/path/index.html
   -p|--port <PORT>                     Port to use [8080]. Use 0 for a dynamic port.
   -a|--address <ADDRESS>               Address to use. [Default = localhost].
                                        Accepts IP addresses,

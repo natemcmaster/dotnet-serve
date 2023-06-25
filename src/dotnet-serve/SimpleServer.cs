@@ -132,16 +132,20 @@ internal class SimpleServer
         _console.WriteLine("");
         _console.WriteLine("Press CTRL+C to exit");
 
-        if (_options.OpenBrowser == true)
+        if (_options.OpenBrowser.hasValue)
         {
-            var url = NormalizeToLoopbackAddress(addresses.Addresses.First());
+            var uri = new Uri(NormalizeToLoopbackAddress(addresses.Addresses.First()));
 
-            if (!string.IsNullOrEmpty(pathBase))
+            if (!string.IsNullOrWhiteSpace(_options.OpenBrowser.path))
             {
-                url += pathBase;
+                uri = new Uri(uri, _options.OpenBrowser.path);
+            }
+            else if (!string.IsNullOrEmpty(pathBase))
+            {
+                uri = new Uri(uri, pathBase);
             }
 
-            LaunchBrowser(url);
+            LaunchBrowser(uri.ToString());
         }
 
         static string GetListeningAddressText(IServerAddressesFeature addresses)
