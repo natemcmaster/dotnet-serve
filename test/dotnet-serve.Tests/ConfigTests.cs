@@ -51,7 +51,7 @@ public class ConfigTests
 
         Assert.Equal(4242, options.Port);
         Assert.Equal(Path.GetTempPath(), options.Directory);
-        Assert.True(options.OpenBrowser);
+        Assert.True(options.OpenBrowser.hasValue);
         Assert.True(options.Quiet);
         Assert.True(options.Verbose);
         Assert.Equal(certFile, options.CertPemPath);
@@ -123,7 +123,7 @@ public class ConfigTests
 
         Assert.Equal(4242, options.Port);
         Assert.Equal(Path.GetTempPath(), options.Directory);
-        Assert.True(options.OpenBrowser);
+        Assert.True(options.OpenBrowser.hasValue);
         Assert.True(options.Quiet);
         Assert.True(options.Verbose);
         Assert.Equal(certFile, options.CertPemPath);

@@ -134,8 +134,7 @@ internal class SimpleServer
 
         if (_options.OpenBrowser.hasValue)
         {
-            var url = NormalizeToLoopbackAddress(addresses.Addresses.First());
-            var uri = new Uri(url);
+            var uri = new Uri(NormalizeToLoopbackAddress(addresses.Addresses.First()));
 
             if (!string.IsNullOrWhiteSpace(_options.OpenBrowser.path))
             {
