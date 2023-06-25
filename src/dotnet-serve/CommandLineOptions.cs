@@ -23,8 +23,8 @@ internal class CommandLineOptions
     [DirectoryExists]
     public string Directory { get; internal set; }
 
-    [Option(Description = "Open a web browser when the server starts. [false]")]
-    public bool? OpenBrowser { get; internal set; }
+    [Option("-o|--open-browser[:<PATH>]", CommandOptionType.SingleOrNoValue, Description = "Open a web browser when the server starts. [Default = false]\nYou can also provide the subpath to launch by using -o:<PATH>.\nExample: -o:/path/index.html")]
+    public (bool hasValue, string path) OpenBrowser { get; internal set; }
 
     [Option(Description = "Port to use [8080]. Use 0 for a dynamic port.")]
     [Range(0, 65535, ErrorMessage = "Invalid port. Ports must be in the range of 0 to 65535.")]

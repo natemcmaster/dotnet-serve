@@ -66,7 +66,25 @@ internal class Program
     {
         model.Port ??= (int?)config.GetNumber("port");
         model.Directory ??= config.GetString("directory");
-        model.OpenBrowser ??= config.GetBoolean("open-browser");
+        if (!model.OpenBrowser.hasValue)
+        {
+            try
+            {
+                if (config.TryGetBoolean("open-browser", out var openBrowser) && openBrowser)
+                {
+                    model.OpenBrowser = (hasValue: true, null);
+                }
+            }
+            catch (FormatException)
+            {
+                // Raised when the value is not a boolean
+                var openBrowserPath = config.GetString("open-browser");
+                if (!string.IsNullOrEmpty(openBrowserPath))
+                {
+                    model.OpenBrowser = (hasValue: true, openBrowserPath);
+                }
+            }
+        }
         model.Quiet ??= config.GetBoolean("quiet");
         model.Verbose ??= config.GetBoolean("verbose");
         model.CertPemPath ??= config.GetNormalizedPath("cert");
@@ -146,9 +164,16 @@ internal class Program
         {
             config.SetString("directory", model.Directory);
         }
-        if (model.OpenBrowser != null)
+        if (model.OpenBrowser.hasValue)
         {
-            config.SetBoolean("open-browser", model.OpenBrowser.Value);
+            if (!string.IsNullOrEmpty(model.OpenBrowser.path))
+            {
+                config.SetString("open-browser", model.OpenBrowser.path);
+            }
+            else
+            {
+                config.SetBoolean("open-browser", true);
+            }
         }
         if (model.Quiet != null)
         {
