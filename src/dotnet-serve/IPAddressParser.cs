@@ -18,6 +18,11 @@ internal class IPAddressParser : IValueParser<IPAddress>
             return IPAddress.Loopback;
         }
 
+        if (string.Equals("any", value, StringComparison.OrdinalIgnoreCase))
+        {
+            return IPAddress.IPv6Any;
+        }
+
         if (!IPAddress.TryParse(value, out var address))
         {
             throw new FormatException($"'{value}' is not a valid IP address");

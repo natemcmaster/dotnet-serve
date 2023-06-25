@@ -35,6 +35,17 @@ dotnet serve -o
 dotnet serve -o -S
 ```
 
+... with a specific port (otherwise, it defaults to a random, unused port).
+```
+dotnet serve --port 8080
+```
+
+... with access allowed to remote machines (defaults to loopback only.) Use this if running inside Docker.
+
+```
+dotnet serve --address any
+```
+
 ## Usage
 
 ```
@@ -45,7 +56,10 @@ Options:
   -d|--directory <DIR>                 The root directory to serve. [Current directory]
   -o|--open-browser                    Open a web browser when the server starts. [false]
   -p|--port <PORT>                     Port to use [8080]. Use 0 for a dynamic port.
-  -a|--address <ADDRESS>               Address to use [127.0.0.1]
+  -a|--address <ADDRESS>               Address to use. [Default = localhost].
+                                       Accepts IP addresses,
+                                       'localhost' for only accept requests from loopback connections, or
+                                       'any' to accept requests from any IP address.
   --path-base <PATH>                   The base URL path of postpended to the site url.
   --reverse-proxy <MAPPING>            Map a path pattern to another url.
                                        Expected format is <SOURCE_PATH_PATTERN>=<DESTINATION_URL_PREFIX>.

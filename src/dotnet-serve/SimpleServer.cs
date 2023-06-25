@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Diagnostics;
+using System.Net;
 using System.Runtime.InteropServices;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.AspNetCore.Hosting;
@@ -80,7 +81,14 @@ internal class SimpleServer
                 {
                     foreach (var a in _options.Addresses)
                     {
-                        o.Listen(a, port.GetValueOrDefault(), ConfigureHttps);
+                        if (a == IPAddress.IPv6Any)
+                        {
+                            o.ListenAnyIP(port.GetValueOrDefault(), ConfigureHttps);
+                        }
+                        else
+                        {
+                            o.Listen(a, port.GetValueOrDefault(), ConfigureHttps);
+                        }
                     }
                 }
             })
@@ -103,12 +111,13 @@ internal class SimpleServer
         }
 
         await host.StartAsync(cancellationToken);
-        AfterServerStart(host);
+        var logger = host.Services.GetRequiredService<ILogger<SimpleServer>>();
+        AfterServerStart(host, logger);
         await host.WaitForShutdownAsync(cancellationToken);
         return 0;
     }
 
-    private void AfterServerStart(IWebHost host)
+    private void AfterServerStart(IWebHost host, ILogger<SimpleServer> logger)
     {
         var addresses = host.ServerFeatures.Get<IServerAddressesFeature>();
         var pathBase = _options.GetPathBase();
@@ -116,6 +125,7 @@ internal class SimpleServer
         _console.WriteLine(GetListeningAddressText(addresses));
         foreach (var a in addresses.Addresses)
         {
+            logger.LogDebug("Listening on {address}", a);
             _console.WriteLine(ConsoleColor.Green, "  " + NormalizeToLoopbackAddress(a) + pathBase);
         }
 
@@ -158,7 +168,7 @@ internal class SimpleServer
         }
     }
 
-    private static void LaunchBrowser(string url)
+    private void LaunchBrowser(string url)
     {
         var psi = new ProcessStartInfo();
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
@@ -171,12 +181,17 @@ internal class SimpleServer
             psi.FileName = "xdg-open";
             psi.ArgumentList.Add(url);
         }
-        else
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
             psi.FileName = "cmd";
             psi.ArgumentList.Add("/C");
             psi.ArgumentList.Add("start");
             psi.ArgumentList.Add(url);
+        }
+        else
+        {
+            _console.Write(ConsoleColor.Red, "Could not determine how to launch the browser for this OS platform.");
+            return;
         }
 
         Process.Start(psi);

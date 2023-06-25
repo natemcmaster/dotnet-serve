@@ -30,7 +30,7 @@ internal class CommandLineOptions
     [Range(0, 65535, ErrorMessage = "Invalid port. Ports must be in the range of 0 to 65535.")]
     public int? Port { get; internal set; }
 
-    [Option("-a|--address <ADDRESS>", Description = "Address to use [127.0.0.1]")]
+    [Option("-a|--address <ADDRESS>", Description = "Address to use. [Default = localhost].\nAccepts IP addresses,\n'localhost' for only accept requests from loopback connections, or\n'any' to accept requests from any IP address.")]
     public IPAddress[] Addresses { get; }
 
     [Option("--path-base <PATH>", Description = "The base URL path of postpended to the site url.")]
