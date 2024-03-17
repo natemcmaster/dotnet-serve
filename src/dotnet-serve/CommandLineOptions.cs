@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.ComponentModel.DataAnnotations;
+using System.IO.Compression;
 using System.Net;
 using System.Reflection;
 using McMaster.Extensions.CommandLineUtils;
@@ -123,6 +124,9 @@ internal class CommandLineOptions
 
     [Option("-b|--brotli", Description = "Enable brotli compression")]
     public bool? UseBrotli { get; internal set; }
+
+    [Option("--compression-level", Description = "The level of compression to use, when compression is enabled")]
+    public CompressionLevel? CompressionLevel { get; internal set; }
 
     [Option("-c|--cors", Description = "Enable CORS (It will enable CORS for all origin and all methods)")]
     public bool? EnableCors { get; internal set; }

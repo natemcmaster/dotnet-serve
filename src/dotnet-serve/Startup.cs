@@ -54,13 +54,23 @@ internal class Startup
 
             if (_options.UseGzip == true)
             {
-                options.Providers.Add<GzipCompressionProvider>();
+                var gzipCompressionProvider = new GzipCompressionProvider(new GzipCompressionProviderOptions
+                {
+                    Level = _options.CompressionLevel ?? System.IO.Compression.CompressionLevel.Fastest
+                });
+
+                options.Providers.Add(gzipCompressionProvider);
             }
 
 
             if (_options.UseBrotli == true)
             {
-                options.Providers.Add<BrotliCompressionProvider>();
+                var brotliCompressionProvider = new BrotliCompressionProvider(new BrotliCompressionProviderOptions
+                {
+                    Level = _options.CompressionLevel ?? System.IO.Compression.CompressionLevel.Fastest
+                });
+
+                options.Providers.Add(brotliCompressionProvider);
             }
         });
 
