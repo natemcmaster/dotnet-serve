@@ -56,7 +56,7 @@ internal class Startup
             {
                 var gzipCompressionProvider = new GzipCompressionProvider(new GzipCompressionProviderOptions
                 {
-                    Level = _options.CompressionLevel
+                    Level = _options.CompressionLevel ?? System.IO.Compression.CompressionLevel.Fastest
                 });
 
                 options.Providers.Add(gzipCompressionProvider);
@@ -67,7 +67,7 @@ internal class Startup
             {
                 var brotliCompressionProvider = new BrotliCompressionProvider(new BrotliCompressionProviderOptions
                 {
-                    Level = _options.CompressionLevel
+                    Level = _options.CompressionLevel ?? System.IO.Compression.CompressionLevel.Fastest
                 });
 
                 options.Providers.Add(brotliCompressionProvider);
