@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Nate McMaster.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.IO.Compression;
 using DotNetConfig;
 using McMaster.Extensions.CommandLineUtils;
 
@@ -93,6 +94,9 @@ internal class Program
         model.CertificatePassword ??= config.GetString("pfx-pwd");
         model.UseGzip ??= config.GetBoolean("gzip");
         model.UseBrotli ??= config.GetBoolean("brotli");
+        model.CompressionLevel ??= config.GetString("compression-level") is string compressionLevel
+            ? Enum.Parse<CompressionLevel>(compressionLevel, ignoreCase: true)
+            : default;
         model.EnableCors ??= config.GetBoolean("cors");
         model.PathBase ??= config.GetString("path-base");
         model.FallbackFile ??= config.GetString("fallback-file");
