@@ -22,7 +22,7 @@ public class MimeTests
     // Add several mappings.
     [InlineData("/file.mytxt", "contents of file.mytxt\n", "application/x-mytxt", "mytxt=application/x-mytxt", "notmytxt=application/x-notmytxt")]
     // Check that *.js has a default mapping.
-    [InlineData("/file.js", "contents_of_file.js\n", "application/javascript")]
+    [InlineData("/file.js", "contents_of_file.js\n", "text/javascript")]
     // Override a default mapping.
     [InlineData("/file.js", "contents_of_file.js\n", "application/my-js", "js=application/my-js")]
     // Remove a default mapping.
