@@ -138,7 +138,6 @@ internal class CommandLineOptions
     public string ConfigFile { get; }
 
     [Option("--fallback-file", Description = "The path to a file which is served for requests that do not match known file names.")]
-    [FileExists]
     public string FallbackFile { get; internal set; }
 
     public string GetPathBase()
