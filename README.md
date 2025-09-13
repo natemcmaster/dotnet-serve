@@ -14,7 +14,7 @@ dotnet-serve
 
 A simple command-line HTTP server.
 
-It launches a server in the current working directory and serves all files in it.
+It launches a server in the current working directory and serves all files from that directory.
 
 ## Get started
 
@@ -24,23 +24,25 @@ It launches a server in the current working directory and serves all files in it
 dotnet tool install --global dotnet-serve
 ```
 
-Start a simple server and open the browser by running
+Start a simple server and open the browser by running:
 
 ```
 dotnet serve -o
 ```
 
-..and with HTTPS.
+And with HTTPS:
+
 ```
 dotnet serve -o -S
 ```
 
-... with a specific port (otherwise, it defaults to a random, unused port).
+With a specific port (otherwise, it defaults to a random unused port):
+
 ```
 dotnet serve --port 8080
 ```
 
-... with access allowed to remote machines (defaults to loopback only.) Use this if running inside Docker.
+Allow access from remote machines (defaults to loopback only). Use this if running inside Docker:
 
 ```
 dotnet serve --address any
@@ -60,9 +62,9 @@ Options:
   -p|--port <PORT>                     Port to use [8080]. Use 0 for a dynamic port.
   -a|--address <ADDRESS>               Address to use. [Default = localhost].
                                        Accepts IP addresses,
-                                       'localhost' for only accept requests from loopback connections, or
+                                       'localhost' to accept only loopback requests, or
                                        'any' to accept requests from any IP address.
-  --path-base <PATH>                   The base URL path of postpended to the site url.
+  --path-base <PATH>                   The base URL path appended to the site URL.
   --reverse-proxy <MAPPING>            Map a path pattern to another url.
                                        Expected format is <SOURCE_PATH_PATTERN>=<DESTINATION_URL_PREFIX>.
                                        SOURCE_PATH_PATTERN uses ASP.NET routing syntax. Use {**all} to match anything.
@@ -82,11 +84,11 @@ Options:
                                        Expected format is <EXT>=<MIME>.
   -z|--gzip                            Enable gzip compression
   -b|--brotli                          Enable brotli compression
-  -c|--cors                            Enable CORS (It will enable CORS for all origin and all methods)
+  -c|--cors                            Enable CORS (it will enable CORS for all origins and all methods)
   --save-options                       Save specified options to .netconfig for subsequent runs.
   --config-file                          Use the given .netconfig file.
   --fallback-file                       The path to a file which is served for requests that do not match known file names.
-                                       This is commonly used for single-page web applications.
+                                       This is commonly used for single-page applications.
   -?|--help                            Show help information.
 ```
 
@@ -94,8 +96,7 @@ Options:
 
 ## Configuring HTTPS
 
-`dotnet serve -S` will serve requests over HTTPS. By default, it will attempt to find an appropriate certificate
-on the machine.
+`dotnet serve -S` will serve requests over HTTPS. By default, it will attempt to find an appropriate certificate on the machine.
 
 By default, `dotnet serve` will look for, in order:
  - A pair of files named `cert.pem` and `private.key` in the current directory
@@ -108,7 +109,8 @@ You can also manually specify certificates as command line options (see below):
 
 ### .pem files
 
-Use this when you have your certficate and private key stored in separate files (PEM encoded).
+Use this when you have your certificate and private key stored in separate files (PEM encoded):
+
 ```
 dotnet serve --cert ./cert.pem --key ./private.pem
 ```
@@ -117,9 +119,8 @@ Note: currently only RSA private keys are supported.
 
 ### .pfx file
 
-You can generate a self-signed
+Use this when you have your certificate as a .pfx/.p12 file (PKCS#12 format):
 
-Use this when you have your certficate as a .pfx/.p12 file (PKCS#12 format).
 ```
 dotnet serve --pfx myCert.pfx --pfx-pwd certPass123
 ```
@@ -127,7 +128,7 @@ dotnet serve --pfx myCert.pfx --pfx-pwd certPass123
 ### Using the ASP.NET Core Developer Certificate
 
 The developer certificate is automatically created the first time you use `dotnet`.
-When serving on 'localhost', dotnet-serve will discover and use when you run:
+When serving on 'localhost', dotnet-serve will discover and use it when you run:
 
 ```
 dotnet serve -S
@@ -135,8 +136,7 @@ dotnet serve -S
 
 ## Reverse Proxy
 
-`dotnet-serve --reverse-proxy /api/{**all}=http://localhost:5000`
-will proxy all requests matching `/api/*` to `http://localhost:5000/api/*`.
+`dotnet-serve --reverse-proxy /api/{**all}=http://localhost:5000` will proxy all requests matching `/api/*` to `http://localhost:5000/api/*`.
 
 The source path pattern uses ASP.NET routing syntax.
 [See the ASP.NET docs for more info.](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0#route-template-reference)
@@ -145,10 +145,7 @@ Multiple `--reverse-proxy <MAPPING>` directives can be defined.
 
 ## Reusing options with .netconfig
 
-`dotnet-serve` supports reading and saving options using [dotnet-config](https://dotnetconfig.org/),
-which provides hierarchical inherited configuration for any .NET tool. This means you can save your
-frequently used options to `.netconfig` so you don't need to specify them every time and for every
-folder you serve across your machine.
+`dotnet-serve` supports reading and saving options using [dotnet-config](https://dotnetconfig.org/), which provides hierarchical inherited configuration for any .NET tool. This means you can save your frequently used options to `.netconfig` so you don't need to specify them every time and for every folder you serve across your machine.
 
 To save the options used in a particular run to the current directory's `.netconfig`, just append
 `--save-options`:
@@ -157,8 +154,7 @@ To save the options used in a particular run to the current directory's `.netcon
 dotnet serve -p 8080 --gzip --cors --quiet --save-options
 ```
 
-After running that command, a new `.netconfig` will be created (if there isn't one already there)
-with the following section for `dotnet-serve`:
+After running that command, a new `.netconfig` will be created (if there isn't one already there) with the following section for `dotnet-serve`:
 
 ```ini
 [serve]
@@ -170,12 +166,9 @@ with the following section for `dotnet-serve`:
 	header = X-Another: bar
 ```
 
-(note multiple `header`, `mime` type mappings and `exclude-file` entries can be provided as
-individual variables)
+Note: multiple `header`, `mime` type mappings, and `exclude-file` entries can be provided as individual variables.
 
-You can place those settings in any parent folder and it will be reused across all descendent
-folders, or they can also be saved to the global (user profile) or system locations. To easily
-configure these options at those levels, use the `dotnet-config` tool itself:
+You can place those settings in any parent folder, and they will be reused across all descendant folders. Alternatively, they can be saved to global (user profile) or system locations. To easily configure these options at those levels, use the `dotnet-config` tool itself:
 
 ```
 dotnet config --global --set serve.port 8000

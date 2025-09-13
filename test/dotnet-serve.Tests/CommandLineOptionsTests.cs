@@ -36,7 +36,7 @@ public class CommandLineOptionsTests
     }
 
     /// <summary>
-    /// Helper method for setting the backing field for getter-only auto-properties
+    /// Helper method that sets the backing field for getter-only auto-properties.
     /// </summary>
     private static void SetPropertyValue(CommandLineOptions options, string propertyName, object value)
     {

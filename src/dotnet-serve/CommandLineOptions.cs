@@ -31,10 +31,10 @@ internal class CommandLineOptions
     [Range(0, 65535, ErrorMessage = "Invalid port. Ports must be in the range of 0 to 65535.")]
     public int? Port { get; internal set; }
 
-    [Option("-a|--address <ADDRESS>", Description = "Address to use. [Default = localhost].\nAccepts IP addresses,\n'localhost' for only accept requests from loopback connections, or\n'any' to accept requests from any IP address.")]
+    [Option("-a|--address <ADDRESS>", Description = "Address to use. [Default = localhost].\nAccepts IP addresses,\n'localhost' to accept only loopback requests, or\n'any' to accept requests from any IP address.")]
     public IPAddress[] Addresses { get; }
 
-    [Option("--path-base <PATH>", Description = "The base URL path of postpended to the site url.")]
+    [Option("--path-base <PATH>", Description = "The base URL path appended to the site URL.")]
     public string PathBase { get; internal set; }
 
     [Option("--reverse-proxy <MAPPING>", CommandOptionType.MultipleValue, Description = "Map a path pattern to another url.\nExpected format is <SOURCE_PATH_PATTERN>=<DESTINATION_URL_PREFIX>.\nSOURCE_PATH_PATTERN uses ASP.NET routing syntax. Use {**all} to match anything.")]
@@ -128,7 +128,7 @@ internal class CommandLineOptions
     [Option("--compression-level", Description = "The level of compression to use, when compression is enabled")]
     public CompressionLevel? CompressionLevel { get; internal set; }
 
-    [Option("-c|--cors", Description = "Enable CORS (It will enable CORS for all origin and all methods)")]
+    [Option("-c|--cors", Description = "Enable CORS (it will enable CORS for all origins and all methods)")]
     public bool? EnableCors { get; internal set; }
 
     [Option("--save-options", Description = "Save specified options to .netconfig for subsequent runs.")]

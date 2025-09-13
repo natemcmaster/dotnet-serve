@@ -13,8 +13,8 @@ A clear and concise description of what the bug is.
 **To Reproduce**
 Steps to reproduce the behavior:
 1. Using this version (run `dotnet serve --version`)
-3. Run these arguments '....'
-4. See error
+2. Run these arguments, e.g. `dotnet serve --port 8080`
+3. See the error
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
