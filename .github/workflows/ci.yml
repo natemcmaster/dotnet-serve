@@ -43,25 +43,31 @@ jobs:
   release:
     if: github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'skip release') && github.actor != 'dependabot[bot]'
     needs: build
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      packages: write
     env:
       PACKAGE_VERSION: ${{ needs.build.outputs.package_version }}
     steps:
       - run: echo "Releasing ${{ env.PACKAGE_VERSION }}"
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v2
-        with:
-          nuget-version: latest
       - uses: actions/download-artifact@v4
         with:
           name: packages
           path: packages
+      - name: Login to NuGet
+        id: nuget-login
+        uses: nuget/login@v1
+        with:
+          nuget-server: https://api.nuget.org/v3/index.json
+          user: natemcmaster
       - name: Configure GitHub NuGet registry
-        run: nuget sources add -name github -source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json -username ${{ github.repository_owner }} -password ${{ secrets.GITHUB_TOKEN }}
+        run: dotnet nuget add source --name github --username ${{ github.repository_owner }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
       - name: Push to GitHub package registry
-        run: nuget push packages\*.nupkg -ApiKey ${{ secrets.GITHUB_TOKEN }} -Source github -SkipDuplicate
+        run: dotnet nuget push packages/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source github --skip-duplicate
       - name: Push to NuGet.org
-        run: nuget push packages\*.nupkg -ApiKey ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push packages/*.nupkg --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         env:
